@@ -1,0 +1,47 @@
+{
+  "name": "mediasync",
+  "version": "0.0.1",
+  "description": "My final year project for college, a webservice to watch videos in sync with friends.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp",
+    "start": "node ./server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/thekemkid/mediasync.git"
+  },
+  "keywords": [
+    "Media",
+    "synchronisation",
+    "project",
+    "webservice"
+  ],
+  "author": "Glen Keane",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thekemkid/mediasync/issues"
+  },
+  "homepage": "https://github.com/thekemkid/mediasync#readme",
+  "dependencies": {
+    "babel-preset-react": "^6.3.13",
+    "babelify": "^7.2.0",
+    "browserify": "^12.0.1",
+    "del": "^1.1.1",
+    "good": "^6.4.0",
+    "good-console": "^5.2.0",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-csso": "^1.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-stylus": "^2.2.0",
+    "gulp-uglify": "^1.5.1",
+    "hapi": "11.x.x",
+    "inert": "3.x.x",
+    "opn": "^3.0.3",
+    "react": "^0.14.6",
+    "react-dom": "^0.14.6",
+    "through": "^2.3.8",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
