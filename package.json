@@ -5,6 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "gulp",
+    "lint": "standard",
     "start": "node ./server/index.js"
   },
   "repository": {
@@ -43,5 +44,11 @@
     "react-dom": "^0.14.6",
     "through": "^2.3.8",
     "vinyl-source-stream": "^1.1.0"
-  }
+  },
+  "devDependencies": {
+    "pre-commit": "^1.1.2"
+  },
+  "pre-commit": [
+    "lint"
+  ]
 }
