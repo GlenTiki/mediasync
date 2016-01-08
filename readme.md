@@ -1,4 +1,4 @@
-![logo][]
+<img style="text-align:center" src="./client/images/logo.png"></img>
 
 #MediaSync
 
