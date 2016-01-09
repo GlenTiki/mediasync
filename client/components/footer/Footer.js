@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 
 export default class Footer extends Component {
-  renderFilter(filter, name) {
+  renderFilter (filter, name) {
     if (filter === this.props.filter) {
       return name
     }
@@ -16,7 +16,7 @@ export default class Footer extends Component {
     )
   }
 
-  render() {
+  render () {
     return (
       <p>
         Show:

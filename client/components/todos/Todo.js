@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 
 export default class Todo extends Component {
-  render() {
+  render () {
     return (
       <li
         onClick={this.props.onClick}
