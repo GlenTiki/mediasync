@@ -14,7 +14,7 @@ To run:
 git clone git@github.com:thekemkid/mediasync.git
 cd mediasync
 npm install
-gulp serve
+npm run serve
 ```
 
 [logo]: ./client/images/logo.png

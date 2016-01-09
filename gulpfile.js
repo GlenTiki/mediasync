@@ -15,8 +15,9 @@ var isDist = (process.argv.indexOf('serve') === -1)
 
 gulp.task('js', ['clean:js'], () => {
   var stream = browserify({
-    entries: './client/app.js',
+    entries: './client/index.js',
     debug: true,
+    sourceType: 'module',
     transform: [babelify]
   }).bundle()
 
