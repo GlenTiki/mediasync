@@ -21,10 +21,10 @@ export default class Header extends Component {
   render () {
     return (
       <div style={styles.wrapper}>
-        <div style={style.pullLeft}>
+        <div style={styles.pullLeft}>
           <Link to='/'><img src='/images/logo.png' /></Link>
         </div>
-        <div style={style.pullRight}>
+        <div style={styles.pullRight}>
           <Link to='/findroom'>Find a room</Link>
         </div>
       </div>
