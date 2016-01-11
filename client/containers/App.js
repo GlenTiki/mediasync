@@ -1,16 +1,21 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+
+import { Router, Route, Link, browserHistory } from 'react-router'
+
 import { addTodo, completeTodo, setVisibilityFilter, VisibilityFilters } from '../actions/TodoActions'
 import AddTodo from '../components/todos/AddTodo'
 import TodoList from '../components/todos/TodoList'
 import Footer from '../components/footer/Footer'
+import Header from '../components/header/Header'
 
 class App extends Component {
   render () {
     // Injected by connect() call:
-    const { dispatch, visibleTodos, visibilityFilter } = this.props
+    const { dispatch, visibleTodos, visibilityFilter, loggedIn } = this.props
     return (
       <div>
+        <Header loggedin={loggedIn} />
         <AddTodo
           onAddClick={text =>
             dispatch(addTodo(text))
@@ -40,7 +45,8 @@ App.propTypes = {
     'SHOW_ALL',
     'SHOW_COMPLETED',
     'SHOW_ACTIVE'
-  ]).isRequired
+  ]).isRequired,
+  loggedIn: PropTypes.bool.isRequired
 }
 
 function selectTodos (todos, filter) {

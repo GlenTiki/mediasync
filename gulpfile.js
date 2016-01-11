@@ -13,7 +13,7 @@ var opn = require('opn')
 var server = require('./server/server.js')
 var isDist = (process.argv.indexOf('serve') === -1)
 
-gulp.task('js', ['clean:js'], () => {
+gulp.task('js', ['clean:js'], (done) => {
   var stream = browserify({
     entries: './client/index.js',
     debug: true,
@@ -21,20 +21,35 @@ gulp.task('js', ['clean:js'], () => {
     transform: [babelify]
   }).bundle()
 
-  return stream
-  .pipe(isDist ? uglify() : through())
-  .pipe(source('build.js'))
-  .pipe(gulp.dest('build/assets/js'))
+  stream
+    .on('end', done)
+    .on('error', (err) => {
+      console.warn('Error building bundle.\n', err, err.stack)
+      done()
+    })
+    .pipe(isDist ? uglify() : through())
+    .pipe(source('build.js'))
+    .pipe(gulp.dest('build/assets/js'))
 })
 
-gulp.task('html', ['clean:html'], () => {
-  return gulp.src('client/index.html')
+gulp.task('html', ['clean:html'], (done) => {
+  gulp.src('client/index.html')
+    .on('end', done)
+    .on('error', (err) => {
+      console.warn('Error moving html.\n', err, err.stack)
+      done()
+    })
     .pipe(rename('index.html'))
     .pipe(gulp.dest('build'))
 })
 
-gulp.task('css', ['clean:css'], () => {
-  return gulp.src('client/styles/main.styl')
+gulp.task('css', ['clean:css'], (done) => {
+  gulp.src('client/styles/main.styl')
+    .on('end', done)
+    .on('error', (err) => {
+      console.warn('Error building styling.\n', err, err.stack)
+      done()
+    })
     .pipe(stylus({
       'include css': true
     }))
@@ -49,8 +64,13 @@ gulp.task('css', ['clean:css'], () => {
     .pipe(gulp.dest('build/assets/css'))
 })
 
-gulp.task('images', ['clean:images'], () => {
-  return gulp.src('./client/images/**/*')
+gulp.task('images', ['clean:images'], (done) => {
+  gulp.src('./client/images/**/*')
+    .on('end', done)
+    .on('error', (err) => {
+      console.warn('Error moving images.\n', err, err.stack)
+      done()
+    })
     .pipe(gulp.dest('build/assets/images'))
 })
 
@@ -81,9 +101,14 @@ gulp.task('connect', ['build'], (done) => {
 gulp.task('reconnect', (done) => {
   server.stop(() => {
     delete require.cache[require.resolve('./server/server.js')]
-    server = require('./server/server.js')
+    try {
+      server = require('./server/server.js')
 
-    server.create(done)
+      server.create(done)
+    } catch (err) {
+      console.warn('Problem parsing server code.\n', err, err.stack)
+      done()
+    }
   })
 })
 
