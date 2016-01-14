@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "My final year project for college, a webservice to watch videos in sync with friends.",
   "scripts": {
+    "install": "bower install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "gulp",
     "serve": "gulp serve",
@@ -28,6 +29,7 @@
   "dependencies": {
     "babel-preset-react": "^6.3.13",
     "babelify": "^7.2.0",
+    "bower": "^1.7.2",
     "browserify": "^12.0.1",
     "del": "^1.1.1",
     "good": "^6.4.0",
@@ -41,6 +43,7 @@
     "hapi": "11.x.x",
     "history": "^1.17.0",
     "inert": "3.x.x",
+    "nes": "^2.0.2",
     "opn": "^3.0.3",
     "react": "^0.14.6",
     "react-dom": "^0.14.6",

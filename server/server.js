@@ -1,12 +1,12 @@
-const Path = require('path')
 const Hapi = require('hapi')
 const Inert = require('inert')
 const Good = require('good')
-
-const BuildPath = Path.resolve(__dirname, '../build')
+const Nes = require('nes')
+const MediaSync = require('./mediasync.js')
 
 const Plugins = [
   Inert,
+  Nes,
   {
     register: Good,
     options: {
@@ -18,7 +18,8 @@ const Plugins = [
         }
       }]
     }
-  }
+  },
+  MediaSync
 ]
 
 var server
@@ -31,18 +32,6 @@ exports.create = function (done) {
     if (err) {
       throw err
     }
-
-    server.route({
-      method: 'GET',
-      path: '/',
-      handler: { file: Path.resolve(BuildPath, 'index.html') }
-    })
-
-    server.route({
-      method: 'GET',
-      path: '/{path*2}',
-      handler: { directory: { path: Path.resolve(BuildPath, 'assets') } }
-    })
 
     server.start((err) => {
       if (err) {

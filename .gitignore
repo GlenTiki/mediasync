@@ -36,5 +36,6 @@ build
 
 # Optional REPL history
 .node_repl_history
-# ===== End Node.gitignore =====
 
+bower_components
+# ===== End Node.gitignore =====

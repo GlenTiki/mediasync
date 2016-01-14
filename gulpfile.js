@@ -51,7 +51,9 @@ gulp.task('css', ['clean:css'], (done) => {
       done()
     })
     .pipe(stylus({
-      'include css': true
+      'include css': true,
+      'compress': true,
+      'paths': ['./node_modules', './bower_components']
     }))
     .pipe(
       autoprefixer({
@@ -62,6 +64,16 @@ gulp.task('css', ['clean:css'], (done) => {
     .pipe(isDist ? csso() : through())
     .pipe(rename('build.css'))
     .pipe(gulp.dest('build/assets/css'))
+})
+
+gulp.task('fonts', ['clean:fonts'], (done) => {
+  gulp.src(['client/fonts/**/*', 'bower_components/flat-ui/dist/fonts/**/*'])
+    .on('end', done)
+    .on('error', (err) => {
+      console.warn('Error moving fonts.\n', err, err.stack)
+      done()
+    })
+    .pipe(gulp.dest('build/assets/fonts'))
 })
 
 gulp.task('images', ['clean:images'], (done) => {
@@ -88,6 +100,10 @@ gulp.task('clean:js', (done) => {
 
 gulp.task('clean:css', (done) => {
   del('build/assets/css/build.css', done)
+})
+
+gulp.task('clean:fonts', (done) => {
+  del('build/assets/fonts', done)
 })
 
 gulp.task('clean:images', (done) => {
@@ -121,10 +137,11 @@ gulp.task('watch', () => {
   gulp.watch('client/styles/**/*.styl', ['css'])
   gulp.watch('client/images/**/*', ['images'])
   gulp.watch('client/**/*.js', ['js'])
-  gulp.watch('server/**/*.js', ['reconnect'])
+  gulp.watch('client/fonts/**/*', ['fonts'])
+  gulp.watch('server/**/*', ['reconnect'])
 })
 
-gulp.task('build', ['js', 'html', 'css', 'images'])
+gulp.task('build', ['js', 'html', 'css', 'images', 'fonts'])
 
 gulp.task('serve', ['open', 'watch'])
 
