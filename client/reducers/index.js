@@ -1,3 +1,8 @@
-import { todoReducer } from './TodoReducers'
+import { default as counter } from './modules/counter'
+import { routeReducer } from 'redux-simple-router'
+import { combineReducers } from 'redux'
 
-export default { todoReducer }
+export default combineReducers({
+  counter,
+  routeReducer
+})

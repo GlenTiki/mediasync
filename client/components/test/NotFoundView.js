@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-export default class Zed extends Component {
+export class NotFoundView extends Component {
   render () {
     return (
       <p>

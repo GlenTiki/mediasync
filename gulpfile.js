@@ -53,7 +53,7 @@ gulp.task('css', ['clean:css'], (done) => {
     .pipe(stylus({
       'include css': true,
       'compress': true,
-      'paths': ['./node_modules', './bower_components']
+      'paths': ['./node_modules', './node_modules/bootstrap-styl']
     }))
     .pipe(
       autoprefixer({
@@ -67,7 +67,7 @@ gulp.task('css', ['clean:css'], (done) => {
 })
 
 gulp.task('fonts', ['clean:fonts'], (done) => {
-  gulp.src(['client/fonts/**/*', 'bower_components/flat-ui/dist/fonts/**/*'])
+  gulp.src(['client/fonts/**/*'])
     .on('end', done)
     .on('error', (err) => {
       console.warn('Error moving fonts.\n', err, err.stack)

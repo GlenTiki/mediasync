@@ -1,17 +1,9 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
 
-export default class Bar extends Component {
+export class Bar extends Component {
   render () {
     return (
-      <p style={{color: (this.props.clicked ? '#005' : '#050')}}
-        onClick={this.props.onClick}>
-        bar
-      </p>
+      <p> bar </p>
     )
   }
-}
-
-Bar.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  clicked: PropTypes.bool.isRequired
 }
