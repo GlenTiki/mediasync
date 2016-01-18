@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import * as Actions from '../../actions/Counter'
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     counter: state.counter.value
   }
@@ -18,7 +17,6 @@ function mapDispatchToProps (dispatch) {
 
 export class Counter extends Component {
   render () {
-    console.log(this.props)
     return (
       <div>
         <p>
