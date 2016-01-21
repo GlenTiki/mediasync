@@ -25,11 +25,10 @@ export class Landing extends Component {
       <Image className='landing-image' src='/assets/images/landing.jpg' responsive />
       <Col className='landing-content' xs={12}>
         <Panel className='quick-about'>
-          <h1>Welcome to MediaSync!</h1>
-          <h3>
-            Sign up, Log in and make yourself at home.<br/>
-            Kick back and listen to some music or watch a video... with a friend.
-          </h3>
+          <h1>Welcome to <img height='40em' width='auto' src='/assets/images/logo.png'/></h1>
+          <br/>
+          Sign up, Log in and make yourself at home.<br/>
+          Kick back and listen to some music or watch a video... with a friend.
         </Panel>
         <Panel className='landing-login'>
           Yo ho ho!

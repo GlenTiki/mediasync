@@ -35,7 +35,7 @@ export class Header extends Component {
           <li role='presentation'><Link to='/foo'>foo</Link></li>
           <li role='presentation'><Link to='/bar'>bar</Link></li>
           <li role='presentation'>
-            <a onClick={() => {
+            <a className='point-at' onClick={() => {
               if (this.props.user) {
                 this.props.actions.logout()
               } else {

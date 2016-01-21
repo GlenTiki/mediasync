@@ -6,12 +6,28 @@ export default class Footer extends Component {
   render () {
     return (
       <footer className='footer'>
-        <Col xs={12} md={8}>
-          Made by <a href='glenkeane.me/about'>Glen Keane</a> for his final year project!
+        <Col md={12} lg={2}/>
+        <Col xs={12} s={6} md={3} lg={2}>
+          <img height='20px' width='auto' src='/assets/images/logo.png'/><br/>
+          Copyright 2015-2016 <a href='glenkeane.me/about'>Glen Keane</a>
         </Col>
-        <Col xs={12} md={4}>
-          <Link to='/about'>About</Link>
+        <Col xs={12} s={6} md={3} lg={2}>
+          <h4>Website</h4>
+          <Link to='/about'>About</Link><br/>
+          <Link to='/blog'>Blog</Link>
         </Col>
+        <Col xs={12} s={6} md={3} lg={2}>
+          <h4>Support</h4>
+          <Link to='/help'>Help</Link><br/>
+          <Link to='/guidelines'>Community guidelines</Link>
+        </Col>
+        <Col xs={12} s={6} md={3} lg={2}>
+          <h4>Follow the Creator</h4>
+          <a href='https://twitter.com/thekemkid'>
+            <img src='/assets/images/twitter-logo.png' height='1em' width='auto'/>
+          </a>
+        </Col>
+        <Col md={12} lg={2}/>
       </footer>
     )
   }

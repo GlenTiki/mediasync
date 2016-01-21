@@ -2,13 +2,14 @@
 $font-family-base ?= 'Roboto', sans-serif
 
 inverse-color = #111
-inverse-text-color = #9d9d9d
-brand-color = #00C2FF
+inverse-text-color = #e8e8e8
+$brand-primary ?= #00C2FF
 love-color = #cf0032
 
 $navbar-inverse-bg ?= inverse-color
 $navbar-inverse-border ?= inverse-color
-
+$navbar-inverse-color ?= inverse-text-color
+$navbar-inverse-link-color ?= inverse-text-color
 
 html
   position: relative
@@ -26,6 +27,7 @@ body
 
 .footer
   position: absolute
+  text-align: center
   background-color: inverse-color
   color: inverse-text-color
   padding-top: 10px
@@ -34,8 +36,11 @@ body
   height: 60px
 
 .my-nav
-  padding-right: 15%
-  padding-left: 15%
+  .navbar-inverse, .navbar-collapse
+    border-color:inverse-color !important
+    box-shadow: none !important
+  padding-right: 10%
+  padding-left: 10%
 
 .navbar-inverse
   background-color: #111 !important
@@ -88,9 +93,10 @@ body
     left: 60%
     z-index: 300
 
-
-
 .love
   color: love-color
+
+.point-at
+  cursor: pointer
 
 @import 'bootstrap/index'

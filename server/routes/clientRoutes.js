@@ -4,8 +4,10 @@ const BuildPath = Path.resolve(__dirname, '../../build')
 module.exports = [
   {
     method: 'GET',
-    path: '/{path*}',
-    handler: { file: Path.resolve(BuildPath, 'index.html') }
+    path: '/api/{path*}',
+    handler: function (request, reply) {
+      reply({hello: 'world'})
+    }
   },
   {
     method: 'GET',
@@ -13,10 +15,8 @@ module.exports = [
     handler: { directory: { path: Path.resolve(BuildPath, 'assets') } }
   },
   {
-    method: '*',
-    path: '/api/{path*}',
-    handler: function (req, res) {
-      res.send({hello: 'world'})
-    }
+    method: 'GET',
+    path: '/{path*}',
+    handler: { file: Path.resolve(BuildPath, 'index.html') }
   }
 ]
