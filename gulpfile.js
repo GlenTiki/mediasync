@@ -7,6 +7,7 @@ var csso = require('gulp-csso')
 var browserify = require('browserify')
 var babelify = require('babelify')
 var source = require('vinyl-source-stream')
+var buffer = require('vinyl-buffer')
 var del = require('del')
 var through = require('through')
 var opn = require('opn')
@@ -14,21 +15,19 @@ var server = require('./server/server.js')
 var isDist = (process.argv.indexOf('serve') === -1)
 
 gulp.task('js', ['clean:js'], (done) => {
-  var stream = browserify({
+  browserify({
     entries: './client/index.js',
-    debug: true,
     sourceType: 'module',
     transform: [babelify]
   }).bundle()
-
-  stream
     .on('end', done)
     .on('error', (err) => {
       console.warn('Error building bundle.\n', err, err.stack)
       done()
     })
-    .pipe(isDist ? uglify() : through())
-    .pipe(source('build.js'))
+    .pipe(source('build.js')) // gives streaming vinyl file object
+    .pipe(buffer())
+    .pipe(isDist ? uglify() : uglify())
     .pipe(gulp.dest('build/assets/js'))
 })
 

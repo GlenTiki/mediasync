@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "My final year project for college, a webservice to watch videos in sync with friends.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ls",
     "build": "gulp",
     "serve": "gulp serve",
     "lint": "standard",
@@ -54,6 +54,7 @@
     "redux-simple-router": "^2.0.3",
     "standard": "^5.4.1",
     "through": "^2.3.8",
+    "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   },
   "devDependencies": {

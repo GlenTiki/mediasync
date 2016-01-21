@@ -10,6 +10,7 @@ import { createHistory } from 'history'
 import App from './containers/App'
 
 import { Foo, Bar, Counter, NotFoundView } from './components/test'
+import { default as Landing } from './components/landing'
 
 import reducer from './reducers'
 
@@ -27,7 +28,8 @@ render(
   <Provider store={store}>
     <Router history={history}>
       <Route path='/' component={App}>
-        <IndexRoute component={Counter} />
+        <IndexRoute component={Landing} />
+        <Route path='about' component={Counter} />
         <Route path='foo' component={Foo} />
         <Route path='bar' component={Bar} />
         <Route path='/404' component={NotFoundView} />

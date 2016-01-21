@@ -21,11 +21,11 @@ function mapDispatchToProps (dispatch) {
 export class Header extends Component {
   render () {
     return (
-    <Navbar>
+    <Navbar inverse fixedTop fluid className='my-nav'>
       <Navbar.Header>
         <Navbar.Brand>
           <Link to='/'>
-            <img height='30px' width='auto' src='/assets/images/logo.png' />
+            <img height='25px' width='auto' src='/assets/images/logo.png' />
           </Link>
         </Navbar.Brand>
         <Navbar.Toggle/>
