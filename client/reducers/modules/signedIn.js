@@ -5,7 +5,7 @@ const initialState = {
 }
 
 export default handleActions({
-  'LOGIN' (state, action) {
+  'SIGNIN' (state, action) {
     return {
       user: {
         username: action.payload.username
@@ -13,9 +13,17 @@ export default handleActions({
     }
   },
 
-  'LOGOUT' (state, action) {
+  'SIGNOUT' (state, action) {
     return {
       user: null
+    }
+  },
+
+  'SIGNUP' (state, action) {
+    return {
+      user: {
+        username: action.payload.username
+      }
     }
   }
 }, initialState)

@@ -11,6 +11,7 @@ import App from './containers/App'
 
 import { Foo, Bar, Counter, NotFoundView } from './components/test'
 import { default as Landing } from './components/landing'
+import { Terms } from './components/terms'
 
 import reducer from './reducers'
 
@@ -32,6 +33,7 @@ render(
         <Route path='about' component={Counter} />
         <Route path='foo' component={Foo} />
         <Route path='bar' component={Bar} />
+        <Route path='terms' component={Terms} />
         <Route path='/404' component={NotFoundView} />
         <Redirect from='*' to='/404' />
       </Route>

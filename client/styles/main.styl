@@ -11,12 +11,19 @@ $navbar-inverse-border ?= inverse-color
 $navbar-inverse-color ?= inverse-text-color
 $navbar-inverse-link-color ?= inverse-text-color
 
+footer-size-large = 100px
+footer-size-small = 300px
+
+mobile-width = 992px
+
 html
   position: relative
   min-height: 100%
 
 body
-  margin-bottom: 60px !important
+  margin-bottom: footer-size-large !important
+  @media (max-width: mobile-width)
+    margin-bottom: footer-size-small !important
 
 .content
   position: relative
@@ -33,7 +40,9 @@ body
   padding-top: 10px
   bottom: 0px
   width: 100%
-  height: 60px
+  height: footer-size-large
+  @media (max-width: mobile-width)
+    height: footer-size-small
 
 .my-nav
   .navbar-inverse, .navbar-collapse
@@ -63,12 +72,12 @@ body
   max-height: 400px
   min-height: 250px
   background-color: inverse-color
-  @media (max-width: 767px)
+  @media (max-width: mobile-width)
     display: none !important
 
 .quick-about
   position: relative
-  @media (min-width: 767px)
+  @media (min-width: mobile-width)
     position: absolute;
     min-height: 200px
     height: auto
@@ -81,13 +90,13 @@ body
     background: rgba(1, 1, 1, 0.8) !important
     color: rgb(255, 255, 255)
 
-.landing-login
+.landing-signin
   position: relative
-  @media (min-width: 767px)
+  @media (min-width: mobile-width)
     position: absolute;
     min-height: 200px
-    height: 48vmin
-    max-height: 350px
+    height: auto
+    max-height: 360px
     top: 60px
     width: 20em
     left: 60%

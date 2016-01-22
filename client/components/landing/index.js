@@ -2,24 +2,30 @@ import React, { PropTypes, Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 // import { Link } from 'react-router'
-import * as LoginActions from '../../actions/Login'
+import * as SigninActions from '../../actions/Signin'
+import * as SigninPanelActions from '../../actions/SigninPanel'
+import { SignInPanel } from '../signin'
 
 import { Col, Image, Glyphicon, Panel } from 'react-bootstrap'
 
 function mapStateToProps (state) {
   return {
-    user: state.login.user
+    user: state.signin.user,
+    selectedSigninPanel: state.signinPanel.landingSelected,
+    signinErrors: state.signinPanel.landingErrorTracker
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    loginActions: bindActionCreators(LoginActions, dispatch)
+    signinActions: bindActionCreators(SigninActions, dispatch),
+    signinPanelActions: bindActionCreators(SigninPanelActions, dispatch)
   }
 }
 
 export class Landing extends Component {
   render () {
+    console.log(this)
     return (
     <div>
       <Image className='landing-image' src='/assets/images/landing.jpg' responsive />
@@ -27,12 +33,17 @@ export class Landing extends Component {
         <Panel className='quick-about'>
           <h1>Welcome to <img height='40em' width='auto' src='/assets/images/logo.png'/></h1>
           <br/>
-          Sign up, Log in and make yourself at home.<br/>
+          Sign up, sign in and make yourself at home.<br/>
           Kick back and listen to some music or watch a video... with a friend.
         </Panel>
-        <Panel className='landing-login'>
-          Yo ho ho!
-          Sign in here!
+        <Panel className='landing-signin'>
+          <SignInPanel selected={this.props.selectedSigninPanel}
+                        handleSignIn={this.props.signinActions.signin}
+                        handleSignUp={this.props.signinActions.signup}
+                        handleSelect={this.props.signinPanelActions.landingHandleSelect}
+                        errorTracker={this.props.signinErrors}
+                        handleError={this.props.signinPanelActions.landingHandleError}
+                        />
         </Panel>
         <Col xs={12} md={4}>
           <h2>Create your own rooms!</h2>
@@ -54,7 +65,10 @@ export class Landing extends Component {
 
 Landing.propTypes = {
   user: PropTypes.object,
-  loginActions: PropTypes.object.isRequired
+  signinActions: PropTypes.object.isRequired,
+  selectedSigninPanel: PropTypes.number.isRequired,
+  signinPanelActions: PropTypes.object.isRequired,
+  signinErrors: PropTypes.object.isRequired
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Landing)

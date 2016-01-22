@@ -27,7 +27,7 @@ gulp.task('js', ['clean:js'], (done) => {
     })
     .pipe(source('build.js')) // gives streaming vinyl file object
     .pipe(buffer())
-    .pipe(isDist ? uglify() : uglify())
+    .pipe(isDist ? uglify() : through())
     .pipe(gulp.dest('build/assets/js'))
 })
 

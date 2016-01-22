@@ -2,13 +2,13 @@ import React, { PropTypes, Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import * as Actions from '../../actions/Login'
+import * as Actions from '../../actions/Signin'
 
 import { Navbar, Nav } from 'react-bootstrap'
 
 function mapStateToProps (state) {
   return {
-    user: state.login.user
+    user: state.signin.user
   }
 }
 
@@ -37,12 +37,12 @@ export class Header extends Component {
           <li role='presentation'>
             <a className='point-at' onClick={() => {
               if (this.props.user) {
-                this.props.actions.logout()
+                this.props.actions.signout()
               } else {
-                this.props.actions.login({username: 'glen'})
+                this.props.actions.signin({username: 'glen'})
               }
             }}>
-              {this.props.user ? 'logout' : 'login'}
+              {this.props.user ? 'Signout' : 'Signin'}
             </a>
           </li>
         </Nav>
