@@ -25,7 +25,6 @@ function mapDispatchToProps (dispatch) {
 
 export class Landing extends Component {
   render () {
-    console.log(this)
     return (
     <div>
       <Image className='landing-image' src='/assets/images/landing.jpg' responsive />
@@ -37,13 +36,16 @@ export class Landing extends Component {
           Kick back and listen to some music or watch a video... with a friend.
         </Panel>
         <Panel className='landing-signin'>
-          <SignInPanel selected={this.props.selectedSigninPanel}
+          { this.props.user
+            ? <div> welcome back yo </div>
+            : <SignInPanel selected={this.props.selectedSigninPanel}
                         handleSignIn={this.props.signinActions.signin}
                         handleSignUp={this.props.signinActions.signup}
                         handleSelect={this.props.signinPanelActions.landingHandleSelect}
                         errorTracker={this.props.signinErrors}
                         handleError={this.props.signinPanelActions.landingHandleError}
                         />
+          }
         </Panel>
         <Col xs={12} md={4}>
           <h2>Create your own rooms!</h2>

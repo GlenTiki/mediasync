@@ -1,10 +1,15 @@
 import { handleActions } from 'redux-actions'
 
 const initialErrorStyle = {
-  pwLengthErrorStyle: { display: 'none' },
-  pwMatchErrorStyle: { display: 'none' },
+  unEmptyErrorStyle: {display: 'none'},
+  unInvalidErrorStyle: {display: 'none'},
+  unTakenErrorStyle: {display: 'none'},
+  emailInvalidErrorStyle: {display: 'none'},
+  emailTakenErrorStyle: {display: 'none'},
+  pwMatchErrorStyle: {display: 'none'},
   pwCharsErrorStyle: {display: 'none'},
-  termsErrorStyle: { display: 'none' }
+  termsErrorStyle: {display: 'none'},
+  problemConnectingToServerErrorStyle: {display: 'none'}
 }
 
 const initialState = {
@@ -30,7 +35,6 @@ export default handleActions({
   },
 
   'LANDING_HANDLE_ERROR' (state, action) {
-    console.log(state)
     return {
       ...state,
       landingErrorTracker: action.payload
