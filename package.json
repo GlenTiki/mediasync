@@ -5,9 +5,10 @@
   "scripts": {
     "test": "ls",
     "build": "gulp",
+    "install": "gulp build",
     "serve": "gulp serve",
     "lint": "standard",
-    "start": "gulp && node ./server/server.js"
+    "start": "node ./server/server.js"
   },
   "repository": {
     "type": "git",
