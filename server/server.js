@@ -6,8 +6,7 @@ const MediaSync = require('./mediasync.js')
 
 const Plugins = [
   Inert,
-  Nes,
-  {
+  Nes, {
     register: Good,
     options: {
       reporters: [{
@@ -26,7 +25,9 @@ var server
 
 exports.create = function (done) {
   server = new Hapi.Server()
-  server.connection({ port: 8080 })
+  server.connection({
+    port: process.env.PORT || 8080
+  })
 
   server.register(Plugins, (err) => {
     if (err) {
@@ -45,5 +46,7 @@ exports.create = function (done) {
 }
 
 exports.stop = function (done) {
-  server.stop({timeout: 0}, done)
+  server.stop({
+    timeout: 0
+  }, done)
 }

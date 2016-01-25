@@ -68,5 +68,9 @@
   },
   "pre-commit": [
     "lint"
-  ]
+  ],
+  "engines": {
+    "node": "4.2.3",
+    "npm": "2.7.4"
+  }
 }
