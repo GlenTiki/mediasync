@@ -8,7 +8,7 @@
     "install": "gulp build",
     "serve": "gulp serve",
     "lint": "standard",
-    "start": "node ./server/server.js"
+    "start": "node ./index.js"
   },
   "repository": {
     "type": "git",
