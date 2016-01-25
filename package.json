@@ -7,7 +7,7 @@
     "build": "gulp",
     "serve": "gulp serve",
     "lint": "standard",
-    "start": "node ./server/index.js"
+    "start": "gulp && node ./server/server.js"
   },
   "repository": {
     "type": "git",
