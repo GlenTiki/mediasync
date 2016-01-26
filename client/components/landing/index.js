@@ -27,7 +27,9 @@ export class Landing extends Component {
   render () {
     return (
     <div>
-      <Image className='landing-image' src='/assets/images/landing.jpg' responsive />
+      <Col className='landing-image-wrap' xs={12}>
+        <Image className='landing-image' src='/assets/images/landing.jpg' responsive />
+      </Col>
       <Col className='landing-content' xs={12}>
         <Panel className='quick-about'>
           <h1>Welcome to <img height='40em' width='auto' src='/assets/images/logo.png'/></h1>

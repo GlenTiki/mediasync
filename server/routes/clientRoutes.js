@@ -10,6 +10,11 @@ module.exports = function () {
     },
     {
       method: 'GET',
+      path: '/favicon.ico',
+      handler: { file: Path.resolve(BuildPath, 'assets/images/favicon.ico') }
+    },
+    {
+      method: 'GET',
       path: '/{path*}',
       handler: { file: Path.resolve(BuildPath, 'index.html') }
     }

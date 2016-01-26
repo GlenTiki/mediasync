@@ -8,8 +8,11 @@ export default class Footer extends Component {
       <footer className='footer'>
         <Col md={12} lg={2}/>
         <Col xs={12} s={6} md={3} lg={2}>
-          <img height='20px' width='auto' src='/assets/images/logo.png'/><br/>
-          Copyright 2015-2016 <a href='glenkeane.me/about'>Glen Keane</a><br/>
+          <Link to='/'>
+            <img height='20px' width='auto' src='/assets/images/logo.png' style={{margin: '10px 0'}}/>
+          </Link>
+          <br/>
+          Copyright 2016 <a href='http://glenkeane.me/about'>Glen Keane</a><br/>
           <Link to='/terms'>Terms And Conditions</Link>
         </Col>
         <Col xs={12} s={6} md={3} lg={2}>
@@ -25,7 +28,13 @@ export default class Footer extends Component {
         <Col xs={12} s={6} md={3} lg={2}>
           <h4>Follow the Creator</h4>
           <a href='https://twitter.com/thekemkid'>
-            <img src='/assets/images/twitter-logo.png' height='1em' width='auto'/>
+            <img src='/assets/images/twitter-logo.png' height='25em' width='auto'/>
+          </a>{'  '}
+          <a href='https://www.facebook.com/thekemkid'>
+            <img src='/assets/images/facebook-logo.png' height='25em' width='auto'/>
+          </a>{'  '}
+          <a href='https://www.instagram.com/thekemkid/'>
+            <img src='/assets/images/instagram-logo.png' height='25em' width='auto'/>
           </a>
         </Col>
         <Col md={12} lg={2}/>
