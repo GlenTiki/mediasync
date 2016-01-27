@@ -10,6 +10,7 @@ cradle.setup({
   port: dbConf.port,
   cache: true,
   raw: false,
+  secure: dbConf.secure,
   auth: dbConf.auth,
   retries: 3,
   retryTimeout: 30 * 1000

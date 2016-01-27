@@ -6,7 +6,8 @@ if (process.env.VCAP_SERVICES) {
     host: VCAP_SERVICES.cloudantNoSQLDB[0].credentials.host,
     port: VCAP_SERVICES.cloudantNoSQLDB[0].credentials.port,
     username: VCAP_SERVICES.cloudantNoSQLDB[0].credentials.username,
-    password: VCAP_SERVICES.cloudantNoSQLDB[0].credentials.password
+    password: VCAP_SERVICES.cloudantNoSQLDB[0].credentials.password,
+    secure: true
   }
 }
 
@@ -16,5 +17,6 @@ module.exports = {
   auth: {
     username: dbconf.username || 'fyp',
     password: dbconf.password || 'default'
-  }
+  },
+  secure: !!dbconf.secure
 }
