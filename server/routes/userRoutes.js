@@ -44,7 +44,7 @@ module.exports = function (db) {
       handler: function (request, reply) {
         const email = request.params.email ? request.params.email : ''
         db.view('user/byEmail', { key: email }, function (err, doc) {
-          if (err) return reply(new Error('something went wrong...'))
+          if (err) reply(new Error('something went wrong...'))
           if (doc[0]) reply(sanitizeUser(doc[0].value))
           else reply('user doesn\'t exist').code(404)
         })
@@ -57,7 +57,7 @@ module.exports = function (db) {
         const username = request.params.username ? request.params.username : ''
         db.view('user/byUsername', { key: username }, function (err, doc) {
           console.log(err, doc)
-          if (err) return reply(new Error('something went wrong...'))
+          if (err) reply(new Error('something went wrong...'))
           if (doc[0]) reply(sanitizeUser(doc[0].value))
           else reply('user doesn\'t exist').code(404)
         })

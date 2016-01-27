@@ -43,8 +43,11 @@ function setupDb (done) {
       console.log('mediasync database does not exist yet. creating.')
 
       db.create()
-      dbUtils.createViews(db, function () {
-        done(db)
+
+      setTimeout(function () {
+        dbUtils.createViews(db, function () {
+          done(db)
+        }, 1000)
       })
     }
   })
