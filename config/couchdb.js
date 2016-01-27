@@ -1,4 +1,6 @@
-var dbconf = {}
+var dbconf = {
+  secure: false
+}
 
 if (process.env.VCAP_SERVICES) {
   var VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES)
@@ -18,5 +20,5 @@ module.exports = {
     username: dbconf.username || 'fyp',
     password: dbconf.password || 'default'
   },
-  secure: !!dbconf.secure
+  secure: dbconf.secure
 }
