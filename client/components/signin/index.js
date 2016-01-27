@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import { Tabs, Tab, Input, ButtonInput } from 'react-bootstrap'
 
 var validation = require('../../../isomorphic/validator.js')
+var userApi = require('../../api/user.js')
 
 const clearErrors = {
   unEmptyErrorStyle: {display: 'none'},
@@ -61,7 +62,12 @@ export class SignInPanel extends Component {
             return that.handleError(err.message)
           }
           if (agreeTerms) {
-            that.props.handleSignUp({ username: username, email: email, password: password })
+            userApi.create({ username: username, email: email, password: password }, function (err, res) {
+              if (err) {
+                return that.handleError(err.message)
+              }
+              that.props.handleSignUp({ username: username, email: email, password: password })
+            })
           } else {
             that.handleError('termsError')
           }
@@ -80,6 +86,7 @@ export class SignInPanel extends Component {
             <Input type='password' ref='passwordSI' placeholder='Password' />
             <Input type='checkbox' ref='checkboxSI' label='Keep me signed in' />
             <ButtonInput type='submit' value='Sign in' onClick={this.handleSignInClick.bind(this)}/>
+            <Link to='/forgotpassword'>Forgot your password?</Link>
           </form>
         </Tab>
         <Tab eventKey={2} title='Sign up'>

@@ -50,15 +50,24 @@ export class Landing extends Component {
           }
         </Panel>
         <Col xs={12} md={4}>
-          <h2>Create your own rooms!</h2>
-          Seamlessly create a room and build a community with easy to manage user permissions within it!
+          <h2>
+            <span className='glyphicon glyphicon-home' aria-hidden='true' />{'  '}
+            Create your own rooms!
+          </h2>
+          Seamlessly create a room and build a community with similiar interests! MediaSync allows you to easily create a room where you can watch in sync with your friends. It also gives the creator control over user permissions within their room.
         </Col>
         <Col xs={12} md={4}>
-          <h2>Find popular rooms!</h2>
-          With the "find a room" feature, you can search for popular rooms and meet people close to you with similiar interests.
+          <h2>
+            <span className='glyphicon glyphicon-search' aria-hidden='true' />{'  '}
+            Find popular rooms!
+          </h2>
+          With the 'find a room' feature, you can search for popular rooms and meet people close to you with similiar interests.
         </Col>
         <Col xs={12} md={4}>
-          <h2>Share and enjoy!</h2>
+          <h2>
+            <span className='glyphicon glyphicon-share' aria-hidden='true' />{'  '}
+            Share and enjoy!
+          </h2>
           This project has been built <span className='love'>(with LOVE <Glyphicon glyph='heart'/>)</span> by Glen Keane at WIT for his final year project. He would love if you would share and enjoy this with friends!
         </Col>
       </Col>

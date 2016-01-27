@@ -3,25 +3,50 @@ const ApiRoutes = require('./routes/apiRoutes.js')
 const Package = require('../package.json')
 var dbConf = require('../config/couchdb.js')
 var cradle = require('cradle')
+var dbUtils = require('./db/dbUtils')
 
 cradle.setup({
   host: dbConf.host,
   port: dbConf.port,
   cache: true,
   raw: false,
-  secure: true,
   auth: dbConf.auth,
   retries: 3,
   retryTimeout: 30 * 1000
 })
-
-var db = new cradle.Connection()
+var dbConnection = new cradle.Connection()
 
 module.exports = function (server, options, next) {
-  server.route(ClientRoutes())
-  server.route(ApiRoutes(db))
+  setupDb(function (db) {
+    server.route(ClientRoutes())
+    server.route(ApiRoutes(db))
 
-  next()
+    next()
+  })
+}
+
+function setupDb (done) {
+  var db = dbConnection.database('mediasync')
+
+  db.exists(function (err, exists) {
+    if (err) {
+      console.log('error creating mediasync db', err.message, err)
+      console.log('exiting!')
+      process.exit(1)
+    } else if (exists) {
+      console.log('mediasync db exists, updating views,')
+      dbUtils.createViews(db, function () {
+        done(db)
+      })
+    } else {
+      console.log('mediasync database does not exist yet. creating.')
+
+      db.create()
+      dbUtils.createViews(db, function () {
+        done(db)
+      })
+    }
+  })
 }
 
 module.exports.attributes = {

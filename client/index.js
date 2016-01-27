@@ -16,6 +16,7 @@ import { About } from './components/about'
 import { Blog } from './components/blog'
 import { Help } from './components/help'
 import { Guidelines } from './components/guidelines'
+import { ForgotPassword } from './components/forgotpassword'
 
 import reducer from './reducers'
 
@@ -41,6 +42,7 @@ render(
         <Route path='help' component={Help} />
         <Route path='guidelines' component={Guidelines} />
         <Route path='blog' component={Blog} />
+        <Route path='forgotpassword' component={ForgotPassword} />
         <Route path='/404' component={NotFoundView} />
         <Redirect from='*' to='/404' />
       </Route>
