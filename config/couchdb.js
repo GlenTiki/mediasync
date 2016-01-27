@@ -11,10 +11,10 @@ if (process.env.VCAP_SERVICES) {
 }
 
 module.exports = {
-  host: 'localhost' || dbconf.host,
-  port: 5984 || dbconf.port,
+  host: dbconf.host || 'localhost',
+  port: dbconf.port || 5984,
   auth: {
-    username: 'fyp' || dbconf.user,
-    password: 'default' || dbconf.password
+    username: dbconf.username || 'fyp',
+    password: dbconf.password || 'default'
   }
 }
