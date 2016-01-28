@@ -16,6 +16,7 @@ cradle.setup({
   retryTimeout: 30 * 1000
 })
 var dbConnection = new cradle.Connection()
+var db = dbConnection.database('mediasync')
 
 module.exports = function (server, options, next) {
   setupDb(function (db) {
@@ -27,8 +28,6 @@ module.exports = function (server, options, next) {
 }
 
 function setupDb (done) {
-  var db = dbConnection.database('mediasync')
-
   db.exists(function (err, exists) {
     if (err) {
       console.log('error creating mediasync db', err.message, err)

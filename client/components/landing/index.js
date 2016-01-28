@@ -28,7 +28,7 @@ export class Landing extends Component {
     return (
     <div>
       <Col className='landing-image-wrap' xs={12}>
-        <Image className='landing-image' src='/assets/images/landing.jpg' responsive />
+        <Image className='landing-image' src='/assets/images/landing.jpg' alt='mediasync' responsive />
       </Col>
       <Col className='landing-content' xs={12}>
         <Panel className='quick-about'>

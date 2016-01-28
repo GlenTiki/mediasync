@@ -13,6 +13,7 @@ module.exports = function (db) {
     {
       method: 'POST',
       path: '/api/users',
+      config: { auth: false },
       handler: function (request, reply) {
         console.log(request.payload.user)
         var user = request.payload.user
@@ -41,10 +42,11 @@ module.exports = function (db) {
     {
       method: 'GET',
       path: '/api/users/email/{email}',
+      config: { auth: false },
       handler: function (request, reply) {
         const email = request.params.email ? request.params.email : ''
         db.view('user/byEmail', { key: email }, function (err, doc) {
-          if (err) reply(new Error('something went wrong...'))
+          if (err) return reply(new Error('something went wrong...'))
           if (doc[0]) reply(sanitizeUser(doc[0].value))
           else reply('user doesn\'t exist').code(404)
         })
@@ -53,11 +55,11 @@ module.exports = function (db) {
     {
       method: 'GET',
       path: '/api/users/username/{username}',
+      config: { auth: false },
       handler: function (request, reply) {
         const username = request.params.username ? request.params.username : ''
         db.view('user/byUsername', { key: username }, function (err, doc) {
-          console.log(err, doc)
-          if (err) reply(new Error('something went wrong...'))
+          if (err) return reply(new Error('something went wrong...'))
           if (doc[0]) reply(sanitizeUser(doc[0].value))
           else reply('user doesn\'t exist').code(404)
         })

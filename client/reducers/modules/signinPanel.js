@@ -9,7 +9,9 @@ const initialErrorStyle = {
   pwMatchErrorStyle: {display: 'none'},
   pwCharsErrorStyle: {display: 'none'},
   termsErrorStyle: {display: 'none'},
-  problemConnectingToServerErrorStyle: {display: 'none'}
+  problemConnectingToServerErrorStyle: {display: 'none'},
+  signinConnectionErrorStyle: {display: 'none'},
+  signinErrorStyle: {display: 'none'}
 }
 
 const initialState = {

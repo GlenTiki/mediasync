@@ -39,7 +39,7 @@ module.exports.validateEmail = function (email, done) {
   if (emailValidator.validate(email)) {
     if (typeof window === 'undefined') { // on server
       return done(null, { valid: true })
-    } else { // we're on the client, so let's check if username is taken
+    } else { // we're on the client, so let's check if email is taken
       return checkIfEmailTaken(email, done)
     }
   } else {

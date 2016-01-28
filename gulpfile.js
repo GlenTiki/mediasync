@@ -116,7 +116,7 @@ gulp.task('connect', ['build'], (done) => {
 gulp.task('reconnect', (done) => {
   server.stop(() => {
     // clear the cache...
-    Object.keys(require.cache).forEach(function (key) { delete require.cache[key] })
+    Object.keys(require.cache).forEach(function (key) { if (key.indexOf('node_modules') < 0) delete require.cache[key] })
     try {
       server = require('./server/server.js')
 

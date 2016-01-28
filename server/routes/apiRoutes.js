@@ -1,4 +1,5 @@
 const UserRoutes = require('./userRoutes')
+const AuthRoutes = require('./authRoutes')
 
 module.exports = function (db) {
   var ret = [
@@ -10,5 +11,5 @@ module.exports = function (db) {
       }
     }
   ]
-  return UserRoutes(db).concat(ret)
+  return UserRoutes(db).concat(AuthRoutes(db), ret)
 }
