@@ -7,11 +7,11 @@ module.exports = {
     .send({user: user})
     // .set('X-API-Key', 'foobar')
     .set('Accept', 'application/json')
-    .end(function (err, body) {
+    .end(function (err, res) {
       if (err) {
         return done(new Error('problemConnectingToServerError'))
       } else {
-        return done(null, user)
+        return done(null, res.header.authorization)
       }
     })
   },
@@ -19,15 +19,19 @@ module.exports = {
   signin: function (authData, done) {
     request
     .post(`/api/auth/signin`)
+    .set('Accept', 'application/json')
     .send(authData)
     // .set('X-API-Key', 'foobar')
-    .set('Accept', 'application/json')
-    .end(function (err, body) {
-      if (err && body.status === 401) {
+    .end(function (err, res) {
+      if (err && res.status === 401) {
         return done(new Error('signinError'))
-      } else if (body.status === 201) {
-        console.log(body)
-        return done(null, body)
+      } else if (res.status === 201) {
+        console.log(res)
+        return done(null, {
+          username: res.body.username,
+          token: res.header.authorization,
+          email: res.body.email
+        })
       }
 
       done(new Error('signinConnectionError'))

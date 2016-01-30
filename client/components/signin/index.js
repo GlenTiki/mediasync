@@ -33,14 +33,20 @@ export class SignInPanel extends Component {
     e.preventDefault()
     let username = this.refs.usernameSI.getValue()
     let password = this.refs.passwordSI.getValue()
-    // let saveSignIn = this.refs.checkboxSI.getChecked()
+    let saveSignIn = this.refs.checkboxSI.getChecked()
 
     var that = this
 
     userApi.signin({ username: username, password: password }, function (err, res) {
       if (err) return that.handleError(err.message)
+      var user = { username: username, token: res.token, email: res.email }
+      if (saveSignIn) {
+        window.localStorage.setItem('mediasyncUser', JSON.stringify(user))
+      } else {
+        window.sessionStorage.setItem('mediasyncUser', JSON.stringify(user))
+      }
       that.handleError()
-      that.props.handleSignIn({ username: username, password: password })
+      that.props.handleSignIn(user)
     })
   }
 
@@ -72,7 +78,7 @@ export class SignInPanel extends Component {
                 return that.handleError(err.message)
               }
               that.handleError()
-              that.props.handleSignUp({ username: username, email: email, password: password })
+              that.props.handleSignUp({ username: username, email: email, token: res })
             })
           } else {
             that.handleError('termsError')

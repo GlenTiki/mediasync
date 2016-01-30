@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import * as Actions from '../../actions/Signin'
 
 import { Navbar, Nav } from 'react-bootstrap'
+// var userApi = require('../../api/user.js')
 
 function mapStateToProps (state) {
   return {
@@ -19,6 +20,10 @@ function mapDispatchToProps (dispatch) {
 }
 
 export class Header extends Component {
+  handleSignOut () {
+    this.props.actions.signout()
+  }
+
   render () {
     return (
     <Navbar inverse fixedTop fluid className='my-nav'>

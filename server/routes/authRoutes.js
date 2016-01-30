@@ -2,7 +2,8 @@
 const bcrypt = require('bcrypt')
 const Jwt = require('jsonwebtoken')
 
-const jwtKey = process.env.jwtKey || require('../../config/jwt-default-key.js')
+const jwtKey = require('../../config/jwtKey.js')
+const signupKey = require('../../config/signUpKey.js')
 
 function sanitizeUser (user) {
   return {
@@ -32,11 +33,12 @@ module.exports = function (db) {
               var obj = {
                 username: username,
                 email: doc[0].value.email,
-                agent: request.headers['user-agent']
+                agent: request.headers['user-agent'],
+                expiresIn: '1000d'
               }
-              var token = Jwt.sign(obj, jwtKey)
-
-              reply(sanitizeUser(doc[0].value)).header('Authorization', token).code(201)
+              Jwt.sign(obj, jwtKey, { algorithm: 'HS256' }, function (token) {
+                reply(sanitizeUser(doc[0].value)).header('Authorization', token).code(201)
+              })
             })
           } else {
             reply('user doesn\'t exist').code(404)
@@ -45,12 +47,18 @@ module.exports = function (db) {
       }
     },
     {
-      method: 'GET',
-      path: '/api/auth/me',
-      config: {auth: {mode: 'try', strategy: 'jwt'}},
+      method: 'POST',
+      path: '/api/auth/validate/{token?}',
+      config: {auth: false},
       handler: function (request, reply) {
         console.log(request)
-        reply().code(204)
+        console.log('PARAMS:', request.params)
+        Jwt.verify(request.params.token, signupKey, function (err, decoded) {
+          console.log(err, decoded)
+        })
+        reply()
+          .redirect('https://' + request.headers.host + '/validationSuccess')
+          .code(301)
       }
     }
   ]

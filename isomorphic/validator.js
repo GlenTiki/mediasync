@@ -65,7 +65,7 @@ function checkIfEmailTaken (email, done) {
 }
 
 module.exports.validatePassword = function (password, repeat, done) {
-  console.log(password, repeat)
+  // console.log(password, repeat)
   // username is valid
   if (password === repeat) {
     var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/

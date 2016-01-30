@@ -3,10 +3,14 @@ const Inert = require('inert')
 const Good = require('good')
 const Nes = require('nes')
 const Jwt = require('hapi-auth-jwt2')
-const Https = require('hapi-require-https')
 const Mediasync = require('./mediasync.js')
 
-const jwtKey = process.env.jwtKey || require('../config/jwt-default-key.js')
+const Https = process.env.VCAP_SERVICES
+                  ? require('hapi-require-https')
+                  : function (server, options, next) { next() }
+Https.attributes = Https.attributes || { pkg: { name: 'https' } }
+
+const jwtKey = require('../config/jwtKey.js')
 
 const Plugins = [
   Inert,
