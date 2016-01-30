@@ -11,8 +11,9 @@ $navbar-inverse-border ?= inverse-color
 $navbar-inverse-color ?= inverse-text-color
 $navbar-inverse-link-color ?= inverse-text-color
 
-footer-size-large = 100px
-footer-size-small = 320px
+footer-size-large = 100
+footer-size-small = 320
+footer-bottom-padding = 30
 
 mobile-width = 992px
 
@@ -21,9 +22,9 @@ html
   min-height: 100%
 
 body
-  margin-bottom: footer-size-large !important
+  margin-bottom: (footer-size-large + footer-bottom-padding)px !important
   @media (max-width: mobile-width)
-    margin-bottom: footer-size-small !important
+    margin-bottom: (footer-size-small + footer-bottom-padding)px !important
 
 .content
   position: relative
@@ -40,9 +41,9 @@ body
   padding-top: 10px
   bottom: 0px
   width: 100%
-  height: footer-size-large
+  height: (footer-size-large)px
   @media (max-width: mobile-width)
-    height: footer-size-small
+    height: (footer-size-small)px
 
 .my-nav
   .navbar-inverse, .navbar-collapse

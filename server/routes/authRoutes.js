@@ -17,7 +17,7 @@ module.exports = function (db) {
     {
       method: 'POST',
       path: '/api/auth/signin',
-      config: {auth: false},
+      config: { auth: false },
       handler: function (request, reply) {
         var username = request.payload.username
         var password = request.payload.password
@@ -49,7 +49,7 @@ module.exports = function (db) {
     {
       method: 'GET',
       path: '/api/auth/validate/{token?}',
-      config: {auth: false},
+      config: { auth: false },
       handler: function (request, reply) {
         Jwt.verify(request.params.token, signupKey, function (err, decoded) {
           if (err) return reply(new Error('Problem with verification'))
@@ -71,6 +71,36 @@ module.exports = function (db) {
             }
           })
         })
+      }
+    },
+    {
+      method: 'GET',
+      path: '/api/auth/facebook',
+      config: {
+        auth: {
+          strategy: 'facebook',
+          mode: 'try'
+        }
+      },
+      handler: function (request, reply) {
+        console.log(request.server.info.protocol)
+        // request.auth.jwt.set(request.auth.credentials)
+        request.response.header('Authorization', 'TESTING')
+        reply()
+          .redirect('https://' + request.headers.host)
+          .code(301)
+      }
+    },
+    {
+      method: 'GET',
+      path: '/api/auth/twitter',
+      config: { auth: 'twitter' },
+      handler: function (request, reply) {
+        console.log(request.auth)
+        request.auth.jwt.set(request.auth.credentials)
+        reply()
+          .redirect('http://' + request.headers.host)
+          .code(301)
       }
     }
   ]

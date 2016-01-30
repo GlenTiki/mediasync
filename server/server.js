@@ -2,6 +2,7 @@ const Hapi = require('hapi')
 const Inert = require('inert')
 const Good = require('good')
 const Nes = require('nes')
+const Bell = require('bell')
 const Jwt = require('hapi-auth-jwt2')
 const Mediasync = require('./mediasync.js')
 
@@ -16,7 +17,9 @@ const Plugins = [
   Inert,
   Jwt,
   Https,
-  Nes, {
+  Bell,
+  Nes,
+  {
     register: Good,
     options: {
       reporters: [{
@@ -45,6 +48,7 @@ var validate = function (decoded, request, callback) {
 var server
 
 exports.create = function (done) {
+  console.log('prod:', !!process.env.VCAP_SERVICES)
   server = new Hapi.Server()
   server.connection({
     port: process.env.PORT || 8080
@@ -54,6 +58,22 @@ exports.create = function (done) {
     if (err) {
       throw err
     }
+
+    server.auth.strategy('twitter', 'bell', {
+      provider: 'twitter',
+      password: jwtKey,
+      clientId: process.env.twitterClientId || 'Here goes the ClientId',
+      clientSecret: process.env.facebookSecretId || 'Here goes the ClientSecret',
+      isSecure: !!process.env.VCAP_SERVICES
+    })
+
+    server.auth.strategy('facebook', 'bell', {
+      provider: 'facebook',
+      password: jwtKey,
+      clientId: process.env.facebookClientId || 'Here goes the ClientId',
+      clientSecret: process.env.facebookSecretId || 'Here goes the ClientSecret',
+      isSecure: !!process.env.VCAP_SERVICES
+    })
 
     server.auth.strategy('jwt', 'jwt', {
       key: jwtKey,

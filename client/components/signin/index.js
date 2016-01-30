@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react'
 // import { Link } from 'react-router'
 
 import { Link } from 'react-router'
-import { Tabs, Tab, Input, ButtonInput } from 'react-bootstrap'
+import { Tabs, Tab, Input, ButtonInput, Button } from 'react-bootstrap'
 
 var validation = require('../../../isomorphic/validator.js')
 var userApi = require('../../api/user.js')
@@ -102,6 +102,9 @@ export class SignInPanel extends Component {
             <Link to='/forgotpassword'>Forgot your password?</Link>
             <div className='text-danger' style={this.props.errorTracker.signinConnectionErrorStyle}>Problem connecting to server!</div>
           </form>
+          <h4 className='text-center'>-or-</h4>
+          <Button bsStyle='primary' href='/api/auth/facebook' block>Signin with facebook</Button>
+          <Button bsStyle='primary' onclick='location.href="http://www.mediasync.io/api/auth/twitter"' block>Signin with twitter</Button>
         </Tab>
         <Tab eventKey={2} title='Sign up'>
           <br/>
