@@ -47,7 +47,7 @@ module.exports = function (db) {
       }
     },
     {
-      method: 'POST',
+      method: 'GET',
       path: '/api/auth/validate/{token?}',
       config: {auth: false},
       handler: function (request, reply) {
