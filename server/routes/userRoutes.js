@@ -55,8 +55,7 @@ module.exports = function (db) {
                   bcrypt.hash(user.password, salt, function (err, hash) {
                     if (err) return reply(new Error('error hashing password'))
                     user.password = hash
-                    user.id = uuid.v4()
-                    db.save(user.id, user, function () {
+                    db.save(uuid.v4(), user, function () {
                       jwt.sign(user, signUpKey, { algorithm: 'HS256' }, function (token) {
                         console.log(`saved user ${user.username}`)
                         emails.sendEmailValidation(user, token, function (err) {

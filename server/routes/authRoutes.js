@@ -51,14 +51,26 @@ module.exports = function (db) {
       path: '/api/auth/validate/{token?}',
       config: {auth: false},
       handler: function (request, reply) {
-        console.log(request)
-        console.log('PARAMS:', request.params)
         Jwt.verify(request.params.token, signupKey, function (err, decoded) {
-          console.log(err, decoded)
+          if (err) return reply(new Error('Problem with verification'))
+          db.view('user/byUsername', { key: decoded.username }, function (err, doc) {
+            if (err) {
+              return reply('problem getting user from database').code(404)
+            }
+            if (doc[0]) {
+              db.merge(doc[0].value._id, { emailValidated: true }, function (err, res) {
+                if (err) return reply('problem updating user in database').code(404)
+                else {
+                  reply()
+                    .redirect('https://' + request.headers.host + '/validationSuccess')
+                    .code(301)
+                }
+              })
+            } else {
+              reply('user doesn\'t exist').code(404)
+            }
+          })
         })
-        reply()
-          .redirect('https://' + request.headers.host + '/validationSuccess')
-          .code(301)
       }
     }
   ]
