@@ -8,7 +8,8 @@ const signupKey = require('../../config/signUpKey.js')
 function sanitizeUser (user) {
   return {
     username: user.username,
-    email: user.email
+    email: user.email,
+    emailValidated: user.emailValidated
   }
 }
 
@@ -33,6 +34,7 @@ module.exports = function (db) {
               var obj = {
                 username: username,
                 email: doc[0].value.email,
+                emailValidated: doc[0].value.emailValidated,
                 agent: request.headers['user-agent'],
                 expiresIn: '1000d'
               }
@@ -75,7 +77,7 @@ module.exports = function (db) {
     },
     {
       method: 'GET',
-      path: '/api/auth/facebook',
+      path: '/api/auth/facebookSignin',
       config: {
         auth: {
           strategy: 'facebook',
@@ -83,24 +85,150 @@ module.exports = function (db) {
         }
       },
       handler: function (request, reply) {
-        console.log(request.server.info.protocol)
-        // request.auth.jwt.set(request.auth.credentials)
-        request.response.header('Authorization', 'TESTING')
-        reply()
-          .redirect('https://' + request.headers.host)
-          .code(301)
+        if (request.auth.isAuthenticated) {
+          db.view('user/byFbId', { key: request.auth.credentials.profile.id }, function (err, doc) {
+            if (err) {
+              return reply('problem getting user from database').code(404)
+            }
+            if (doc[0]) {
+              var obj = {
+                username: doc[0].value.username,
+                email: doc[0].value.email,
+                emailValidated: doc[0].value.emailValidated,
+                agent: request.headers['user-agent'],
+                expiresIn: '1000d'
+              }
+
+              Jwt.sign(obj, jwtKey, { algorithm: 'HS256' }, function (token) {
+                reply()
+                  .redirect('/?token=' + token)
+                  .code(301)
+              })
+            } else {
+              return reply()
+                .redirect('/fbErrorSignin')
+                .code(301)
+            }
+          })
+        } else {
+          return reply()
+            .redirect('/fbErrorSignin')
+            .code(301)
+        }
       }
     },
     {
       method: 'GET',
-      path: '/api/auth/twitter',
-      config: { auth: 'twitter' },
+      path: '/api/auth/facebookSignup',
+      config: {
+        auth: {
+          strategy: 'facebook',
+          mode: 'try'
+        }
+      },
+      handler: function (request, reply) {
+        // console.log(request.auth)
+        // console.log(request.server.info.protocol)
+        // request.auth.jwt.set(request.auth.credentials)
+        // request.response.header('Authorization', 'TESTING')
+        db.view('user/byFbId', { key: request.auth.credentials.profile.id }, function (err, doc) {
+          if (err) {
+            return reply('problem getting user from database').code(404)
+          }
+          if (doc[0]) {
+            return reply()
+              .redirect('/fbErrorSignup')
+              .code(301)
+          } else {
+            reply()
+              .redirect(`/signup?name=${encodeURIComponent(request.auth.credentials.profile.displayName)}&email=${encodeURIComponent(request.auth.credentials.profile.email)}&fb=${encodeURIComponent(request.auth.credentials.profile.id)}`)
+              .code(301)
+          }
+        })
+      }
+    },
+    {
+      method: 'GET',
+      path: '/api/auth/twitterSignin',
+      config: {
+        auth: {
+          strategy: 'twitter',
+          mode: 'try'
+        }
+      },
+      handler: function (request, reply) {
+        if (request.auth.isAuthenticated) {
+          db.view('user/byTwitterId', { key: request.auth.credentials.profile.id }, function (err, doc) {
+            if (err) {
+              return reply('problem getting user from database').code(404)
+            }
+            if (doc[0]) {
+              var obj = {
+                username: doc[0].value.username,
+                email: doc[0].value.email,
+                emailValidated: doc[0].value.emailValidated,
+                agent: request.headers['user-agent'],
+                expiresIn: '1000d'
+              }
+
+              Jwt.sign(obj, jwtKey, { algorithm: 'HS256' }, function (token) {
+                reply()
+                  .redirect('/?token=' + token)
+                  .code(301)
+              })
+            } else {
+              return reply()
+                .redirect('/twitterErrorSignin')
+                .code(301)
+            }
+          })
+        } else {
+          return reply()
+            .redirect('/twitterErrorSignin')
+            .code(301)
+        }
+      }
+    },
+    {
+      method: 'GET',
+      path: '/api/auth/twitterSignup',
+      config: {
+        auth: {
+          strategy: 'twitter',
+          mode: 'try'
+        }
+      },
+      handler: function (request, reply) {
+        // console.log(request.auth)
+        // console.log(request.server.info.protocol)
+        // request.auth.jwt.set(request.auth.credentials)
+        // request.response.header('Authorization', 'TESTING')
+        db.view('user/byTwitterId', { key: request.auth.credentials.profile.id }, function (err, doc) {
+          if (err) {
+            return reply('problem getting user from database').code(404)
+          }
+          if (doc[0]) {
+            return reply()
+              .redirect('/twitterErrorSignup')
+              .code(301)
+          } else {
+            reply()
+              .redirect(`/signup?name=${encodeURIComponent(request.auth.credentials.profile.displayName)}&username=${encodeURIComponent(request.auth.credentials.profile.username)}&twitter=${encodeURIComponent(request.auth.credentials.profile.id)}`)
+              .code(301)
+          }
+        })
+      }
+    },
+    {
+      method: 'GET',
+      path: '/api/auth/me',
+      config: {
+        auth: 'jwt'
+      },
       handler: function (request, reply) {
         console.log(request.auth)
-        request.auth.jwt.set(request.auth.credentials)
-        reply()
-          .redirect('http://' + request.headers.host)
-          .code(301)
+        // request.auth.jwt.set(request.auth.credentials)
+        reply(sanitizeUser(request.auth.credentials))
       }
     }
   ]

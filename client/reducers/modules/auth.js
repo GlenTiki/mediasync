@@ -13,6 +13,7 @@ export default handleActions({
     var user = {
       username: action.payload.username,
       email: action.payload.email,
+      emailValidated: action.payload.emailValidated,
       token: action.payload.token
     }
     return {
@@ -29,11 +30,14 @@ export default handleActions({
   },
 
   'SIGNUP' (state, action) {
+    console.log('in here', action.payload)
     var user = {
       username: action.payload.username,
       email: action.payload.email,
+      emailValidated: action.payload.emailValidated,
       token: action.payload.token
     }
+    window.sessionStorage.setItem('mediasyncUser', JSON.stringify(user))
     return {
       user: user
     }

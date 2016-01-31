@@ -8,6 +8,10 @@
     /* -------------------------------------
       GLOBAL
     ------------------------------------- */
+    p {
+      margin-bottom:0; 
+      margin:0
+    }
 
     * {
       font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;

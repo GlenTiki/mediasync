@@ -63,7 +63,7 @@ exports.create = function (done) {
       provider: 'twitter',
       password: jwtKey,
       clientId: process.env.twitterClientId || 'Here goes the ClientId',
-      clientSecret: process.env.facebookSecretId || 'Here goes the ClientSecret',
+      clientSecret: process.env.twitterSecretId || 'Here goes the ClientSecret',
       isSecure: !!process.env.VCAP_SERVICES
     })
 

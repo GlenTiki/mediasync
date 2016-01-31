@@ -6,6 +6,12 @@ module.exports.createViews = function (db, done) {
       },
       byEmail: {
         map: 'function (doc) { if (doc.resource === "User") { emit(doc.email, doc) } }'
+      },
+      byFbId: {
+        map: 'function (doc) { if (doc.resource === "User") { emit(doc.fbId, doc) } }'
+      },
+      byTwitterId: {
+        map: 'function (doc) { if (doc.resource === "User") { emit(doc.twitterId, doc) } }'
       }
     }
   }, done)

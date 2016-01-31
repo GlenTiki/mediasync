@@ -1,6 +1,18 @@
 var request = require('superagent')
 var emailValidator = require('email-validator')
 
+module.exports.validateDisplayName = function (displayName, done) {
+  if (displayName !== '') {
+    if (displayName.length <= 64) { // check if entered username mathces style
+      return done(null, { valid: true })
+    } else {
+      return done(new Error('displayNameLengthError'))
+    }
+  } else {
+    return done(new Error('displayNameEmptyError'))
+  }
+}
+
 module.exports.validateUsername = function (username, done) {
   var re = /^\w+$/
   if (username !== '') { // check if entered username

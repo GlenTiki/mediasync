@@ -1,15 +1,6 @@
 import { handleActions } from 'redux-actions'
 
 const initialErrorStyle = {
-  unEmptyErrorStyle: {display: 'none'},
-  unInvalidErrorStyle: {display: 'none'},
-  unTakenErrorStyle: {display: 'none'},
-  emailInvalidErrorStyle: {display: 'none'},
-  emailTakenErrorStyle: {display: 'none'},
-  pwMatchErrorStyle: {display: 'none'},
-  pwCharsErrorStyle: {display: 'none'},
-  termsErrorStyle: {display: 'none'},
-  problemConnectingToServerErrorStyle: {display: 'none'},
   signinConnectionErrorStyle: {display: 'none'},
   signinErrorStyle: {display: 'none'}
 }

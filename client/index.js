@@ -7,9 +7,10 @@ import { Router, Route, IndexRoute, Redirect } from 'react-router'
 import { syncHistory } from 'redux-simple-router'
 import { createHistory } from 'history'
 
-import App from './containers/App'
+import {default as App} from './containers/App'
 
 import { Foo, Bar, NotFoundView } from './components/test'
+import { FbErrorSignup, FbErrorSignin, TwitterErrorSignup, TwitterErrorSignin } from './components/errors'
 import { default as Landing } from './components/landing'
 import { Terms } from './components/terms'
 import { About } from './components/about'
@@ -17,6 +18,9 @@ import { Blog } from './components/blog'
 import { Help } from './components/help'
 import { Guidelines } from './components/guidelines'
 import { ForgotPassword } from './components/forgotpassword'
+import { default as SignUp } from './components/signup'
+import { SignupSuccessful } from './components/signup/signupSuccessful'
+import { ValidationSuccess } from './components/signup/validationSuccess'
 
 import reducer from './reducers'
 
@@ -43,6 +47,13 @@ render(
         <Route path='guidelines' component={Guidelines} />
         <Route path='blog' component={Blog} />
         <Route path='forgotpassword' component={ForgotPassword} />
+        <Route path='signup' component={SignUp} />
+        <Route path='signupSuccessful' component={SignupSuccessful} />
+        <Route path='validationSuccess' component={ValidationSuccess} />
+        <Route path='fbErrorSignup' component={FbErrorSignup} />
+        <Route path='fbErrorSignin' component={FbErrorSignin} />
+        <Route path='twitterErrorSignup' component={TwitterErrorSignup} />
+        <Route path='twitterErrorSignin' component={TwitterErrorSignin} />
         <Route path='/404' component={NotFoundView} />
         <Redirect from='*' to='/404' />
       </Route>

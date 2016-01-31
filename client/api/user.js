@@ -30,11 +30,32 @@ module.exports = {
         return done(null, {
           username: res.body.username,
           token: res.header.authorization,
-          email: res.body.email
+          email: res.body.email,
+          emailValidated: res.body.emailValidated
         })
       }
 
       done(new Error('signinConnectionError'))
+    })
+  },
+
+  me: function (token, done) {
+    request
+    .get(`/api/auth/me`)
+    .set('Authorization', token)
+    .set('Accept', 'application/json')
+    // .set('X-API-Key', 'foobar')
+    .end(function (err, res) {
+      if (err) {
+        return done(new Error('signinError'))
+      } else {
+        return done(null, {
+          username: res.body.username,
+          token: token,
+          email: res.body.email,
+          emailValidated: res.body.emailValidated
+        })
+      }
     })
   }
 }

@@ -2,24 +2,24 @@ import React, { PropTypes, Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 // import { Link } from 'react-router'
+import * as AuthActions from '../../actions/Auth'
 import * as SigninActions from '../../actions/Signin'
-import * as SigninPanelActions from '../../actions/SigninPanel'
 import { SignInPanel } from '../signin'
 
 import { Col, Image, Glyphicon, Panel } from 'react-bootstrap'
 
 function mapStateToProps (state) {
   return {
-    user: state.signin.user,
-    selectedSigninPanel: state.signinPanel.landingSelected,
-    signinErrors: state.signinPanel.landingErrorTracker
+    user: state.auth.user,
+    selectedSigninPanel: state.signin.landingSelected,
+    signinErrors: state.signin.landingErrorTracker
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    signinActions: bindActionCreators(SigninActions, dispatch),
-    signinPanelActions: bindActionCreators(SigninPanelActions, dispatch)
+    authActions: bindActionCreators(AuthActions, dispatch),
+    signinActions: bindActionCreators(SigninActions, dispatch)
   }
 }
 
@@ -41,11 +41,10 @@ export class Landing extends Component {
           { this.props.user
             ? <div> welcome back yo </div>
             : <SignInPanel selected={this.props.selectedSigninPanel}
-                        handleSignIn={this.props.signinActions.signin}
-                        handleSignUp={this.props.signinActions.signup}
-                        handleSelect={this.props.signinPanelActions.landingHandleSelect}
+                        handleSignIn={this.props.authActions.signin}
+                        handleSelect={this.props.signinActions.landingHandleSelect}
                         errorTracker={this.props.signinErrors}
-                        handleError={this.props.signinPanelActions.landingHandleError}
+                        handleError={this.props.signinActions.landingHandleError}
                         />
           }
         </Panel>
@@ -78,9 +77,9 @@ export class Landing extends Component {
 
 Landing.propTypes = {
   user: PropTypes.object,
-  signinActions: PropTypes.object.isRequired,
+  authActions: PropTypes.object.isRequired,
   selectedSigninPanel: PropTypes.number.isRequired,
-  signinPanelActions: PropTypes.object.isRequired,
+  signinActions: PropTypes.object.isRequired,
   signinErrors: PropTypes.object.isRequired
 }
 
