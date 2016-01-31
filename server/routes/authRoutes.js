@@ -80,7 +80,8 @@ module.exports = function (db) {
       path: '/api/auth/facebookSignin',
       config: {
         auth: {
-          strategy: 'facebook'
+          strategy: 'facebook',
+          mode: 'try'
         }
       },
       handler: function (request, reply) {
@@ -121,7 +122,8 @@ module.exports = function (db) {
       path: '/api/auth/facebookSignup',
       config: {
         auth: {
-          strategy: 'facebook'
+          strategy: 'facebook',
+          mode: 'try'
         }
       },
       handler: function (request, reply) {
@@ -156,7 +158,8 @@ module.exports = function (db) {
       path: '/api/auth/twitterSignin',
       config: {
         auth: {
-          strategy: 'twitter'
+          strategy: 'twitter',
+          mode: 'try'
         }
       },
       handler: function (request, reply) {
@@ -197,7 +200,8 @@ module.exports = function (db) {
       path: '/api/auth/twitterSignup',
       config: {
         auth: {
-          strategy: 'twitter'
+          strategy: 'twitter',
+          mode: 'try'
         }
       },
       handler: function (request, reply) {

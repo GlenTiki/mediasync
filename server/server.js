@@ -64,7 +64,8 @@ exports.create = function (done) {
       password: jwtKey,
       clientId: process.env.twitterClientId || 'Here goes the ClientId',
       clientSecret: process.env.twitterSecretId || 'Here goes the ClientSecret',
-      isSecure: !!process.env.VCAP_SERVICES
+      isSecure: !!process.env.VCAP_SERVICES,
+      location: 'https://www.mediasync.io'
     })
 
     server.auth.strategy('facebook', 'bell', {
@@ -72,7 +73,8 @@ exports.create = function (done) {
       password: jwtKey,
       clientId: process.env.facebookClientId || 'Here goes the ClientId',
       clientSecret: process.env.facebookSecretId || 'Here goes the ClientSecret',
-      isSecure: !!process.env.VCAP_SERVICES
+      isSecure: !!process.env.VCAP_SERVICES,
+      location: 'https://www.mediasync.io'
     })
 
     server.auth.strategy('jwt', 'jwt', {
