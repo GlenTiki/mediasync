@@ -131,20 +131,26 @@ module.exports = function (db) {
         // console.log(request.server.info.protocol)
         // request.auth.jwt.set(request.auth.credentials)
         // request.response.header('Authorization', 'TESTING')
-        db.view('user/byFbId', { key: request.auth.credentials.profile.id }, function (err, doc) {
-          if (err) {
-            return reply('problem getting user from database').code(404)
-          }
-          if (doc[0]) {
-            return reply()
-              .redirect('/fbErrorSignup')
-              .code(301)
-          } else {
-            reply()
-              .redirect(`/signup?name=${encodeURIComponent(request.auth.credentials.profile.displayName)}&email=${encodeURIComponent(request.auth.credentials.profile.email)}&fb=${encodeURIComponent(request.auth.credentials.profile.id)}`)
-              .code(301)
-          }
-        })
+        if (request.auth.isAuthenticated) {
+          db.view('user/byFbId', { key: request.auth.credentials.profile.id }, function (err, doc) {
+            if (err) {
+              return reply('problem getting user from database').code(404)
+            }
+            if (doc[0]) {
+              return reply()
+                .redirect('/fbErrorSignup')
+                .code(301)
+            } else {
+              reply()
+                .redirect(`/signup?name=${encodeURIComponent(request.auth.credentials.profile.displayName)}&email=${encodeURIComponent(request.auth.credentials.profile.email)}&fb=${encodeURIComponent(request.auth.credentials.profile.id)}`)
+                .code(301)
+            }
+          })
+        } else {
+          return reply()
+            .redirect('/fbErrorSignup')
+            .code(301)
+        }
       }
     },
     {
@@ -203,20 +209,26 @@ module.exports = function (db) {
         // console.log(request.server.info.protocol)
         // request.auth.jwt.set(request.auth.credentials)
         // request.response.header('Authorization', 'TESTING')
-        db.view('user/byTwitterId', { key: request.auth.credentials.profile.id }, function (err, doc) {
-          if (err) {
-            return reply('problem getting user from database').code(404)
-          }
-          if (doc[0]) {
-            return reply()
-              .redirect('/twitterErrorSignup')
-              .code(301)
-          } else {
-            reply()
-              .redirect(`/signup?name=${encodeURIComponent(request.auth.credentials.profile.displayName)}&username=${encodeURIComponent(request.auth.credentials.profile.username)}&twitter=${encodeURIComponent(request.auth.credentials.profile.id)}`)
-              .code(301)
-          }
-        })
+        if (request.auth.isAuthenticated) {
+          db.view('user/byTwitterId', { key: request.auth.credentials.profile.id }, function (err, doc) {
+            if (err) {
+              return reply('problem getting user from database').code(404)
+            }
+            if (doc[0]) {
+              return reply()
+                .redirect('/twitterErrorSignup')
+                .code(301)
+            } else {
+              reply()
+                .redirect(`/signup?name=${encodeURIComponent(request.auth.credentials.profile.displayName)}&username=${encodeURIComponent(request.auth.credentials.profile.username)}&twitter=${encodeURIComponent(request.auth.credentials.profile.id)}`)
+                .code(301)
+            }
+          })
+        } else {
+          return reply()
+            .redirect('/twitterErrorSignup')
+            .code(301)
+        }
       }
     },
     {
