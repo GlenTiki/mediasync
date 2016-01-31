@@ -5,7 +5,7 @@ import { Link } from 'react-router'
 import * as Actions from '../../actions/Auth'
 
 import { Navbar, Nav } from 'react-bootstrap'
-import { RouteActions } from 'redux-simple-router'
+import { routeActions } from 'redux-simple-router'
 // var userApi = require('../../api/user.js')
 
 function mapStateToProps (state) {
@@ -17,7 +17,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     actions: bindActionCreators(Actions, dispatch),
-    routeActions: bindActionCreators(RouteActions, dispatch)
+    routeActions: bindActionCreators(routeActions, dispatch)
   }
 }
 

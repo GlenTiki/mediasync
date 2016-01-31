@@ -64,7 +64,7 @@ module.exports = function (db) {
                 if (err) return reply('problem updating user in database').code(404)
                 else {
                   reply()
-                    .redirect('https://' + request.headers.host + '/validationSuccess')
+                    .redirect('/validationSuccess')
                     .code(301)
                 }
               })
