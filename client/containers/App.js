@@ -16,6 +16,7 @@ export class App extends Component {
       usersApi.me(this.props.location.query.token, function (err, me) {
         if (err) console.log(err)
         else {
+          console.log('deserialisation done', me)
           window.localStorage.setItem('mediasyncUser', JSON.stringify(me))
           that.props.authActions.signin(me)
           setTimeout(() => that.props.history.pushState(null, '/'), 200)
