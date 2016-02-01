@@ -20,7 +20,7 @@ export class App extends Component {
           console.log('that', that)
           window.localStorage.setItem('mediasyncUser', JSON.stringify(me))
           that.props.authActions.signin(me)
-          that.props.history.pushState(null, '/')
+          // that.props.history.pushState(null, '/')
         }
       })
     }
