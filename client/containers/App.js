@@ -16,9 +16,11 @@ export class App extends Component {
       usersApi.me(this.props.location.query.token, function (err, me) {
         if (err) console.log(err)
         else {
+          console.log('me', me)
+          console.log('that', that)
           window.localStorage.setItem('mediasyncUser', JSON.stringify(me))
           that.props.authActions.signin(me)
-          setTimeout(() => that.props.history.pushState(null, '/'), 200)
+          that.props.history.pushState(null, '/')
         }
       })
     }
@@ -37,7 +39,8 @@ export class App extends Component {
 }
 
 App.propTypes = {
-  location: PropTypes.object,
+  location: PropTypes.object.isRequired,
+  authActions: PropTypes.object.isRequired,
   children: PropTypes.element
 }
 

@@ -10,9 +10,6 @@ if ((user === undefined) || (user == null) || (user === 'undefined')) {
 
 export default handleActions({
   'SIGNIN' (state, action) {
-    console.log('signin')
-    console.log(state)
-    console.log(action)
     return {
       user: action.payload
     }
