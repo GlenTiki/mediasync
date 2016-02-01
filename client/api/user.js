@@ -26,7 +26,6 @@ module.exports = {
       if (err && res.status === 401) {
         return done(new Error('signinError'))
       } else if (res.status === 201) {
-        console.log(res)
         return done(null, {
           username: res.body.username,
           token: res.header.authorization,
@@ -46,6 +45,7 @@ module.exports = {
     .set('Accept', 'application/json')
     // .set('X-API-Key', 'foobar')
     .end(function (err, res) {
+      console.log(err, res)
       if (err) {
         return done(new Error('signinError'))
       } else {

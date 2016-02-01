@@ -24,7 +24,6 @@ export default handleActions({
   },
 
   'SIGNUP' (state, action) {
-    console.log('in here', action.payload)
     window.sessionStorage.setItem('mediasyncUser', JSON.stringify(user))
     return {
       user: action.payload
