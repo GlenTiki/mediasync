@@ -62,15 +62,15 @@ export class Header extends Component {
                 <a className='hidden-xs point-at'>Signin</a>
               </OverlayTrigger>
             }
-            {
-              this.props.user
-              ? void (0)
-              : <NavDropdown className='visible-xs point-at' eventKey={3} title='Signin' id='basic-nav-dropdown'>
-                <MenuItem><Link to='/signin'>signin</Link></MenuItem>
-                <MenuItem><Link to='/signup'>signup</Link></MenuItem>
-              </NavDropdown>
-            }
           </li>
+          {
+            this.props.user
+            ? void (0)
+            : <NavDropdown className='visible-xs point-at' eventKey={3} title='Signin' id='basic-nav-dropdown'>
+              <MenuItem><Link to='/signin'>signin</Link></MenuItem>
+              <MenuItem><Link to='/signup'>signup</Link></MenuItem>
+            </NavDropdown>
+          }
         </Nav>
       </Navbar.Collapse>
     </Navbar>

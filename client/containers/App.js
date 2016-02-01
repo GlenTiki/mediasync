@@ -16,8 +16,6 @@ export class App extends Component {
       usersApi.me(this.props.location.query.token, function (err, me) {
         if (err) console.log(err)
         else {
-          console.log('me', me)
-          console.log('that', that)
           window.localStorage.setItem('mediasyncUser', JSON.stringify(me))
           that.props.authActions.signin(me)
           // that.props.history.pushState(null, '/')
