@@ -10,14 +10,8 @@ if ((user === undefined) || (user == null) || (user === 'undefined')) {
 
 export default handleActions({
   'SIGNIN' (state, action) {
-    var user = {
-      username: action.payload.username,
-      email: action.payload.email,
-      emailValidated: action.payload.emailValidated,
-      token: action.payload.token
-    }
     return {
-      user: user
+      user: action.payload
     }
   },
 
@@ -31,15 +25,9 @@ export default handleActions({
 
   'SIGNUP' (state, action) {
     console.log('in here', action.payload)
-    var user = {
-      username: action.payload.username,
-      email: action.payload.email,
-      emailValidated: action.payload.emailValidated,
-      token: action.payload.token
-    }
     window.sessionStorage.setItem('mediasyncUser', JSON.stringify(user))
     return {
-      user: user
+      user: action.payload
     }
   }
 }, initialState)
