@@ -50,7 +50,7 @@ export class SignInPanel extends Component {
             <Input type='text' ref='usernameSI' placeholder='Username' />
             <Input type='password' ref='passwordSI' placeholder='Password' />
             <Input type='checkbox' ref='checkboxSI' label='Keep me signed in' />
-            <ButtonInput type='submit' value='Sign in' onClick={this.handleSignInClick.bind(this)}/>
+            <ButtonInput type='submit' bsStyle='primary' value='Sign in' onClick={this.handleSignInClick.bind(this)}/>
             <Link to='/forgotpassword'>Forgot your password?</Link>
             <div className='text-danger' style={this.props.errorTracker.signinConnectionErrorStyle}>Problem connecting to server!</div>
           </form>
@@ -59,11 +59,13 @@ export class SignInPanel extends Component {
           <Button bsStyle='primary' href='/api/auth/twitterSignin' block>Signin with twitter</Button>
         </Tab>
         <Tab eventKey={2} title='Sign up'>
-          <br/>
-          <Button bsStyle='primary' href='/api/auth/facebookSignup' block>Signup with facebook</Button>
-          <Button bsStyle='primary' href='/api/auth/twitterSignup' block>Signup with twitter</Button>
-          <h4 className='text-center'>-or-</h4>
-          <Link to='/signup' className='btn btn-primary btn-block'>Signup here</Link>
+          <div>
+            <br/>
+            <Button bsStyle='primary' href='/api/auth/facebookSignup' block>Signup with facebook</Button>
+            <Button bsStyle='primary' href='/api/auth/twitterSignup' block>Signup with twitter</Button>
+            <h4 className='text-center'>-or-</h4>
+            <Link to='/signup' className='btn btn-primary btn-block'>Signup here</Link>
+          </div>
         </Tab>
       </Tabs>
     )

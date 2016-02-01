@@ -2,22 +2,27 @@ import React, { PropTypes, Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import * as Actions from '../../actions/Auth'
+import * as AuthActions from '../../actions/Auth'
+import * as SigninActions from '../../actions/Signin'
+import { SignInPanel } from '../signin'
 
-import { Navbar, Nav } from 'react-bootstrap'
+import { Navbar, Nav, OverlayTrigger, Popover, NavDropdown, MenuItem } from 'react-bootstrap'
 import { routeActions } from 'redux-simple-router'
 // var userApi = require('../../api/user.js')
 
 function mapStateToProps (state) {
   return {
-    user: state.auth.user
+    user: state.auth.user,
+    selectedSigninPanel: state.signin.navSelected,
+    signinErrors: state.signin.navErrorTracker
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    actions: bindActionCreators(Actions, dispatch),
-    routeActions: bindActionCreators(routeActions, dispatch)
+    routeActions: bindActionCreators(routeActions, dispatch),
+    authActions: bindActionCreators(AuthActions, dispatch),
+    signinActions: bindActionCreators(SigninActions, dispatch)
   }
 }
 
@@ -38,18 +43,33 @@ export class Header extends Component {
           <li role='presentation'><Link to='/foo'>foo</Link></li>
           <li role='presentation'><Link to='/bar'>bar</Link></li>
           <li role='presentation'>
-            <a className='point-at' onClick={() => {
-              if (this.props.user) {
-                console.log(this)
-                this.props.actions.signout()
-                this.props.routeActions.push('/')
-              } else {
-                // I want to popup a signin prompt here
-                this.props.actions.signin({username: 'glen'})
-              }
-            }}>
-              {this.props.user ? 'Signout' : 'Signin'}
-            </a>
+            {
+              this.props.user
+              ? <a className='point-at' onClick={() => { this.props.authActions.signout(); this.props.routeActions.push('/') }}>
+                  Signout
+                </a>
+              : <OverlayTrigger container={this} trigger='click' rootClose placement='bottom'
+                    overlay={
+                        <Popover className='nav-signin' id={33}>
+                              <SignInPanel selected={this.props.selectedSigninPanel}
+                                    handleSignIn={this.props.authActions.signin}
+                                    handleSelect={this.props.signinActions.navHandleSelect}
+                                    errorTracker={this.props.signinErrors}
+                                    handleError={this.props.signinActions.navHandleError}
+                                    />
+                        </Popover>
+                      }>
+                <a className='hidden-xs point-at'>Signin</a>
+              </OverlayTrigger>
+            }
+            {
+              this.props.user
+              ? void (0)
+              : <NavDropdown className='visible-xs point-at' eventKey={3} title='Signin' id='basic-nav-dropdown'>
+                <MenuItem><Link to='/signin'>signin</Link></MenuItem>
+                <MenuItem><Link to='/signup'>signup</Link></MenuItem>
+              </NavDropdown>
+            }
           </li>
         </Nav>
       </Navbar.Collapse>
@@ -60,8 +80,11 @@ export class Header extends Component {
 
 Header.propTypes = {
   user: PropTypes.object,
-  actions: PropTypes.object.isRequired,
-  routeActions: PropTypes.object
+  routeActions: PropTypes.object,
+  authActions: PropTypes.object.isRequired,
+  selectedSigninPanel: PropTypes.number.isRequired,
+  signinActions: PropTypes.object.isRequired,
+  signinErrors: PropTypes.object.isRequired
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

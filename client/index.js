@@ -12,6 +12,7 @@ import {default as App} from './containers/App'
 import { Foo, Bar, NotFoundView } from './components/test'
 import { FbErrorSignup, FbErrorSignin, TwitterErrorSignup, TwitterErrorSignin } from './components/errors'
 import { default as Landing } from './components/landing'
+import { default as Signin } from './components/signin/signinPage'
 import { Terms } from './components/terms'
 import { About } from './components/about'
 import { Blog } from './components/blog'
@@ -48,6 +49,7 @@ render(
         <Route path='blog' component={Blog} />
         <Route path='forgotpassword' component={ForgotPassword} />
         <Route path='signup' component={SignUp} />
+        <Route path='signin' component={Signin} />
         <Route path='signupSuccessful' component={SignupSuccessful} />
         <Route path='validationSuccess' component={ValidationSuccess} />
         <Route path='fbErrorSignup' component={FbErrorSignup} />
