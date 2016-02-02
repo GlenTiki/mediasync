@@ -12,7 +12,6 @@ export class App extends Component {
   render () {
     var that = this
     if (this.props.location.query && this.props.location.query.token) {
-      console.log('token needs deserialisation')
       usersApi.me(this.props.location.query.token, function (err, me) {
         if (err) console.log(err)
         else {

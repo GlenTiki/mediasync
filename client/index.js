@@ -7,11 +7,14 @@ import { Router, Route, IndexRoute, Redirect } from 'react-router'
 import { syncHistory } from 'redux-simple-router'
 import { createHistory } from 'history'
 
-import {default as App} from './containers/App'
+import { default as App } from './containers/App'
+import { Empty } from './containers/Empty'
 
 import { Foo, Bar, NotFoundView } from './components/test'
 import { FbErrorSignup, FbErrorSignin, TwitterErrorSignup, TwitterErrorSignin } from './components/errors'
 import { default as Landing } from './components/landing'
+import { default as Profile } from './components/profile'
+import { default as myProfile } from './components/profile/mine'
 import { default as Signin } from './components/signin/signinPage'
 import { Terms } from './components/terms'
 import { About } from './components/about'
@@ -19,7 +22,7 @@ import { Blog } from './components/blog'
 import { Help } from './components/help'
 import { Guidelines } from './components/guidelines'
 import { ForgotPassword } from './components/forgotpassword'
-import { default as SignUp } from './components/signup'
+import { default as Signup } from './components/signup'
 import { SignupSuccessful } from './components/signup/signupSuccessful'
 import { ValidationSuccess } from './components/signup/validationSuccess'
 
@@ -32,7 +35,6 @@ const store = createStoreWithMiddleware(reducer)
 
 // Required for replaying actions from devtools to work
 // reduxRouterMiddleware.listenForReplays(store)
-
 let rootElement = document.getElementById('app')
 
 render(
@@ -47,8 +49,12 @@ render(
         <Route path='help' component={Help} />
         <Route path='guidelines' component={Guidelines} />
         <Route path='blog' component={Blog} />
+        <Route path='profile' component={Empty} >
+          <IndexRoute component={myProfile} />
+          <Route path='/profile/:username' component={Profile}/>
+        </Route>
         <Route path='forgotpassword' component={ForgotPassword} />
-        <Route path='signup' component={SignUp} />
+        <Route path='signup' component={Signup} />
         <Route path='signin' component={Signin} />
         <Route path='signupSuccessful' component={SignupSuccessful} />
         <Route path='validationSuccess' component={ValidationSuccess} />

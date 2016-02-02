@@ -1,5 +1,8 @@
 import React, { PropTypes, Component } from 'react'
 // import { Link } from 'react-router'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { routeActions } from 'redux-simple-router'
 
 import { Link } from 'react-router'
 import { Tabs, Tab, Input, ButtonInput, Button } from 'react-bootstrap'
@@ -9,6 +12,16 @@ var userApi = require('../../api/user.js')
 const clearErrors = {
   signinConnectionErrorStyle: {display: 'none'},
   signinErrorStyle: {display: 'none'}
+}
+
+function mapStateToProps (state) {
+  return {}
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    routeActions: bindActionCreators(routeActions, dispatch)
+  }
 }
 
 export class SignInPanel extends Component {
@@ -37,6 +50,7 @@ export class SignInPanel extends Component {
       }
       that.handleError()
       that.props.handleSignIn(user)
+      that.props.routeActions.push('/')
     })
   }
 
@@ -79,3 +93,5 @@ SignInPanel.propTypes = {
   errorTracker: PropTypes.object.isRequired,
   handleError: PropTypes.func.isRequired
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignInPanel)

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 // import { Link } from 'react-router'
 import * as AuthActions from '../../actions/Auth'
 import * as SigninActions from '../../actions/Signin'
-import { SignInPanel } from '../signin'
+import { default as SignInPanel } from '../signin'
 
 import { Col, Image, Glyphicon, Panel } from 'react-bootstrap'
 
@@ -37,7 +37,7 @@ export class Landing extends Component {
           Sign up, sign in and make yourself at home.<br/>
           Kick back and listen to some music or watch a video... with a friend.
         </Panel>
-        <Panel className='landing-signin'>
+        <Panel className='landing-user'>
           { this.props.user
             ? <div> welcome back yo </div>
             : <SignInPanel selected={this.props.selectedSigninPanel}

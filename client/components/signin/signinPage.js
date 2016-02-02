@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 
 import * as AuthActions from '../../actions/Auth'
 import * as SigninActions from '../../actions/Signin'
-import { SignInPanel } from '../signin'
+
+import { default as SignInPanel } from '../signin'
 
 function mapStateToProps (state) {
   return {
