@@ -7,7 +7,7 @@ import * as SigninActions from '../../actions/Signin'
 import * as ProfileActions from '../../actions/Profile'
 import { default as SignInPanel } from '../signin'
 
-import { Navbar, Nav, OverlayTrigger, Popover, NavDropdown, MenuItem } from 'react-bootstrap'
+import { Navbar, Nav, OverlayTrigger, Popover, NavDropdown } from 'react-bootstrap'
 import { routeActions } from 'redux-simple-router'
 // var userApi = require('../../api/user.js')
 
@@ -52,10 +52,10 @@ export class Header extends Component {
           <li role='presentation'><Link to='/bar'>bar</Link></li>
           {
             this.props.user
-            ? <NavDropdown eventKey={2} title={ this.props.user.username } id='basic-nav-dropdown'>
-              <MenuItem onClick={this.viewMyProfile.bind(this)}>Profile</MenuItem>
-              <MenuItem href='/settings'>Settings</MenuItem>
-            </NavDropdown>
+            ? <NavDropdown className='point-at' eventKey={1} title={this.props.user.username} id='basic-nav-dropdown'>
+                  <li><a onClick={this.viewMyProfile.bind(this)}>Profile</a></li>
+                  <li><Link to='/settings'>Settings</Link></li>
+              </NavDropdown>
             : void (0)
           }
           <li role='presentation'>
@@ -66,7 +66,7 @@ export class Header extends Component {
                 </a>
               : <OverlayTrigger container={this} trigger='click' rootClose placement='bottom'
                     overlay={
-                        <Popover className='nav-signin' id={33}>
+                        <Popover className='nav-signin' id={2}>
                               <SignInPanel selected={this.props.selectedSigninPanel}
                                     handleSignIn={this.props.authActions.signin}
                                     handleSelect={this.props.signinActions.navHandleSelect}
@@ -83,9 +83,9 @@ export class Header extends Component {
             this.props.user
             ? void (0)
             : <NavDropdown className='visible-xs point-at' eventKey={3} title='Signin' id='basic-nav-dropdown'>
-              <MenuItem><Link to='/signin'>signin</Link></MenuItem>
-              <MenuItem><Link to='/signup'>signup</Link></MenuItem>
-            </NavDropdown>
+                  <li><Link to='/signin'>signin</Link></li>
+                  <li><Link to='/signup'>signup</Link></li>
+              </NavDropdown>
           }
         </Nav>
       </Navbar.Collapse>

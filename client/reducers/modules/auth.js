@@ -16,6 +16,7 @@ export default handleActions({
   },
 
   'SIGNOUT' (state, action) {
+    console.log('reducer')
     window.localStorage.setItem('mediasyncUser', null)
     window.sessionStorage.setItem('mediasyncUser', null)
     return {

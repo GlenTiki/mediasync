@@ -47,7 +47,7 @@ module.exports = {
     .end(function (err, res) {
       console.log(err, res)
       if (err) {
-        return done(new Error('signinError'))
+        return done(new Error('invalid token'))
       } else {
         return done(null, {
           username: res.body.username,
