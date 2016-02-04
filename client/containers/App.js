@@ -10,7 +10,9 @@ import * as AuthActions from '../actions/Auth'
 var usersApi = require('../api/user.js')
 
 function mapStateToProps (state) {
-  return {}
+  return {
+    user: state.auth.user
+  }
 }
 
 function mapDispatchToProps (dispatch) {
@@ -37,7 +39,14 @@ export class App extends Component {
         }
       })
     }
-    console.log(this)
+    if (this.props.user) {
+      usersApi.me(this.props.user.token, function (err) {
+        if (err) {
+          that.props.authActions.signout()
+          that.props.routeActions.push('/badToken')
+        }
+      })
+    }
     // this.context.redux.getState()
   }
 
@@ -56,6 +65,7 @@ export class App extends Component {
 }
 
 App.propTypes = {
+  user: PropTypes.object,
   location: PropTypes.object.isRequired,
   authActions: PropTypes.object.isRequired,
   routeActions: PropTypes.object.isRequired,

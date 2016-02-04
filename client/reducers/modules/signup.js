@@ -10,6 +10,7 @@ const initialErrorStyle = {
   emailTakenErrorStyle: {display: 'none'},
   pwMatchErrorStyle: {display: 'none'},
   pwCharsErrorStyle: {display: 'none'},
+  captchaErrorStyle: {display: 'none'},
   termsErrorStyle: {display: 'none'},
   problemConnectingToServerErrorStyle: {display: 'none'}
 }

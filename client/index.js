@@ -11,7 +11,8 @@ import { default as App } from './containers/App'
 import { Empty } from './containers/Empty'
 
 import { Foo, Bar, NotFoundView } from './components/test'
-import { FbErrorSignup, FbErrorSignin, TwitterErrorSignup, TwitterErrorSignin } from './components/errors'
+import { FbErrorSignup, FbErrorSignin, TwitterErrorSignup, TwitterErrorSignin, BadToken } from './components/errors'
+import { UserNotFoundError } from './components/profile/userNotFoundError'
 import { default as Landing } from './components/landing'
 import { default as Profile } from './components/profile'
 import { default as myProfile } from './components/profile/mine'
@@ -58,10 +59,12 @@ render(
         <Route path='signin' component={Signin} />
         <Route path='signupSuccessful' component={SignupSuccessful} />
         <Route path='validationSuccess' component={ValidationSuccess} />
+        <Route path='userNotFound' component={UserNotFoundError} />
         <Route path='fbErrorSignup' component={FbErrorSignup} />
         <Route path='fbErrorSignin' component={FbErrorSignin} />
         <Route path='twitterErrorSignup' component={TwitterErrorSignup} />
         <Route path='twitterErrorSignin' component={TwitterErrorSignin} />
+        <Route path='badToken' component={BadToken} />
         <Route path='/404' component={NotFoundView} />
         <Redirect from='*' to='/404' />
       </Route>

@@ -1,15 +1,26 @@
 // const _ = require('lodash')
+const ReCAPTCHA = require('recaptcha2')
 const bcrypt = require('bcrypt')
 const uuid = require('node-uuid')
 const legit = require('legit')
 const jwt = require('jsonwebtoken')
 const emails = require('../emails')
 const signUpKey = require('../../config/signUpKey.js')
+const jwtKey = require('../../config/jwtKey.js')
+const capKey = require('../../config/recaptcha.js')
+
+const recaptcha = new ReCAPTCHA({
+  siteKey: capKey.client,
+  secretKey: capKey.server
+})
 
 function sanitizeUser (user) {
   return {
+    name: user.name,
     username: user.username,
-    email: user.email
+    email: user.email,
+    emailValidated: user.emailValidated,
+    token: user.token
   }
 }
 
@@ -40,38 +51,51 @@ module.exports = function (db) {
       handler: function (request, reply) {
         // console.log(request.payload.user)
         var user = request.payload.user
+        console.log(user)
         user.resource = 'User'
         user.emailValidated = false
-        legit(user.email, function (valid, addresses, err) {
-          if (err) return reply(new Error('problem validating email')).code(425)
-          if (valid) {
-            userExists(user, function (err, exists) {
-              if (err) return reply(err)
-              if (exists) {
-                return reply(new Error('Username or email is taken'))
-              } else {
-                bcrypt.genSalt(10, function (err, salt) {
-                  if (err) return reply(new Error('error generating password salt'))
-                  bcrypt.hash(user.password, salt, function (err, hash) {
-                    if (err) return reply(new Error('error hashing password'))
-                    user.password = hash
-                    db.save(uuid.v4(), user, function () {
-                      jwt.sign(user, signUpKey, { algorithm: 'HS256' }, function (token) {
+        // console.log(request.info.remoteAddress)
+
+        recaptcha
+        .validate(request.payload.user.captcha, request.info.remoteAddress)
+        .then(function () {
+          user.captcha = null
+          legit(user.email, function (valid, addresses, err) {
+            if (err) return reply('problem validating email').code(425)
+            if (valid) {
+              userExists(user, function (err, exists) {
+                if (err) return reply(err)
+                if (exists) {
+                  return reply(new Error('Username or email is taken'))
+                } else {
+                  bcrypt.genSalt(10, function (err, salt) {
+                    if (err) return reply(new Error('error generating password salt'))
+                    bcrypt.hash(user.password, salt, function (err, hash) {
+                      if (err) return reply(new Error('error hashing password'))
+                      user.password = hash
+                      db.save(uuid.v4(), user, function () {
                         console.log(`saved user ${user.username}`)
-                        emails.sendEmailValidation(user, token, function (err) {
-                          console.log(err)
-                          if (err) return reply(new Error('problem sending verification'))
-                          reply(sanitizeUser(user))
+                        jwt.sign(user, signUpKey, { algorithm: 'HS256' }, function (token) {
+                          emails.sendEmailValidation(user, token, function (err) {
+                            if (err) return reply(new Error('problem sending verification'))
+                            jwt.sign(user, jwtKey, { algorithm: 'HS256' }, function (token) {
+                              user.token = token
+                              reply(sanitizeUser(user))
+                            })
+                          })
                         })
                       })
                     })
                   })
-                })
-              }
-            })
-          } else {
-            return reply(new Error('invalid email address')).code(426)
-          }
+                }
+              })
+            } else {
+              return reply(new Error('invalid email address')).code(426)
+            }
+          })
+        }).catch(function (errorCodes) {
+          console.log(errorCodes)
+          reply('problem validating recaptcha').code(425)
         })
       }
     },

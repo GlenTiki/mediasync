@@ -4,11 +4,13 @@ import { connect } from 'react-redux'
 
 import * as AuthActions from '../../actions/Auth'
 import * as SigninActions from '../../actions/Signin'
+import { routeActions } from 'redux-simple-router'
 
 import { default as SignInPanel } from '../signin'
 
 function mapStateToProps (state) {
   return {
+    signedInUser: state.auth.user,
     selectedSigninPanel: state.signin.landingSelected,
     signinErrors: state.signin.landingErrorTracker
   }
@@ -16,12 +18,17 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    routeActions: bindActionCreators(routeActions, dispatch),
     authActions: bindActionCreators(AuthActions, dispatch),
     signinActions: bindActionCreators(SigninActions, dispatch)
   }
 }
 
 export class SigninPage extends Component {
+  componentWillMount () {
+    if (this.props.signedInUser !== null) this.props.routeActions.push('/')
+  }
+
   render () {
     return (
       <div className='single-page-element bordered-spe'>
@@ -37,8 +44,8 @@ export class SigninPage extends Component {
 }
 
 SigninPage.propTypes = {
-  user: PropTypes.object,
-  routeActions: PropTypes.object,
+  signedInUser: PropTypes.object,
+  routeActions: PropTypes.object.isRequired,
   authActions: PropTypes.object.isRequired,
   selectedSigninPanel: PropTypes.number.isRequired,
   signinActions: PropTypes.object.isRequired,

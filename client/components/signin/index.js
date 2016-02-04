@@ -40,9 +40,8 @@ export class SignInPanel extends Component {
 
     var that = this
 
-    userApi.signin({ username: username, password: password }, function (err, res) {
+    userApi.signin({ username: username, password: password }, function (err, user) {
       if (err) return that.handleError(err.message)
-      var user = { username: username, token: res.token, email: res.email }
       if (saveSignIn) {
         window.localStorage.setItem('mediasyncUser', JSON.stringify(user))
       } else {

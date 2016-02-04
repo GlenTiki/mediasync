@@ -8,8 +8,10 @@ const signupKey = require('../../config/signUpKey.js')
 function sanitizeUser (user) {
   return {
     username: user.username,
+    name: user.name,
     email: user.email,
-    emailValidated: user.emailValidated
+    emailValidated: user.emailValidated,
+    token: user.token
   }
 }
 
@@ -24,7 +26,7 @@ module.exports = function (db) {
         var password = request.payload.password
         db.view('user/byUsername', { key: username }, function (err, doc) {
           if (err) {
-            return reply('user doesn\'t exist').code(401)
+            return reply('user doesn\'t exist').code(430)
           }
           if (doc[0]) {
             bcrypt.compare(password, doc[0].value.password, function (err, res) {
@@ -33,13 +35,15 @@ module.exports = function (db) {
 
               var obj = {
                 username: username,
+                name: doc[0].value.name,
                 email: doc[0].value.email,
                 emailValidated: doc[0].value.emailValidated,
                 agent: request.headers['user-agent'],
                 expiresIn: '1000d'
               }
               Jwt.sign(obj, jwtKey, { algorithm: 'HS256' }, function (token) {
-                reply(sanitizeUser(doc[0].value)).header('Authorization', token).code(201)
+                obj.token = token
+                reply(sanitizeUser(obj)).header('Authorization', token).code(201)
               })
             })
           } else {
@@ -93,6 +97,7 @@ module.exports = function (db) {
             if (doc[0]) {
               var obj = {
                 username: doc[0].value.username,
+                name: doc[0].value.name,
                 email: doc[0].value.email,
                 emailValidated: doc[0].value.emailValidated,
                 agent: request.headers['user-agent'],
@@ -172,6 +177,7 @@ module.exports = function (db) {
               var obj = {
                 username: doc[0].value.username,
                 email: doc[0].value.email,
+                name: doc[0].name,
                 emailValidated: doc[0].value.emailValidated,
                 agent: request.headers['user-agent'],
                 expiresIn: '1000d'
@@ -238,7 +244,7 @@ module.exports = function (db) {
         auth: 'jwt'
       },
       handler: function (request, reply) {
-        console.log(request.auth)
+        // console.log(request.auth)
         // request.auth.jwt.set(request.auth.credentials)
         reply(sanitizeUser(request.auth.credentials))
       }

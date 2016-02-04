@@ -11,7 +11,7 @@ module.exports = {
       if (err) {
         return done(new Error('problemConnectingToServerError'))
       } else {
-        return done(null, res.header.authorization)
+        return done(null, res.body)
       }
     })
   },
@@ -23,18 +23,31 @@ module.exports = {
     .send(authData)
     // .set('X-API-Key', 'foobar')
     .end(function (err, res) {
-      if (err && res.status === 401) {
+      if (err && (res.status === 401 || res.status === 404)) {
         return done(new Error('signinError'))
       } else if (res.status === 201) {
-        return done(null, {
-          username: res.body.username,
-          token: res.header.authorization,
-          email: res.body.email,
-          emailValidated: res.body.emailValidated
-        })
+        return done(null, res.body)
       }
 
       done(new Error('signinConnectionError'))
+    })
+  },
+
+  getUserByUsername: function (username, done) {
+    request
+    .get(`/api/users/username/${username}`)
+    .set('Accept', 'application/json')
+    .end(function (err, res) {
+      // console.log(err, res)
+      if (err) {
+        return done(new Error('user doesn\'t exist'))
+      } else {
+        return done(null, {
+          name: res.body.name,
+          username: res.body.username,
+          email: res.body.email
+        })
+      }
     })
   },
 
@@ -45,16 +58,11 @@ module.exports = {
     .set('Accept', 'application/json')
     // .set('X-API-Key', 'foobar')
     .end(function (err, res) {
-      console.log(err, res)
+      // console.log(err, res)
       if (err) {
         return done(new Error('invalid token'))
       } else {
-        return done(null, {
-          username: res.body.username,
-          token: token,
-          email: res.body.email,
-          emailValidated: res.body.emailValidated
-        })
+        return done(null, res.body)
       }
     })
   }

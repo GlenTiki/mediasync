@@ -2,18 +2,22 @@ import React, { PropTypes, Component } from 'react'
 // import { Link } from 'react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { routeActions } from 'redux-simple-router'
 
 import { Link } from 'react-router'
 import { Panel, Input, Button } from 'react-bootstrap'
 
 var validation = require('../../../isomorphic/validator.js')
 var userApi = require('../../api/user.js')
+var ReCAPTCHA = require('react-google-recaptcha')
+var capKey = require('../../../config/recaptcha').client
 
 import * as AuthActions from '../../actions/Auth'
 import * as SignupActions from '../../actions/Signup'
 
 function mapStateToProps (state) {
   return {
+    signedInUser: state.auth.user,
     errorTracker: state.signup.errorTracker
   }
 }
@@ -22,6 +26,7 @@ function mapDispatchToProps (dispatch) {
   return {
     authActions: bindActionCreators(AuthActions, dispatch),
     signupActions: bindActionCreators(SignupActions, dispatch),
+    routeActions: bindActionCreators(routeActions, dispatch),
     dispatch: dispatch
   }
 }
@@ -37,10 +42,15 @@ const clearErrors = {
   pwMatchErrorStyle: {display: 'none'},
   pwCharsErrorStyle: {display: 'none'},
   termsErrorStyle: {display: 'none'},
+  captchaErrorStyle: {display: 'none'},
   problemConnectingToServerErrorStyle: {display: 'none'}
 }
 
 export class SignUp extends Component {
+  componentWillMount () {
+    if (this.props.signedInUser !== null) this.props.routeActions.push('/')
+  }
+
   handleError (e) {
     e = e + 'Style'
     let c = Object.assign({}, clearErrors)
@@ -50,7 +60,7 @@ export class SignUp extends Component {
 
   handleSignUpClick (e) {
     e.preventDefault()
-    let displayName = this.refs.displayNameSU.getValue()
+    let name = this.refs.displayNameSU.getValue()
     let username = this.refs.usernameSU.getValue()
     let email = this.refs.emailSU.getValue()
     let password = this.refs.passwordSU.getValue()
@@ -58,10 +68,13 @@ export class SignUp extends Component {
     let fbId = this.refs.fbSU.getValue()
     let twitterId = this.refs.twitterSU.getValue()
     let agreeTerms = this.refs.checkboxSU.getChecked()
+    let captcha = this.refs.captcha.getValue()
+
+    if (captcha === null) return this.handleError('captchaError')
 
     var that = this
     // console.log(username, email, password, pwRepeat, agreeTerms)
-    validation.validateDisplayName(displayName, function (err, res) {
+    validation.validateDisplayName(name, function (err, res) {
       if (err) {
         return that.handleError(err.message)
       }
@@ -78,14 +91,16 @@ export class SignUp extends Component {
               return that.handleError(err.message)
             }
             if (agreeTerms) {
-              userApi.create({ username: username, email: email, password: password, fbId: fbId, twitterId: twitterId }, function (err, res) {
+              userApi.create({ name: name, username: username, email: email,
+                                password: password, fbId: fbId, twitterId: twitterId,
+                                captcha: captcha }, function (err, user) {
                 if (err) {
                   return that.handleError(err.message)
                 }
                 that.handleError()
                 // console.log(that)
-                that.props.authActions.signup({ username: username, email: email, emailValidated: false, token: res })
-                setTimeout(() => that.props.history.pushState(null, '/signupSuccessful'), 200)
+                that.props.authActions.signup(user)
+                that.props.routeActions.push('/signupSuccessful')
               })
             } else {
               that.handleError('termsError')
@@ -97,7 +112,6 @@ export class SignUp extends Component {
   }
 
   render () {
-    console.log(this)
     var name = this.props.location.query && this.props.location.query.name || ''
     var username = this.props.location.query && this.props.location.query.username || ''
     var email = this.props.location.query && this.props.location.query.email || ''
@@ -123,6 +137,8 @@ export class SignUp extends Component {
           <Input type='checkbox' ref='checkboxSU' label={<span>I agree to the <Link to='/terms'>terms and conditions</Link></span>}/>
           <div className='text-danger' style={this.props.errorTracker.termsErrorStyle}>You must agree to the <Link to='/terms'>Terms and conditions</Link> to sign up!</div>
           {/* !!!!verify not bot!!!! */}
+          <ReCAPTCHA align='center' ref='captcha' sitekey={capKey} onChange={function (val) {}} />
+          <div className='text-danger' style={this.props.errorTracker.captchaErrorStyle}>Captcha problem.</div>
           <Button bsStyle='primary' type='submit' onClick={this.handleSignUpClick.bind(this)} block>Sign up</Button>
           <div className='text-danger' style={this.props.errorTracker.problemConnectingToServerErrorStyle}>Issue connecting to server, please check if online!</div>
           <Input type='hidden' ref='fbSU' defaultValue={fbId} />
@@ -136,10 +152,11 @@ export class SignUp extends Component {
 }
 
 SignUp.propTypes = {
-  location: PropTypes.object,
-  dispatch: PropTypes.func,
+  signedInUser: PropTypes.object,
+  location: PropTypes.object.isRequired,
   errorTracker: PropTypes.object.isRequired,
   authActions: PropTypes.object.isRequired,
+  routeActions: PropTypes.object.isRequired,
   signupActions: PropTypes.object.isRequired
 }
 

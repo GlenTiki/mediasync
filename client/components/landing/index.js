@@ -5,8 +5,13 @@ import { connect } from 'react-redux'
 import * as AuthActions from '../../actions/Auth'
 import * as SigninActions from '../../actions/Signin'
 import { default as SignInPanel } from '../signin'
+import { compliments } from './compliments'
 
 import { Col, Image, Glyphicon, Panel } from 'react-bootstrap'
+
+function randomComplement () {
+  return compliments[Math.floor(Math.random() * compliments.length)]
+}
 
 function mapStateToProps (state) {
   return {
@@ -25,6 +30,7 @@ function mapDispatchToProps (dispatch) {
 
 export class Landing extends Component {
   render () {
+    // console.log(this.props.user)
     return (
     <div>
       <Col className='landing-image-wrap' xs={12}>
@@ -39,7 +45,10 @@ export class Landing extends Component {
         </Panel>
         <Panel className='landing-user'>
           { this.props.user
-            ? <div> welcome back yo </div>
+            ? <div>
+                <h2> Welcome back, {this.props.user.name}.</h2>
+                <p>{randomComplement()}</p>
+              </div>
             : <SignInPanel selected={this.props.selectedSigninPanel}
                         handleSignIn={this.props.authActions.signin}
                         handleSelect={this.props.signinActions.landingHandleSelect}

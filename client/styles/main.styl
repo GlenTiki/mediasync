@@ -11,7 +11,7 @@ $navbar-inverse-border ?= inverse-color
 $navbar-inverse-color ?= inverse-text-color
 $navbar-inverse-link-color ?= inverse-text-color
 
-footer-size-large = 100
+footer-size-large = 110
 footer-size-small = 320
 footer-bottom-padding = 30
 
@@ -26,6 +26,11 @@ body
   margin-bottom: (footer-size-large + footer-bottom-padding)px !important
   @media (max-width: mobile-width)
     margin-bottom: (footer-size-small + footer-bottom-padding)px !important
+
+#loading
+  background:url("/assets/images/loading.gif") no-repeat center center
+  height: 100%
+  width: 100%
 
 .content
   position: relative
