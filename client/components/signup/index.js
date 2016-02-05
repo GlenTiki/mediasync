@@ -137,7 +137,7 @@ export class SignUp extends Component {
           <Input type='checkbox' ref='checkboxSU' label={<span>I agree to the <Link to='/terms'>terms and conditions</Link></span>}/>
           <div className='text-danger' style={this.props.errorTracker.termsErrorStyle}>You must agree to the <Link to='/terms'>Terms and conditions</Link> to sign up!</div>
           {/* !!!!verify not bot!!!! */}
-          <ReCAPTCHA align='center' ref='captcha' sitekey={capKey} onChange={function (val) {}} />
+          <ReCAPTCHA className='center-align' ref='captcha' sitekey={capKey} onChange={function (val) {}} />
           <div className='text-danger' style={this.props.errorTracker.captchaErrorStyle}>Captcha problem.</div>
           <Button bsStyle='primary' type='submit' onClick={this.handleSignUpClick.bind(this)} block>Sign up</Button>
           <div className='text-danger' style={this.props.errorTracker.problemConnectingToServerErrorStyle}>Issue connecting to server, please check if online!</div>
