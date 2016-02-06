@@ -4,9 +4,9 @@
   "description": "My final year project for college, a webservice to watch videos in sync with friends.",
   "scripts": {
     "test": "ls",
-    "build": "./node_modules/.bin/gulp",
-    "install": "./node_modules/.bin/gulp",
-    "serve": "./node_modules/.bin/gulp serve",
+    "build": "gulp",
+    "install": "gulp",
+    "serve": "gulp serve",
     "lint": "standard",
     "start": "node ./index.js"
   },

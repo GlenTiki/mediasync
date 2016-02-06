@@ -11,7 +11,7 @@ var buffer = require('vinyl-buffer')
 var del = require('del')
 var through = require('through')
 var opn = require('opn')
-var server = require('./server/server.js')
+var server
 var isDist = (process.argv.indexOf('serve') === -1)
 
 gulp.task('js', ['clean:js'], (done) => {
@@ -110,6 +110,7 @@ gulp.task('clean:images', (done) => {
 })
 
 gulp.task('connect', ['build'], (done) => {
+  server = require('./server/server.js')
   server.create(done)
 })
 
