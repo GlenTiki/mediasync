@@ -68,14 +68,14 @@ export class SignInPanel extends Component {
             <div className='text-danger' style={this.props.errorTracker.signinConnectionErrorStyle}>Problem connecting to server!</div>
           </form>
           <h4 className='text-center'>-or-</h4>
-          <Button bsStyle='primary' href='/api/auth/facebookSignin' block>Signin with facebook</Button>
-          <Button bsStyle='primary' href='/api/auth/twitterSignin' block>Signin with twitter</Button>
+          <Button bsStyle='primary' className='facebook-button' href='/api/auth/facebookSignin' block><span className='icon facebook-logo'/> Signin with facebook</Button>
+          <Button bsStyle='primary' className='twitter-button' href='/api/auth/twitterSignin' block><span className='icon twitter-logo-white'/> Signin with twitter</Button>
         </Tab>
         <Tab eventKey={2} title='Sign up'>
           <div>
             <br/>
-            <Button bsStyle='primary' href='/api/auth/facebookSignup' block>Signup with facebook</Button>
-            <Button bsStyle='primary' href='/api/auth/twitterSignup' block>Signup with twitter</Button>
+            <Button bsStyle='primary' className='facebook-button' href='/api/auth/facebookSignup' block><span className='icon facebook-logo'/> Signup with facebook</Button>
+            <Button bsStyle='primary' className='twitter-button' href='/api/auth/twitterSignup' block><span className='icon twitter-logo-white'/> Signup with twitter</Button>
             <h4 className='text-center'>-or-</h4>
             <Link to='/signup' className='btn btn-primary btn-block'>Signup here</Link>
           </div>

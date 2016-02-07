@@ -7,10 +7,13 @@ const signupKey = require('../../config/signUpKey.js')
 
 function sanitizeUser (user) {
   return {
-    username: user.username,
     name: user.name,
+    id: user.id,
+    username: user.username,
     email: user.email,
     emailValidated: user.emailValidated,
+    fbId: user.fbId,
+    twitterId: user.twitterId,
     token: user.token
   }
 }
@@ -35,8 +38,11 @@ module.exports = function (db) {
 
               var obj = {
                 username: username,
+                id: doc[0].value._id,
                 name: doc[0].value.name,
                 email: doc[0].value.email,
+                twitterId: doc[0].value.twitterId,
+                fbId: doc[0].value.fbId,
                 emailValidated: doc[0].value.emailValidated,
                 agent: request.headers['user-agent'],
                 expiresIn: '1000d'
@@ -97,8 +103,11 @@ module.exports = function (db) {
             if (doc[0]) {
               var obj = {
                 username: doc[0].value.username,
+                id: doc[0].value._id,
                 name: doc[0].value.name,
                 email: doc[0].value.email,
+                twitterId: doc[0].value.twitterId,
+                fbId: doc[0].value.fbId,
                 emailValidated: doc[0].value.emailValidated,
                 agent: request.headers['user-agent'],
                 expiresIn: '1000d'
@@ -160,6 +169,38 @@ module.exports = function (db) {
     },
     {
       method: 'GET',
+      path: '/api/auth/linkFacebook',
+      config: {
+        auth: {
+          strategy: 'facebook',
+          mode: 'try'
+        }
+      },
+      handler: function (request, reply) {
+        if (request.auth.isAuthenticated) {
+          db.view('user/byFbId', { key: request.auth.credentials.profile.id }, function (err, doc) {
+            if (err) {
+              return reply('problem with database').code(404)
+            }
+            if (doc[0]) {
+              return reply()
+                .redirect('/fbUserAlreadyExists')
+                .code(301)
+            } else {
+              return reply()
+                .redirect(`/settings?fbId=${request.auth.credentials.profile.id}`)
+                .code(301)
+            }
+          })
+        } else {
+          return reply()
+            .redirect('/fbErrorLinking')
+            .code(301)
+        }
+      }
+    },
+    {
+      method: 'GET',
       path: '/api/auth/twitterSignin',
       config: {
         auth: {
@@ -177,7 +218,10 @@ module.exports = function (db) {
               var obj = {
                 username: doc[0].value.username,
                 email: doc[0].value.email,
+                id: doc[0].value._id,
                 name: doc[0].name,
+                twitterId: doc[0].value.twitterId,
+                fbId: doc[0].value.fbId,
                 emailValidated: doc[0].value.emailValidated,
                 agent: request.headers['user-agent'],
                 expiresIn: '1000d'
@@ -233,6 +277,38 @@ module.exports = function (db) {
         } else {
           return reply()
             .redirect('/twitterErrorSignup')
+            .code(301)
+        }
+      }
+    },
+    {
+      method: 'GET',
+      path: '/api/auth/linkTwitter',
+      config: {
+        auth: {
+          strategy: 'twitter',
+          mode: 'try'
+        }
+      },
+      handler: function (request, reply) {
+        if (request.auth.isAuthenticated) {
+          db.view('user/byTwitterId', { key: request.auth.credentials.profile.id }, function (err, doc) {
+            if (err) {
+              return reply('problem with database').code(404)
+            }
+            if (doc[0]) {
+              return reply()
+                .redirect('/twitterUserAlreadyExists')
+                .code(301)
+            } else {
+              return reply()
+                .redirect(`/settings?twitterId=${request.auth.credentials.profile.id}`)
+                .code(301)
+            }
+          })
+        } else {
+          return reply()
+            .redirect('/twitterErrorLinking')
             .code(301)
         }
       }

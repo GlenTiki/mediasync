@@ -16,7 +16,7 @@ module.exports.validateDisplayName = function (displayName, done) {
 module.exports.validateUsername = function (username, done) {
   var re = /^\w+$/
   if (username !== '') { // check if entered username
-    if (re.test(username)) { // check if entered username mathces style
+    if (re.test(username)) { // check if entered username matches style
       if (typeof window === 'undefined') { // on server
         return done(null, { valid: true })
       } else { // we're on the client, so let's check if username is taken

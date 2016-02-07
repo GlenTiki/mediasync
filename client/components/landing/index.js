@@ -62,7 +62,7 @@ export class Landing extends Component {
             <span className='glyphicon glyphicon-home' aria-hidden='true' />{'  '}
             Create your own rooms!
           </h2>
-          Seamlessly create a room and build a community with similiar interests! MediaSync allows you to easily create a room where you can watch in sync with your friends. It also gives the creator control over user permissions within their room.
+          Seamlessly create a room and build a community with similiar interests! MediaSync allows you to easily create a room where you can watch videos or listen to music in sync with your friends. It also gives the creator control over user permissions within their room.
         </Col>
         <Col xs={12} md={4}>
           <h2>

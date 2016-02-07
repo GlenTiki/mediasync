@@ -40,6 +40,7 @@ export class App extends Component {
       })
     }
     if (this.props.user) {
+      console.log('user', this.props.user)
       usersApi.me(this.props.user.token, function (err) {
         if (err) {
           that.props.authActions.signout()

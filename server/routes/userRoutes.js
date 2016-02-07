@@ -20,6 +20,8 @@ function sanitizeUser (user) {
     username: user.username,
     email: user.email,
     emailValidated: user.emailValidated,
+    fbId: user.fbId,
+    twitterId: user.twitterId,
     token: user.token
   }
 }
@@ -119,6 +121,21 @@ module.exports = function (db) {
       handler: function (request, reply) {
         const username = request.params.username ? request.params.username : ''
         db.view('user/byUsername', { key: username }, function (err, doc) {
+          if (err) return reply(new Error('something went wrong...'))
+          if (doc[0]) reply(sanitizeUser(doc[0].value))
+          else reply('user doesn\'t exist').code(404)
+        })
+      }
+    },
+    {
+      method: 'GET',
+      path: '/api/users/updateFbId',
+      config: { auth: 'jwt' },
+      handler: function (request, reply) {
+        const fbId = request.payload.fbId
+        db.view('user/byUsername', { key: request.auth.credentials.username }, function (err, doc) {
+          console.log(doc[0])
+          console.log('newFbID', fbId)
           if (err) return reply(new Error('something went wrong...'))
           if (doc[0]) reply(sanitizeUser(doc[0].value))
           else reply('user doesn\'t exist').code(404)

@@ -15,6 +15,7 @@ import { FbErrorSignup, FbErrorSignin, TwitterErrorSignup, TwitterErrorSignin, B
 import { UserNotFoundError } from './components/profile/userNotFoundError'
 import { default as Landing } from './components/landing'
 import { default as Profile } from './components/profile'
+import { default as Settings } from './components/settings'
 import { default as myProfile } from './components/profile/mine'
 import { default as Signin } from './components/signin/signinPage'
 import { Terms } from './components/terms'
@@ -54,6 +55,7 @@ render(
           <IndexRoute component={myProfile} />
           <Route path='/profile/:username' component={Profile}/>
         </Route>
+        <Route path='settings' component={Settings} />
         <Route path='forgotpassword' component={ForgotPassword} />
         <Route path='signup' component={Signup} />
         <Route path='signin' component={Signin} />

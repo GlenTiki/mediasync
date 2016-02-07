@@ -120,18 +120,18 @@ export class SignUp extends Component {
     return (
       <Panel className='single-page-element' header='Sign up'>
         <form className='form-horizontal'>
-          <Input type='text' ref='displayNameSU' placeholder='Name' defaultValue={name}/>
+          <Input type='text' ref='displayNameSU' placeholder='Name' label='Name' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={name}/>
           <div className='text-danger' style={this.props.errorTracker.displayNameEmptyErrorStyle}>Name must not be blank!</div>
           <div className='text-danger' style={this.props.errorTracker.displayNameLengthErrorStyle}>Name needs to be shorted than 64 characters!</div>
-          <Input type='text' ref='usernameSU' placeholder='Username' defaultValue={username}/>
+          <Input type='text' ref='usernameSU' placeholder='Username' label='Username' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={username}/>
           <div className='text-danger' style={this.props.errorTracker.unEmptyErrorStyle}>Usernames must not be blank!</div>
           <div className='text-danger' style={this.props.errorTracker.unInvalidErrorStyle}>Usernames must contain only letters, numbers and underscores!</div>
           <div className='text-danger' style={this.props.errorTracker.unTakenErrorStyle}>Username is taken!</div>
-          <Input type='email' ref='emailSU' placeholder='Email' defaultValue={email}/>
+          <Input type='email' ref='emailSU' placeholder='Email' label='Email' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={email}/>
           <div className='text-danger' style={this.props.errorTracker.emailInvalidErrorStyle}>Email is invalid!</div>
           <div className='text-danger' style={this.props.errorTracker.emailTakenErrorStyle}>Email is taken!</div>
-          <Input type='password' ref='passwordSU' placeholder='Password' />
-          <Input type='password' ref='pwRepeatSU' placeholder='Re-type Password' />
+          <Input type='password' ref='passwordSU' placeholder='Password' label='Password' labelClassName='col-sm-2' wrapperClassName='col-sm-10'/>
+          <Input type='password' ref='pwRepeatSU' placeholder='Re-type Password' wrapperClassName='col-sm-12'/>
           <div className='text-danger' style={this.props.errorTracker.pwCharsErrorStyle}>Password needs to be at least 6 letters long and needs to have at least 1 upper case letter, 1 lower case letter and 1 number!</div>
           <div className='text-danger' style={this.props.errorTracker.pwMatchErrorStyle}>Passwords must match!</div>
           <Input type='checkbox' ref='checkboxSU' label={<span>I agree to the <Link to='/terms'>terms and conditions</Link></span>}/>
@@ -144,8 +144,8 @@ export class SignUp extends Component {
           <Input type='hidden' ref='fbSU' defaultValue={fbId} />
           <Input type='hidden' ref='twitterSU' defaultValue={twitterId} />
         </form>
-        <Button bsStyle='primary' href='/api/auth/facebookSignup' block>Signup with facebook</Button>
-        <Button bsStyle='primary' href='/api/auth/twitterSignup' block>Signup with twitter</Button>
+        <Button bsStyle='primary' className='facebook-button' href='/api/auth/facebookSignup' block><span className='icon facebook-logo'/> Signup with facebook</Button>
+        <Button bsStyle='primary' className='twitter-button' href='/api/auth/twitterSignup' block><span className='icon twitter-logo-white'/> Signup with twitter</Button>
       </Panel>
     )
   }
