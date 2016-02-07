@@ -62,6 +62,7 @@ module.exports = function (db) {
         .validate(request.payload.user.captcha, request.info.remoteAddress)
         .then(function () {
           user.captcha = null
+          user.validatedEmails = []
           legit(user.email, function (valid, addresses, err) {
             if (err) return reply('problem validating email').code(425)
             if (valid) {
@@ -128,20 +129,39 @@ module.exports = function (db) {
       }
     },
     {
-      method: 'GET',
+      method: 'POST',
       path: '/api/users/updateFbId',
       config: { auth: 'jwt' },
       handler: function (request, reply) {
         const fbId = request.payload.fbId
         db.view('user/byUsername', { key: request.auth.credentials.username }, function (err, doc) {
-          console.log(doc[0])
-          console.log('newFbID', fbId)
           if (err) return reply(new Error('something went wrong...'))
           if (doc[0]) {
             doc[0].value.fbId = fbId
             db.save(doc[0].value._id, doc[0].value, function (err) {
               if (err) {
-                console.log('error')
+                reply('something went wront').code(500)
+              }
+              doc[0].value.token = request.auth.token
+              reply(sanitizeUser(doc[0].value))
+            })
+          }
+          else reply('user doesn\'t exist').code(404)
+        })
+      }
+    },
+    {
+      method: 'POST',
+      path: '/api/users/updateTwitterId',
+      config: { auth: 'jwt' },
+      handler: function (request, reply) {
+        const twitterId = request.payload.twitterId
+        db.view('user/byUsername', { key: request.auth.credentials.username }, function (err, doc) {
+          if (err) return reply(new Error('something went wrong...'))
+          if (doc[0]) {
+            doc[0].value.twitterId = twitterId
+            db.save(doc[0].value._id, doc[0].value, function (err) {
+              if (err) {
                 reply('something went wront').code(500)
               }
               doc[0].value.token = request.auth.token

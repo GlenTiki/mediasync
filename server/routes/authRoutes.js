@@ -70,7 +70,10 @@ module.exports = function (db) {
               return reply('problem getting user from database').code(404)
             }
             if (doc[0]) {
-              db.merge(doc[0].value._id, { emailValidated: true }, function (err, res) {
+              var currentEmailValidated = false
+              if (decoded.email === doc[0].value.email) currentEmailValidated = true
+              doc[0].value.validatedEmails.push(decoded.email)
+              db.merge(doc[0].value._id, { emailValidated: currentEmailValidated, validatedEmails: doc[0].value.validatedEmails }, function (err, res) {
                 if (err) return reply('problem updating user in database').code(404)
                 else {
                   reply()

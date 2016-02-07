@@ -27,20 +27,33 @@ function mapDispatchToProps (dispatch) {
 }
 
 export class Settings extends Component {
-  componentWillMount () {
+  componentDidMount () {
     var that = this
     if (!this.props.user) {
       that.props.authActions.signout()
       that.props.routeActions.push('/')
+      return
     }
-    if (this.props.location.query && this.props.location.query.fbId) {
-      usersApi.saveFbId({token: this.props.user.token, fbId: this.props.location.query.fbId}, function (err, me) {
-        if (err) {
-          console.error('something went wrong saving FbID for user')
-        } else {
-          that.props.authActions.signin(me)
-        }
-      })
+    if (this.props.location.query) {
+      var token = JSON.parse(window.localStorage.getItem('settingsUser')).token
+      if (this.props.location.query.fbId) {
+        usersApi.saveFbId({token: token, fbId: this.props.location.query.fbId}, function (err, me) {
+          if (err) {
+            console.error('something went wrong saving FbID for user')
+          } else {
+            that.props.authActions.signin(me)
+          }
+        })
+      }
+      if (this.props.location.query.twitterId) {
+        usersApi.saveFbId({token: token, twitterId: this.props.location.query.twitterId}, function (err, me) {
+          if (err) {
+            console.error('something went wrong saving twitterID for user')
+          } else {
+            that.props.authActions.signin(me)
+          }
+        })
+      }
     }
   }
 
@@ -84,7 +97,7 @@ export class Settings extends Component {
     var email = this.props.user.email
     var fbId = this.props.user.fbId
     var twitterId = this.props.user.twitterId
-    var tooltip = <Tooltip>You must validate your email to edit this.</Tooltip>
+    var tooltip = <Tooltip id='3'>You must validate your email to edit this.</Tooltip>
     return (
       <Panel className='single-page-element' header='Settings'>
         <form className='form-horizontal'>

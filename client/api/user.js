@@ -69,9 +69,26 @@ module.exports = {
 
   saveFbId: function (data, done) {
     request
-    .get(`/api/users/updateFbId`)
-    .set('Authorization', data.token)
+    .post(`/api/users/updateFbId`)
     .send({fbId: data.fbId})
+    .set('Authorization', data.token)
+    .set('Accept', 'application/json')
+    // .set('X-API-Key', 'foobar')
+    .end(function (err, res) {
+      // console.log(err, res)
+      if (err) {
+        return done(new Error('invalid token'))
+      } else {
+        return done(null, res.body)
+      }
+    })
+  },
+
+  saveTwitterId: function (data, done) {
+    request
+    .post(`/api/users/updateTwitterId`)
+    .send({fbId: data.fbId})
+    .set('Authorization', data.token)
     .set('Accept', 'application/json')
     // .set('X-API-Key', 'foobar')
     .end(function (err, res) {
