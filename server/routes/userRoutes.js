@@ -137,7 +137,17 @@ module.exports = function (db) {
           console.log(doc[0])
           console.log('newFbID', fbId)
           if (err) return reply(new Error('something went wrong...'))
-          if (doc[0]) reply(sanitizeUser(doc[0].value))
+          if (doc[0]) {
+            doc[0].value.fbId = fbId
+            db.save(doc[0].value._id, doc[0].value, function (err) {
+              if (err) {
+                console.log('error')
+                reply('something went wront').code(500)
+              }
+              doc[0].value.token = request.auth.token
+              reply(sanitizeUser(doc[0].value))
+            })
+          }
           else reply('user doesn\'t exist').code(404)
         })
       }

@@ -6,7 +6,7 @@ import * as AuthActions from '../../actions/Auth'
 import * as SettingsActions from '../../actions/Settings'
 
 import { routeActions } from 'redux-simple-router'
-import { Col, Panel, Input, Button, Modal } from 'react-bootstrap'
+import { Col, Panel, Input, Button, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap'
 var usersApi = require('../../api/user.js')
 
 function mapStateToProps (state) {
@@ -38,7 +38,6 @@ export class Settings extends Component {
         if (err) {
           console.error('something went wrong saving FbID for user')
         } else {
-          window.localStorage.setItem('mediasyncUser', JSON.stringify(me))
           that.props.authActions.signin(me)
         }
       })
@@ -85,13 +84,23 @@ export class Settings extends Component {
     var email = this.props.user.email
     var fbId = this.props.user.fbId
     var twitterId = this.props.user.twitterId
+    var tooltip = <Tooltip>You must validate your email to edit this.</Tooltip>
     return (
       <Panel className='single-page-element' header='Settings'>
         <form className='form-horizontal'>
-          <Input type='text' ref='displayNameSU' placeholder='Name' label='Name' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={name}/>
+          <Input type='text' ref='displayNameSU' placeholder='Name' label='Name' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={name} />
           <div className='text-danger' style={this.props.errorTracker.displayNameEmptyErrorStyle}>Name must not be blank!</div>
           <div className='text-danger' style={this.props.errorTracker.displayNameLengthErrorStyle}>Name needs to be shorter than 64 characters!</div>
-          <Input type='text' ref='usernameSU' placeholder='Username' label='Username' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={username}/>
+          {
+            this.props.user.emailValidated
+            ? <Input type='text' ref='usernameSU' placeholder='Username' label='Username' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={username}/>
+            : <OverlayTrigger
+                overlay={tooltip} placement='top'
+                delayShow={300} delayHide={150}
+              >
+                <Input type='text' ref='usernameSU' placeholder='Username' label='Username' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={username} disabled/>
+              </OverlayTrigger>
+          }
           <div className='text-danger' style={this.props.errorTracker.unEmptyErrorStyle}>Usernames must not be blank!</div>
           <div className='text-danger' style={this.props.errorTracker.unInvalidErrorStyle}>Usernames must contain only letters, numbers and underscores!</div>
           <div className='text-danger' style={this.props.errorTracker.unTakenErrorStyle}>Username is taken!</div>

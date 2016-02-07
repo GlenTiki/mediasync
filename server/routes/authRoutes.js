@@ -322,7 +322,14 @@ module.exports = function (db) {
       handler: function (request, reply) {
         // console.log(request.auth)
         // request.auth.jwt.set(request.auth.credentials)
-        reply(sanitizeUser(request.auth.credentials))
+        db.view('user/byUsername', { key: request.auth.credentials.username }, function (err, doc) {
+          if (err) return reply(new Error('something went wrong...'))
+          if (doc[0]) {
+            doc[0].value.token = request.auth.token
+            reply(sanitizeUser(doc[0].value))
+          }
+          else reply('user doesn\'t exist').code(404)
+        })
       }
     }
   ]
