@@ -1,3 +1,0 @@
-applications:
-- name: mediasync
-buildpack: sdk-for-nodejs_v2_8-20151209-1403
