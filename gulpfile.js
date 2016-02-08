@@ -76,7 +76,7 @@ gulp.task('fonts', ['clean:fonts'], (done) => {
 })
 
 gulp.task('images', ['clean:images'], (done) => {
-  gulp.src('./client/images/**/*')
+  gulp.src('client/images/**/*')
     .on('end', done)
     .on('error', (err) => {
       console.warn('Error moving images.\n', err, err.stack)

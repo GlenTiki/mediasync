@@ -5,7 +5,7 @@
   "scripts": {
     "test": "ls",
     "build": "gulp",
-    "install": "gulp",
+    "install": "gulp --silent",
     "serve": "gulp serve",
     "lint": "standard",
     "start": "node ./index.js"
@@ -40,7 +40,7 @@
     "email-validator": "^1.0.4",
     "good": "^6.4.0",
     "good-console": "^5.2.0",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-csso": "^1.0.1",
     "gulp-rename": "^1.2.2",
