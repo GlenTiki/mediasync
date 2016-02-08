@@ -13,7 +13,7 @@ var through = require('through')
 var opn = require('opn')
 var isDist = (process.argv.indexOf('serve') === -1)
 var server
-// console.log(process.env)
+console.log(process.env)
 
 gulp.task('js', ['clean:js'], (done) => {
   browserify({
