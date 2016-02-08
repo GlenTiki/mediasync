@@ -11,8 +11,8 @@ var buffer = require('vinyl-buffer')
 var del = require('del')
 var through = require('through')
 var opn = require('opn')
-var server
 var isDist = (process.argv.indexOf('serve') === -1)
+var server
 // console.log(process.env)
 
 gulp.task('js', ['clean:js'], (done) => {
@@ -57,8 +57,7 @@ gulp.task('css', ['clean:css'], (done) => {
     }))
     .pipe(
       autoprefixer({
-        browsers: ['last 2 versions'],
-        cascade: isDist
+        browsers: ['last 2 versions']
       })
     )
     .pipe(isDist ? csso() : through())
