@@ -67,7 +67,7 @@ gulp.task('css', ['clean:css'], (done) => {
 })
 
 gulp.task('fonts', ['clean:fonts'], (done) => {
-  gulp.src(['client/fonts/**/*'])
+  gulp.src('client/fonts/**/*')
     .on('end', done)
     .on('error', (err) => {
       console.warn('Error moving fonts.\n', err, err.stack)
