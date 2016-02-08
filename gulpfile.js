@@ -19,6 +19,7 @@ gulp.task('js', ['clean:js'], (done) => {
   browserify({
     entries: './client/index.js',
     sourceType: 'module',
+    debug: false,
     transform: [babelify]
   }).bundle()
     .on('end', done)
