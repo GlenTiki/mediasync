@@ -14,7 +14,7 @@ var opn = require('opn')
 var isDist = (process.argv.indexOf('serve') === -1)
 var server
 // console.log(process.env)
-if (isDist) console.log = function () {}
+// if (isDist) console.log = function () {}
 
 gulp.task('js', ['clean:js'], (done) => {
   browserify({

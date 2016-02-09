@@ -7,7 +7,7 @@ import * as SigninActions from '../../actions/Signin'
 import * as ProfileActions from '../../actions/Profile'
 import { default as SignInPanel } from '../signin'
 
-import { Navbar, Nav, OverlayTrigger, Popover, NavDropdown } from 'react-bootstrap'
+import { Navbar, Nav, OverlayTrigger, Popover, NavDropdown, Tooltip } from 'react-bootstrap'
 import { routeActions } from 'redux-simple-router'
 // var userApi = require('../../api/user.js')
 
@@ -35,6 +35,11 @@ export class Header extends Component {
     this.props.routeActions.push(`/profile/${this.props.user.username}`)
   }
 
+  createARoom (e) {
+    e.preventDefault()
+    console.log('hey!')
+  }
+
   render () {
     return (
     <Navbar inverse fixedTop fluid className='my-nav'>
@@ -48,6 +53,18 @@ export class Header extends Component {
       </Navbar.Header>
       <Navbar.Collapse>
         <Nav pullRight>
+          <li role='presentation'>
+            {
+              this.props.user && this.props.user.emailValidated
+              ? <button type='button' className='btn btn-primary navbar-btn' onClick={this.createARoom.bind(this)}>Create a room</button>
+              : <OverlayTrigger
+                  overlay={<Tooltip>You must be signed in with an account with a verified email to create a room.</Tooltip>} placement='bottom'
+                  delayShow={300} delayHide={150}
+                >
+                  <button type='button' className='btn btn-primary navbar-btn disabled'>Create a room</button>
+                </OverlayTrigger>
+            }
+          </li>
           <li role='presentation'><Link to='/foo'>foo</Link></li>
           <li role='presentation'><Link to='/bar'>bar</Link></li>
           {

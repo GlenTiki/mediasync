@@ -26,7 +26,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export class Settings extends Component {
+export class CreateRoom extends Component {
   componentDidMount () {
     var that = this
     if (!this.props.user) {
@@ -34,7 +34,7 @@ export class Settings extends Component {
       that.props.routeActions.push('/')
       return
     }
-    if (this.props.location.query && (this.props.location.query.fbId || this.props.location.query.twitterId)) {
+    if (this.props.location.query) {
       var token = JSON.parse(window.localStorage.getItem('settingsUser')).token
       if (this.props.location.query.fbId) {
         usersApi.saveFbId({token: token, fbId: this.props.location.query.fbId}, function (err, me) {
@@ -46,7 +46,7 @@ export class Settings extends Component {
         })
       }
       if (this.props.location.query.twitterId) {
-        usersApi.saveTwitterId({token: token, twitterId: this.props.location.query.twitterId}, function (err, me) {
+        usersApi.saveFbId({token: token, twitterId: this.props.location.query.twitterId}, function (err, me) {
           if (err) {
             console.error('something went wrong saving twitterID for user')
           } else {
@@ -63,38 +63,10 @@ export class Settings extends Component {
     window.location.replace('/api/auth/linkFacebook')
   }
 
-  unlinkFacebook (e) {
-    e.preventDefault()
-    var that = this
-    usersApi.saveFbId({token: this.props.user.token, fbId: ''}, function (err, me) {
-      if (err) {
-        console.error('something went wrong saving FbID for user')
-      } else {
-        that.props.authActions.signin(me)
-      }
-    })
-    // window.localStorage.setItem('settingsUser', this.props.user)
-    // window.location.replace('/api/auth/unlinkFacebook')
-  }
-
   linkTwitter (e) {
     e.preventDefault()
     window.localStorage.setItem('settingsUser', this.props.user)
     window.location.replace('/api/auth/linkTwitter')
-  }
-
-  unlinkTwitter (e) {
-    e.preventDefault()
-    var that = this
-    usersApi.saveTwitterId({token: this.props.user.token, twitterId: ''}, function (err, me) {
-      if (err) {
-        console.error('something went wrong saving twitterID for user')
-      } else {
-        that.props.authActions.signin(me)
-      }
-    })
-    // window.localStorage.setItem('settingsUser', this.props.user)
-    // window.location.replace('/api/auth/unlinkFacebook')
   }
 
   handleChangePasswordClick (e) {
@@ -153,7 +125,7 @@ export class Settings extends Component {
             <Col sm={10}>{
               fbId === ''
               ? <Button bsStyle='primary' type='submit' className='facebook-button' onClick={that.linkFacebook.bind(this)} block><span className='icon facebook-logo'/>Link to facebook</Button>
-              : <span><strong> linked! </strong> <Button bsStyle='danger' type='submit' onClick={that.unlinkFacebook.bind(this)}>unlink</Button></span>
+              : <strong> linked! </strong>
             }</Col>
           </div>
           <div className='form-group'>
@@ -161,7 +133,7 @@ export class Settings extends Component {
             <Col sm={10}>{
               twitterId === ''
               ? <Button bsStyle='primary' type='submit' className='twitter-button' onClick={that.linkTwitter.bind(this)} block><span className='icon twitter-logo-white'/>Link to twitter</Button>
-              : <span><strong> linked! </strong> <Button bsStyle='danger' type='submit' onClick={that.unlinkTwitter.bind(this)}>unlink</Button></span>
+              : <strong> linked! </strong>
             }</Col>
           </div>
           <Input type='password' ref='currPWForm' placeholder='Current Password' wrapperClassName='col-sm-12' />
@@ -194,7 +166,7 @@ export class Settings extends Component {
   }
 }
 
-Settings.propTypes = {
+CreateRoom.propTypes = {
   user: PropTypes.object,
   displayModal: PropTypes.bool.isRequired,
   routeActions: PropTypes.object.isRequired,
@@ -205,4 +177,4 @@ Settings.propTypes = {
   settingsActions: PropTypes.object.isRequired
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings)
+export default connect(mapStateToProps, mapDispatchToProps)(CreateRoom)
