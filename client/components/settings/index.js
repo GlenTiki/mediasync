@@ -59,7 +59,7 @@ export class Settings extends Component {
 
   linkFacebook (e) {
     e.preventDefault()
-    window.localStorage.setItem('settingsUser', this.props.user)
+    window.localStorage.setItem('settingsUser', JSON.stringify(this.props.user))
     window.location.replace('/api/auth/linkFacebook')
   }
 
@@ -79,7 +79,7 @@ export class Settings extends Component {
 
   linkTwitter (e) {
     e.preventDefault()
-    window.localStorage.setItem('settingsUser', this.props.user)
+    window.localStorage.setItem('settingsUser', JSON.stringify(this.props.user))
     window.location.replace('/api/auth/linkTwitter')
   }
 
