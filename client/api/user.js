@@ -87,7 +87,7 @@ module.exports = {
   saveTwitterId: function (data, done) {
     request
     .post(`/api/users/updateTwitterId`)
-    .send({fbId: data.fbId})
+    .send({twitterId: data.twitterId})
     .set('Authorization', data.token)
     .set('Accept', 'application/json')
     // .set('X-API-Key', 'foobar')

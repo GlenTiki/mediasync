@@ -99,7 +99,7 @@ export class CreateRoom extends Component {
     var twitterId = this.props.user.twitterId
     var tooltip = <Tooltip id='3'>You must validate your email to edit this.</Tooltip>
     return (
-      <Panel className='single-page-element' header='Settings'>
+      <Panel className='single-page-element' header='Create a room'>
         <form className='form-horizontal'>
           <Input type='text' ref='displayNameSU' placeholder='Name' label='Name' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={name} />
           <div className='text-danger' style={this.props.errorTracker.displayNameEmptyErrorStyle}>Name must not be blank!</div>

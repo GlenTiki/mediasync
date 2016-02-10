@@ -140,7 +140,7 @@ module.exports = function (db) {
             doc[0].value.fbId = fbId
             db.save(doc[0].value._id, doc[0].value, function (err) {
               if (err) {
-                reply('something went wront').code(500)
+                reply('something went wrong').code(500)
               }
               doc[0].value.token = request.auth.token
               reply(sanitizeUser(doc[0].value))
@@ -155,6 +155,7 @@ module.exports = function (db) {
       path: '/api/users/updateTwitterId',
       config: { auth: 'jwt' },
       handler: function (request, reply) {
+        console.log(request.payload)
         const twitterId = request.payload.twitterId
         db.view('user/byUsername', { key: request.auth.credentials.username }, function (err, doc) {
           if (err) return reply(new Error('something went wrong...'))
@@ -162,7 +163,7 @@ module.exports = function (db) {
             doc[0].value.twitterId = twitterId
             db.save(doc[0].value._id, doc[0].value, function (err) {
               if (err) {
-                reply('something went wront').code(500)
+                reply('something went wrong').code(500)
               }
               doc[0].value.token = request.auth.token
               reply(sanitizeUser(doc[0].value))

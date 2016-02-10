@@ -37,7 +37,7 @@ export class Header extends Component {
 
   createARoom (e) {
     e.preventDefault()
-    console.log('hey!')
+    this.props.routeActions.push('/createroom')
   }
 
   render () {
