@@ -58,7 +58,7 @@ export class Header extends Component {
               this.props.user && this.props.user.emailValidated
               ? <button type='button' className='btn btn-primary navbar-btn' onClick={this.createARoom.bind(this)}>Create a room</button>
               : <OverlayTrigger
-                  overlay={<Tooltip>You must be signed in with an account with a verified email to create a room.</Tooltip>} placement='bottom'
+                  overlay={<Tooltip id={55}>You must be signed in with an account with a verified email to create a room.</Tooltip>} placement='bottom'
                   delayShow={300} delayHide={150}
                 >
                   <button type='button' className='btn btn-primary navbar-btn disabled'>Create a room</button>

@@ -3,25 +3,26 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 // import { Link } from 'react-router'
 import * as AuthActions from '../../actions/Auth'
-import * as SettingsActions from '../../actions/Settings'
+import * as CreateRoomActions from '../../actions/CreateRoom'
 
 import { routeActions } from 'redux-simple-router'
-import { Col, Panel, Input, Button, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Panel, Input } from 'react-bootstrap'
 var usersApi = require('../../api/user.js')
 
 function mapStateToProps (state) {
   return {
     user: state.auth.user,
     selectedSigninPanel: state.signin.navSelected,
-    errorTracker: state.settings.errorTracker,
-    displayModal: state.settings.displayChangePasswordModal
+    errorTracker: state.createroom.errorTracker,
+    showPlaybackControllers: state.createroom.showPlaybackControllers,
+    showInvitedUsers: state.createroom.showInvitedUsers
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     routeActions: bindActionCreators(routeActions, dispatch),
-    settingsActions: bindActionCreators(SettingsActions, dispatch),
+    createRoomActions: bindActionCreators(CreateRoomActions, dispatch),
     authActions: bindActionCreators(AuthActions, dispatch)
   }
 }
@@ -57,110 +58,53 @@ export class CreateRoom extends Component {
     }
   }
 
-  linkFacebook (e) {
+  createARoom (e) {
     e.preventDefault()
-    window.localStorage.setItem('settingsUser', this.props.user)
-    window.location.replace('/api/auth/linkFacebook')
+    var name = this.refs.roomName
+    var type = this.refs.roomType
+    var playback = this.refs.roomPlayback
+    console.log(name, type, playback)
   }
 
-  linkTwitter (e) {
-    e.preventDefault()
-    window.localStorage.setItem('settingsUser', this.props.user)
-    window.location.replace('/api/auth/linkTwitter')
+  handleTypeChange () {
+    var type = this.refs.roomType.getValue()
+    this.props.createRoomActions.handleTypeChange(type === 'private')
   }
 
-  handleChangePasswordClick (e) {
-    e.preventDefault()
-
-    this.props.settingsActions.showPasswordModal(true)
-  }
-
-  closeModal (e) {
-    e.preventDefault()
-
-    this.props.settingsActions.showPasswordModal(false)
-  }
-
-  handleUpdatePassword (e) {
-    e.preventDefault()
-    console.log('here')
-  }
-
-  handleSaveClick () {
-
+  handlePlaybackChange () {
+    var playback = this.refs.roomPlayback.getValue()
+    this.props.createRoomActions.handlePlaybackChange(playback === 'friends')
   }
 
   render () {
-    var that = this
-    var name = this.props.user.name
-    var username = this.props.user.username
-    var email = this.props.user.email
-    var fbId = this.props.user.fbId
-    var twitterId = this.props.user.twitterId
-    var tooltip = <Tooltip id='3'>You must validate your email to edit this.</Tooltip>
     return (
       <Panel className='single-page-element' header='Create a room'>
         <form className='form-horizontal'>
-          <Input type='text' ref='displayNameSU' placeholder='Name' label='Name' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={name} />
-          <div className='text-danger' style={this.props.errorTracker.displayNameEmptyErrorStyle}>Name must not be blank!</div>
-          <div className='text-danger' style={this.props.errorTracker.displayNameLengthErrorStyle}>Name needs to be shorter than 64 characters!</div>
+          <Input type='text' ref='roomName' placeholder='A Cool Room Name' label='Name' labelClassName='col-sm-2' wrapperClassName='col-sm-10'/>
+          <div className='text-danger' style={this.props.errorTracker.nameEmptyErrorStyle}>Name must not be blank!</div>
+          <div className='text-danger' style={this.props.errorTracker.nameLengthErrorStyle}>Name needs to be shorter than 256 characters!</div>
+          <Input type='select' ref='roomType' label='Type' placeholder='public' labelClassName='col-sm-2' wrapperClassName='col-sm-10' onChange={this.handleTypeChange.bind(this)}>
+            <option value='public'>Public</option>
+            <option value='private'>Invite only</option>
+            <option value='membersOnly'>Mediasync Members Only</option>
+          </Input>
           {
-            this.props.user.emailValidated
-            ? <Input type='text' ref='usernameSU' placeholder='Username' label='Username' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={username}/>
-            : <OverlayTrigger
-                overlay={tooltip} placement='top'
-                delayShow={300} delayHide={150}
-              >
-                <Input type='text' ref='usernameSU' placeholder='Username' label='Username' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={username} disabled/>
-              </OverlayTrigger>
+            this.props.showInvitedUsers
+            ? <Input type='text' ref='invited' placeholder='Who should be able enter?' label='Who should be able enter the room?' wrapperClassName='col-sm-12'/>
+            : void 0
           }
-          <div className='text-danger' style={this.props.errorTracker.unEmptyErrorStyle}>Usernames must not be blank!</div>
-          <div className='text-danger' style={this.props.errorTracker.unInvalidErrorStyle}>Usernames must contain only letters, numbers and underscores!</div>
-          <div className='text-danger' style={this.props.errorTracker.unTakenErrorStyle}>Username is taken!</div>
-          <Input type='email' ref='emailSU' placeholder='Email' label='Email' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={email}/>
-          <div className='text-danger' style={this.props.errorTracker.emailInvalidErrorStyle}>Email is invalid!</div>
-          <div className='text-danger' style={this.props.errorTracker.emailTakenErrorStyle}>Email is taken!</div>
-          <div className='form-group'>
-            <Col sm={2} text-align='left'><strong>Facebook</strong></Col>
-            <Col sm={10}>{
-              fbId === ''
-              ? <Button bsStyle='primary' type='submit' className='facebook-button' onClick={that.linkFacebook.bind(this)} block><span className='icon facebook-logo'/>Link to facebook</Button>
-              : <strong> linked! </strong>
-            }</Col>
-          </div>
-          <div className='form-group'>
-            <Col sm={2} text-align='left'><strong>Twitter</strong></Col>
-            <Col sm={10}>{
-              twitterId === ''
-              ? <Button bsStyle='primary' type='submit' className='twitter-button' onClick={that.linkTwitter.bind(this)} block><span className='icon twitter-logo-white'/>Link to twitter</Button>
-              : <strong> linked! </strong>
-            }</Col>
-          </div>
-          <Input type='password' ref='currPWForm' placeholder='Current Password' wrapperClassName='col-sm-12' />
-          <Button bsStyle='primary' type='submit' onClick={this.handleSaveClick.bind(this)} block>Save</Button>
-          <br/>
-          <Button bsStyle='primary' type='submit' onClick={this.handleChangePasswordClick.bind(this)} block>Change your password here</Button>
+          <Input type='select' ref='roomPlayback' label='Who can change the playback in this room?' placeholder='me' wrapperClassName='col-sm-12' onChange={this.handlePlaybackChange.bind(this)}>
+            <option value='me'>Just Me</option>
+            <option value='anyone'>Anyone</option>
+            <option value='friends'>People I Choose</option>
+          </Input>
+          {
+            this.props.showPlaybackControllers
+            ? <Input type='text' ref='controllers' placeholder='Who should be able to control playback?' label='Who should be able to control playback?' wrapperClassName='col-sm-12'/>
+            : void 0
+          }
+          <button type='button' className='btn btn-primary btn-block' onClick={this.createARoom.bind(this)} block>Create Room</button>
         </form>
-
-        <Modal show={this.props.displayModal} onHide={this.closeModal.bind(this)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Change your password!</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-          <form className='form-horizontal'>
-            <Input type='password' ref='newPW' placeholder='New Password' />
-            <Input type='password' ref='repeatNewPW' placeholder='Re-type Password' />
-            <div className='text-danger' style={this.props.errorTracker.pwCharsErrorStyle}>Password needs to be at least 6 letters long and needs to have at least 1 upper case letter, 1 lower case letter and 1 number!</div>
-            <div className='text-danger' style={this.props.errorTracker.pwMatchErrorStyle}>Passwords must match!</div>
-            <Input type='password' ref='currPWModal' placeholder='Current Password' />
-            <div className='text-danger' style={this.props.errorTracker.problemConnectingToServerErrorStyle}>Issue connecting to server, please check if online!</div>
-          </form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button bsStyle='primary' type='submit' onClick={that.handleUpdatePassword.bind(that)}>Update Password</Button>
-            <Button onClick={that.closeModal.bind(that)}>Close</Button>
-          </Modal.Footer>
-        </Modal>
       </Panel>
     )
   }
@@ -168,13 +112,13 @@ export class CreateRoom extends Component {
 
 CreateRoom.propTypes = {
   user: PropTypes.object,
-  displayModal: PropTypes.bool.isRequired,
+  showPlaybackControllers: PropTypes.bool.isRequired,
+  showInvitedUsers: PropTypes.bool.isRequired,
   routeActions: PropTypes.object.isRequired,
   errorTracker: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   authActions: PropTypes.object.isRequired,
-  selectedSigninPanel: PropTypes.number.isRequired,
-  settingsActions: PropTypes.object.isRequired
+  createRoomActions: PropTypes.object.isRequired
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateRoom)
