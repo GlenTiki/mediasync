@@ -60,9 +60,9 @@ export class CreateRoom extends Component {
 
   createARoom (e) {
     e.preventDefault()
-    var name = this.refs.roomName
-    var type = this.refs.roomType
-    var playback = this.refs.roomPlayback
+    var name = this.refs.roomName.getValue()
+    var type = this.refs.roomType.getValue()
+    var playback = this.refs.roomPlayback.getValue()
     console.log(name, type, playback)
   }
 

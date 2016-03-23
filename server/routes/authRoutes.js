@@ -44,7 +44,6 @@ module.exports = function (db) {
                 twitterId: doc[0].value.twitterId,
                 fbId: doc[0].value.fbId,
                 emailValidated: doc[0].value.emailValidated,
-                agent: request.headers['user-agent'],
                 expiresIn: '1000d'
               }
               Jwt.sign(obj, jwtKey, { algorithm: 'HS256' }, function (token) {
@@ -112,7 +111,6 @@ module.exports = function (db) {
                 twitterId: doc[0].value.twitterId,
                 fbId: doc[0].value.fbId,
                 emailValidated: doc[0].value.emailValidated,
-                agent: request.headers['user-agent'],
                 expiresIn: '1000d'
               }
 
@@ -226,7 +224,6 @@ module.exports = function (db) {
                 twitterId: doc[0].value.twitterId,
                 fbId: doc[0].value.fbId,
                 emailValidated: doc[0].value.emailValidated,
-                agent: request.headers['user-agent'],
                 expiresIn: '1000d'
               }
 

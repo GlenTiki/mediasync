@@ -37,8 +37,7 @@ const Plugins = [
 var validate = function (decoded, request, callback) {
   // do your checks to see if the person is valid
   // console.log(request)
-  if (!decoded.username || !decoded.agent ||
-        !decoded.email || decoded.agent !== request.headers['user-agent']) {
+  if (!decoded.username || !decoded.email) {
     return callback(null, false)
   } else {
     return callback(null, true)
