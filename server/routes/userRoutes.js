@@ -8,6 +8,7 @@ const emails = require('../emails')
 const signUpKey = require('../../config/signUpKey.js')
 const jwtKey = require('../../config/jwtKey.js')
 const capKey = require('../../config/recaptcha.js')
+var validator = require('../../isomorphic/validator')
 
 const recaptcha = new ReCAPTCHA({
   siteKey: capKey.client,
@@ -17,6 +18,7 @@ const recaptcha = new ReCAPTCHA({
 function sanitizeUser (user) {
   return {
     name: user.name,
+    id: user.id,
     username: user.username,
     email: user.email,
     emailValidated: user.emailValidated,
@@ -45,10 +47,45 @@ module.exports = function (db) {
     })
   }
 
+  function checkIfEmailTaken (email, cb) {
+    db.view('user/byEmail', { key: email }, function (err, doc) {
+      if (err) return cb(new Error('something went wrong...'))
+      if (doc[0]) cb(null, true)
+      else {
+        cb(null, false)
+      }
+    })
+  }
+
+  function checkIfUsernameTaken (username, cb) {
+    db.view('user/byUsername', { key: username }, function (err, doc) {
+      if (err) return cb(new Error('something went wrong...'))
+      if (doc[0]) cb(null, true)
+      else {
+        cb(null, false)
+      }
+    })
+  }
+
+  function resendVerification (username, reply) {
+    db.view('user/byUsername', { key: username }, function (err, doc) {
+      if (err) return reply(new Error('something went wrong...'))
+      if (doc[0]) {
+        jwt.sign(doc[0].value, signUpKey, { algorithm: 'HS256' }, function (token) {
+          emails.sendEmailValidation(doc[0].value, token, function (err) {
+            if (err) return reply(new Error('problem sending verification'))
+            reply('resent')
+          })
+        })
+      }
+      else reply('user doesn\'t exist').code(404)
+    })
+  }
+
   return [
     {
       method: 'POST',
-      path: '/api/users',
+      path: '/api/user',
       config: { auth: false },
       handler: function (request, reply) {
         // console.log(request.payload.user)
@@ -66,6 +103,7 @@ module.exports = function (db) {
           legit(user.email, function (valid, addresses, err) {
             if (err) return reply('problem validating email').code(425)
             if (valid) {
+              // TODO: call the isomorphic validator
               userExists(user, function (err, exists) {
                 if (err) return reply(err)
                 if (exists) {
@@ -103,8 +141,94 @@ module.exports = function (db) {
       }
     },
     {
+      method: 'PUT',
+      path: '/api/user',
+      config: { auth: 'jwt' },
+      handler: function (request, reply) {
+        var user = request.payload.user
+        db.get(request.auth.credentials.id, function (err, original) {
+          if (err) {
+            return reply(new Error('something went fataly wrong'))
+          }
+          bcrypt.compare(user.password, original.password, function (err, match) {
+            if (err) return reply(new Error('something went wrong...'))
+            if (!match) return reply('invalid password').code(401)
+
+            if (user.name !== original.name) original.name = user.name
+
+            if (user.email !== original.email) {
+              original.email = user.email
+              original.emailValidated = !(original.validatedEmails.indexOf(user.email) > -1)
+              // check if new email taken...
+              legit(user.email, function (valid, addresses, err) {
+                if (err) return reply('problem validating email').code(425)
+                if (valid) {
+                  checkIfEmailTaken(user.email, function (err, taken) {
+                    if (err) return reply(err)
+                    if (taken) return reply(new Error('email taken')).code(430)
+                    else checkUsername()
+                  })
+                } else {
+                  return reply(new Error('invalid email address')).code(426)
+                }
+              })
+            } else {
+              checkUsername()
+            }
+          })
+
+          function checkUsername () {
+            if (user.username !== original.username) {
+              validator.validateUsername(user.username, function (err, res) {
+                if (err || !res.valid) return reply(new Error('invalidUsername')).code(500)
+                checkIfUsernameTaken(user.username, function (err, taken) {
+                  if (err || taken) {
+                    return reply(new Error('usernameTaken')).code(500)
+                  }
+                  original.username = user.username
+                  updateUser()
+                })
+              })
+            } else {
+              updateUser()
+            }
+          }
+
+          function updateUser () {
+            db.save(request.auth.credentials.id, original, function (err) {
+              if (err) return reply(new Error('problem updating db'))
+              else {
+                original.expiresIn = '1000d'
+                jwt.sign(sanitizeUser(original), jwtKey, { algorithm: 'HS256' }, function (token) {
+                  original.token = token
+                  reply(sanitizeUser(original))
+                  resendVerification(original.username, function (err) {
+                    // dirty hack to resend verification. user gets no feedback if err
+                    if (err) {
+                      console.error('problem sending verification for new email for user', original.username)
+                      console.error(err)
+                      return
+                    }
+                    this.code = function () {}
+                  })
+                })
+              }
+            })
+          }
+        })
+      }
+    },
+    {
+      method: 'POST',
+      path: '/api/user/resendVerification',
+      config: { auth: 'jwt' },
+      handler: function (request, reply) {
+        resendVerification(request.auth.credentials.username, reply)
+      }
+    },
+    {
       method: 'GET',
-      path: '/api/users/email/{email}',
+      path: '/api/user/email/{email}',
       config: { auth: false },
       handler: function (request, reply) {
         const email = request.params.email ? request.params.email : ''
@@ -117,7 +241,7 @@ module.exports = function (db) {
     },
     {
       method: 'GET',
-      path: '/api/users/username/{username}',
+      path: '/api/user/username/{username}',
       config: { auth: false },
       handler: function (request, reply) {
         const username = request.params.username ? request.params.username : ''
@@ -130,7 +254,7 @@ module.exports = function (db) {
     },
     {
       method: 'POST',
-      path: '/api/users/updateFbId',
+      path: '/api/user/updateFbId',
       config: { auth: 'jwt' },
       handler: function (request, reply) {
         const fbId = request.payload.fbId
@@ -152,7 +276,7 @@ module.exports = function (db) {
     },
     {
       method: 'POST',
-      path: '/api/users/updateTwitterId',
+      path: '/api/user/updateTwitterId',
       config: { auth: 'jwt' },
       handler: function (request, reply) {
         console.log(request.payload)

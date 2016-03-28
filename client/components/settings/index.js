@@ -7,7 +7,24 @@ import * as SettingsActions from '../../actions/Settings'
 
 import { routeActions } from 'redux-simple-router'
 import { Col, Panel, Input, Button, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap'
+var async = require('async')
 var usersApi = require('../../api/user.js')
+var validator = require('../../../isomorphic/validator')
+
+const clearErrors = {
+  displayNameEmptyErrorStyle: {display: 'none'},
+  displayNameLengthErrorStyle: {display: 'none'},
+  unEmptyErrorStyle: {display: 'none'},
+  unInvalidErrorStyle: {display: 'none'},
+  unTakenErrorStyle: {display: 'none'},
+  emailInvalidErrorStyle: {display: 'none'},
+  emailTakenErrorStyle: {display: 'none'},
+  pwMatchErrorStyle: {display: 'none'},
+  pwCharsErrorStyle: {display: 'none'},
+  termsErrorStyle: {display: 'none'},
+  captchaErrorStyle: {display: 'none'},
+  problemConnectingToServerErrorStyle: {display: 'none'}
+}
 
 function mapStateToProps (state) {
   return {
@@ -55,6 +72,13 @@ export class Settings extends Component {
         })
       }
     }
+  }
+
+  handleError (e) {
+    e = e + 'Style'
+    let c = Object.assign({}, clearErrors)
+    c[e] = {display: 'block'}
+    this.props.settingsActions.handleError(c)
   }
 
   linkFacebook (e) {
@@ -111,11 +135,100 @@ export class Settings extends Component {
 
   handleUpdatePassword (e) {
     e.preventDefault()
+    // TODO update password
     console.log('here')
   }
 
-  handleSaveClick () {
+  handleSaveClick (e) {
+    e.preventDefault()
+    var saveData = {
+      token: this.props.user.token,
+      name: this.refs.displayName.getValue(),
+      username: this.refs.username.getValue(),
+      email: this.refs.email.getValue(),
+      password: this.refs.currPWForm.getValue()
+    }
+    var that = this
 
+    async.waterfall([
+      validateUsername,
+      validateEmail,
+      validateName
+    ], updateUser)
+
+    function validateUsername (done) {
+      if (that.props.user.username === saveData.username) {
+        done(null)
+      } else {
+        validator.validateUsername(saveData.username, function (err, res) {
+          if (err) {
+            return done(err)
+          } else {
+            return done(null)
+          }
+        })
+      }
+    }
+
+    function validateEmail (done) {
+      if (that.props.user.email === saveData.email) {
+        done(null)
+      } else {
+        validator.validateEmail(saveData.email, function (err, res) {
+          if (err) {
+            return done(err)
+          } else {
+            return done(null)
+          }
+        })
+      }
+    }
+
+    function validateName (done) {
+      if (that.props.user.name === saveData.name) {
+        done(null)
+      } else {
+        validator.validateDisplayName(saveData.name, function (err, res) {
+          if (err) {
+            return done(err)
+          } else {
+            return done(null)
+          }
+        })
+      }
+    }
+
+    function updateUser (err) {
+      if (err) {
+        return that.handleErr(err)
+      }
+
+      usersApi.update(saveData, function (err, newState) {
+        console.log(that.props.user)
+        console.log(newState)
+        if (err) {
+          console.error('Everything is wrong with the world!')
+          console.error('but mostly this:', err)
+          return
+          // TODO: display error to user
+        }
+        that.props.authActions.signin(newState)
+      })
+    }
+  }
+
+  resendVerification (e) {
+    e.preventDefault()
+    usersApi.resendVerification({token: this.props.user.token}, function (err, user) {
+      if (err) {
+        // do something I guess?
+        console.error('something went wrong resending verification')
+        console.error(err)
+        return
+      }
+      // do something else?
+      // TODO: user feedback
+    })
   }
 
   render () {
@@ -125,27 +238,35 @@ export class Settings extends Component {
     var email = this.props.user.email
     var fbId = this.props.user.fbId
     var twitterId = this.props.user.twitterId
-    var tooltip = <Tooltip id='3'>You must validate your email to edit this.</Tooltip>
+    var tooltip = <Tooltip id='3'>You must validate your email to edit this field.</Tooltip>
     return (
       <Panel className='single-page-element' header='Settings'>
         <form className='form-horizontal'>
-          <Input type='text' ref='displayNameSU' placeholder='Name' label='Name' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={name} />
+          <Input type='text' ref='displayName' placeholder='Name' label='Name' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={name} />
           <div className='text-danger' style={this.props.errorTracker.displayNameEmptyErrorStyle}>Name must not be blank!</div>
           <div className='text-danger' style={this.props.errorTracker.displayNameLengthErrorStyle}>Name needs to be shorter than 64 characters!</div>
           {
             this.props.user.emailValidated
-            ? <Input type='text' ref='usernameSU' placeholder='Username' label='Username' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={username}/>
+            ? <Input type='text' ref='username' placeholder='Username' label='Username' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={username}/>
             : <OverlayTrigger
                 overlay={tooltip} placement='top'
                 delayShow={300} delayHide={150}
               >
-                <Input type='text' ref='usernameSU' placeholder='Username' label='Username' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={username} disabled/>
+                <Input type='text' ref='username' placeholder='Username' label='Username' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={username} disabled/>
               </OverlayTrigger>
           }
           <div className='text-danger' style={this.props.errorTracker.unEmptyErrorStyle}>Usernames must not be blank!</div>
           <div className='text-danger' style={this.props.errorTracker.unInvalidErrorStyle}>Usernames must contain only letters, numbers and underscores!</div>
           <div className='text-danger' style={this.props.errorTracker.unTakenErrorStyle}>Username is taken!</div>
-          <Input type='email' ref='emailSU' placeholder='Email' label='Email' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={email}/>
+          <Input type='email' ref='email' placeholder='Email' label='Email' labelClassName='col-sm-2' wrapperClassName='col-sm-10' defaultValue={email}/>
+          {
+            this.props.user.emailValidated
+            ? <div className='text-success'> Email Validated. </div>
+            : <div>
+                <span className='text-warning'> Email not validated yet </span>
+                <Button bsStyle='primary' type='submit' onClick={this.resendVerification.bind(this)}>Resend Verification Email</Button>
+              </div>
+          }
           <div className='text-danger' style={this.props.errorTracker.emailInvalidErrorStyle}>Email is invalid!</div>
           <div className='text-danger' style={this.props.errorTracker.emailTakenErrorStyle}>Email is taken!</div>
           <div className='form-group'>
@@ -165,6 +286,7 @@ export class Settings extends Component {
             }</Col>
           </div>
           <Input type='password' ref='currPWForm' placeholder='Current Password' wrapperClassName='col-sm-12' />
+          <div className='text-danger' style={this.props.errorTracker.problemConnectingToServerErrorStyle}>Issue connecting to server, please check if online!</div>
           <Button bsStyle='primary' type='submit' onClick={this.handleSaveClick.bind(this)} block>Save</Button>
           <br/>
           <Button bsStyle='primary' type='submit' onClick={this.handleChangePasswordClick.bind(this)} block>Change your password here</Button>

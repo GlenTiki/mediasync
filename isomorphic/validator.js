@@ -3,7 +3,7 @@ var emailValidator = require('email-validator')
 
 module.exports.validateDisplayName = function (displayName, done) {
   if (displayName !== '') {
-    if (displayName.length <= 64) { // check if entered username mathces style
+    if (displayName.length <= 64) { // check if entered username matches style
       return done(null, { valid: true })
     } else {
       return done(new Error('displayNameLengthError'))
@@ -18,6 +18,7 @@ module.exports.validateUsername = function (username, done) {
   if (username !== '') { // check if entered username
     if (re.test(username)) { // check if entered username matches style
       if (typeof window === 'undefined') { // on server
+        // TODO: Check DB
         return done(null, { valid: true })
       } else { // we're on the client, so let's check if username is taken
         return checkIfUsernameTaken(username, done)
@@ -50,6 +51,7 @@ function checkIfUsernameTaken (username, done) {
 module.exports.validateEmail = function (email, done) {
   if (emailValidator.validate(email)) {
     if (typeof window === 'undefined') { // on server
+      // TODO: check db
       return done(null, { valid: true })
     } else { // we're on the client, so let's check if email is taken
       return checkIfEmailTaken(email, done)
@@ -89,4 +91,25 @@ module.exports.validatePassword = function (password, repeat, done) {
   } else {
     return done(new Error('pwMatchError'))
   }
+}
+
+// TODO: Room validation
+module.exports.validateRoomName = function (name, done) {
+  return done(null, {valid: true})
+}
+
+module.exports.validateRoomType = function (type, done) {
+  return done(null, {valid: true})
+}
+
+module.exports.validateRoomPlayback = function (type, done) {
+  return done(null, {valid: true})
+}
+
+module.exports.validateRoomControllers = function (controllers, done) {
+  return done(null, {valid: true})
+}
+
+module.exports.validateInvitedUsers = function (users, done) {
+  return done(null, {valid: true})
 }

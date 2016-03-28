@@ -32,9 +32,9 @@ module.exports = function (db) {
             return reply('user doesn\'t exist').code(430)
           }
           if (doc[0]) {
-            bcrypt.compare(password, doc[0].value.password, function (err, res) {
+            bcrypt.compare(password, doc[0].value.password, function (err, match) {
               if (err) return reply(new Error('something went wrong...'))
-              if (!res) return reply('invalid password').code(401) // unauthorised
+              if (!match) return reply('invalid password').code(401) // unauthorised
 
               var obj = {
                 username: username,
@@ -320,13 +320,12 @@ module.exports = function (db) {
         auth: 'jwt'
       },
       handler: function (request, reply) {
-        // console.log(request.auth)
         // request.auth.jwt.set(request.auth.credentials)
-        db.view('user/byUsername', { key: request.auth.credentials.username }, function (err, doc) {
+        db.get(request.auth.credentials.id, function (err, res) {
           if (err) return reply(new Error('something went wrong...'))
-          if (doc[0]) {
-            doc[0].value.token = request.auth.token
-            reply(sanitizeUser(doc[0].value))
+          if (res) {
+            res.token = request.auth.token
+            reply(sanitizeUser(res))
           }
           else reply('user doesn\'t exist').code(404)
         })

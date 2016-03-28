@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/thekemkid/mediasync#readme",
   "dependencies": {
+    "async": "^1.5.2",
     "babel-plugin-transform-object-rest-spread": "^6.3.13",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.3.13",

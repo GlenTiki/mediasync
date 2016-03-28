@@ -56,17 +56,18 @@ export class Header extends Component {
           <li role='presentation'>
             {
               this.props.user && this.props.user.emailValidated
-              ? <button type='button' className='btn btn-primary navbar-btn' onClick={this.createARoom.bind(this)}>Create a room</button>
+              ? <button type='button' className='btn btn-primary navbar-btn' onClick={this.createARoom.bind(this)}>Create A Room</button>
               : <OverlayTrigger
                   overlay={<Tooltip id={55}>You must be signed in with an account with a verified email to create a room.</Tooltip>} placement='bottom'
                   delayShow={300} delayHide={150}
                 >
-                  <button type='button' className='btn btn-primary navbar-btn disabled'>Create a room</button>
+                  <button type='button' className='btn btn-primary navbar-btn disabled'>Create A Room</button>
                 </OverlayTrigger>
             }
-          </li>
-          <li role='presentation'><Link to='/foo'>foo</Link></li>
-          <li role='presentation'><Link to='/bar'>bar</Link></li>
+          </li>{
+          // <li role='presentation'><Link to='/foo'>foo</Link></li>
+          // <li role='presentation'><Link to='/bar'>bar</Link></li>
+          }
           {
             this.props.user
             ? <NavDropdown className='point-at' eventKey={1} title={this.props.user.username} id='basic-nav-dropdown'>

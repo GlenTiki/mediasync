@@ -63,7 +63,19 @@ export class CreateRoom extends Component {
     var name = this.refs.roomName.getValue()
     var type = this.refs.roomType.getValue()
     var playback = this.refs.roomPlayback.getValue()
-    console.log(name, type, playback)
+    var controllers = []
+    if (playback === 'friends') {
+      controllers = this.refs.controllers.getValue().trim().toLowerCase().split(',')
+      controllers.push(this.props.user.username)
+      controllers.filter(function (c, i) {
+        // if the index of the current element is not the first occurance of it
+        // in the array, the element is not unique
+        return controllers.indexOf(c) === i
+      })
+    } else if (playback === 'me') {
+      controllers = [this.props.user.username]
+    }
+    console.log(name, type, playback, controllers)
   }
 
   handleTypeChange () {
@@ -80,7 +92,7 @@ export class CreateRoom extends Component {
     return (
       <Panel className='single-page-element' header='Create a room'>
         <form className='form-horizontal'>
-          <Input type='text' ref='roomName' placeholder='A Cool Room Name' label='Name' labelClassName='col-sm-2' wrapperClassName='col-sm-10'/>
+          <Input type='text' ref='roomName' placeholder='Cool Room Name' label='Name' labelClassName='col-sm-2' wrapperClassName='col-sm-10'/>
           <div className='text-danger' style={this.props.errorTracker.nameEmptyErrorStyle}>Name must not be blank!</div>
           <div className='text-danger' style={this.props.errorTracker.nameLengthErrorStyle}>Name needs to be shorter than 256 characters!</div>
           <Input type='select' ref='roomType' label='Type' placeholder='public' labelClassName='col-sm-2' wrapperClassName='col-sm-10' onChange={this.handleTypeChange.bind(this)}>
