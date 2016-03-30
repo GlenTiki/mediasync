@@ -5,7 +5,6 @@
   "scripts": {
     "test": "ls",
     "build": "gulp",
-    "install": "gulp",
     "serve": "gulp serve",
     "lint": "standard",
     "start": "node ./index.js"
