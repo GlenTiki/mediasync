@@ -8,6 +8,7 @@ import * as CreateRoomActions from '../../actions/CreateRoom'
 import { routeActions } from 'redux-simple-router'
 import { Panel, Input } from 'react-bootstrap'
 var usersApi = require('../../api/user.js')
+var roomsApi = require('../../api/room.js')
 
 function mapStateToProps (state) {
   return {
@@ -75,6 +76,8 @@ export class CreateRoom extends Component {
     } else if (playback === 'me') {
       controllers = [this.props.user.username]
     }
+
+
     console.log(name, type, playback, controllers)
   }
 
@@ -98,6 +101,7 @@ export class CreateRoom extends Component {
           <Input type='select' ref='roomType' label='Type' placeholder='public' labelClassName='col-sm-2' wrapperClassName='col-sm-10' onChange={this.handleTypeChange.bind(this)}>
             <option value='public'>Public</option>
             <option value='private'>Invite only</option>
+            <option value='unlisted'>Unlisted</option>
             <option value='membersOnly'>Mediasync Members Only</option>
           </Input>
           {
