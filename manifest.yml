@@ -1,0 +1,7 @@
+pplications:
+- name: mediasync
+memory: 512M
+services:
+- Auto-Scaling-td
+- mediasync-db
+- redis-mediasync
