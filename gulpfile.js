@@ -12,6 +12,7 @@ var del = require('del')
 var through = require('through')
 var opn = require('opn')
 var isDist = (process.argv.indexOf('serve') === -1)
+if (isDist) process.env.NODE_ENV = 'production'
 var server
 // console.log(process.env)
 // if (isDist) console.log = function () {}
