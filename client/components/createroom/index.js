@@ -77,6 +77,10 @@ export class CreateRoom extends Component {
       controllers = [this.props.user.username]
     }
 
+    roomsApi.create({ name: name, type: type, playback: playback, controllers: controllers }, this.props.user, function (err, res) {
+      if (err) return console.error(err)
+      console.log(res)
+    })
 
     console.log(name, type, playback, controllers)
   }
