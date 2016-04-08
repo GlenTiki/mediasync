@@ -10,7 +10,9 @@ const initialErrorStyle = {
   emailTakenErrorStyle: {display: 'none'},
   pwMatchErrorStyle: {display: 'none'},
   pwCharsErrorStyle: {display: 'none'},
-  problemConnectingToServerErrorStyle: {display: 'none'}
+  problemConnectingToServerErrorStyle: {display: 'none'},
+  currPWMatchFormErrorStyle: {display: 'none'},
+  successStyle: {display: 'none'}
 }
 
 const initialState = {

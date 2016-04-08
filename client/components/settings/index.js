@@ -23,7 +23,9 @@ const clearErrors = {
   pwCharsErrorStyle: {display: 'none'},
   termsErrorStyle: {display: 'none'},
   captchaErrorStyle: {display: 'none'},
-  problemConnectingToServerErrorStyle: {display: 'none'}
+  problemConnectingToServerErrorStyle: {display: 'none'},
+  currPWMatchFormErrorStyle: {display: 'none'},
+  successStyle: {display: 'none'}
 }
 
 function mapStateToProps (state) {
@@ -158,12 +160,15 @@ export class Settings extends Component {
 
     function validateUsername (done) {
       if (that.props.user.username === saveData.username) {
+        console.log('same username')
         done(null)
       } else {
         validator.validateUsername(saveData.username, function (err, res) {
           if (err) {
+            console.log('diff UN invalid')
             return done(err)
           } else {
+            console.log('diff UN valid')
             return done(null)
           }
         })
@@ -172,12 +177,15 @@ export class Settings extends Component {
 
     function validateEmail (done) {
       if (that.props.user.email === saveData.email) {
+        console.log('same email')
         done(null)
       } else {
         validator.validateEmail(saveData.email, function (err, res) {
           if (err) {
+            console.log('diff email invalid')
             return done(err)
           } else {
+            console.log('diff email valid')
             return done(null)
           }
         })
@@ -186,12 +194,15 @@ export class Settings extends Component {
 
     function validateName (done) {
       if (that.props.user.name === saveData.name) {
+        console.log('same name')
         done(null)
       } else {
         validator.validateDisplayName(saveData.name, function (err, res) {
           if (err) {
+            console.log('diff name invalid')
             return done(err)
           } else {
+            console.log('diff name valid')
             return done(null)
           }
         })
@@ -200,19 +211,23 @@ export class Settings extends Component {
 
     function updateUser (err) {
       if (err) {
-        return that.handleErr(err)
+        console.log('err', err)
+        return that.handleError(err.message)
       }
 
+      console.log('saveData', saveData)
       usersApi.update(saveData, function (err, newState) {
-        console.log(that.props.user)
-        console.log(newState)
+        console.log('before update', that.props.user)
+        console.log('after', newState)
         if (err) {
           console.error('Everything is wrong with the world!')
           console.error('but mostly this:', err)
+          that.handleError(err.message)
           return
           // TODO: display error to user
         }
         that.props.authActions.signin(newState)
+        that.handleError('success')
       })
     }
   }
@@ -286,8 +301,10 @@ export class Settings extends Component {
             }</Col>
           </div>
           <Input type='password' ref='currPWForm' placeholder='Current Password' wrapperClassName='col-sm-12' />
+          <div className='text-danger' style={this.props.errorTracker.currPWMatchFormErrorStyle}>Password issue, try reenter it!</div>
           <div className='text-danger' style={this.props.errorTracker.problemConnectingToServerErrorStyle}>Issue connecting to server, please check if online!</div>
           <Button bsStyle='primary' type='submit' onClick={this.handleSaveClick.bind(this)} block>Save</Button>
+          <div className='text-success' style={this.props.errorTracker.successStyle}>Success!</div>
           <br/>
           <Button bsStyle='primary' type='submit' onClick={this.handleChangePasswordClick.bind(this)} block>Change your password here</Button>
         </form>

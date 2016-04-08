@@ -67,18 +67,12 @@ module.exports = function (db) {
     })
   }
 
-  function resendVerification (username, reply) {
-    db.view('user/byUsername', { key: username }, function (err, doc) {
-      if (err) return reply(new Error('something went wrong...'))
-      if (doc[0]) {
-        jwt.sign(doc[0].value, signUpKey, { algorithm: 'HS256' }, function (token) {
-          emails.sendEmailValidation(doc[0].value, token, function (err) {
-            if (err) return reply(new Error('problem sending verification'))
-            reply('resent')
-          })
-        })
-      }
-      else reply('user doesn\'t exist').code(404)
+  function resendVerification (user, cb) {
+    jwt.sign(user, signUpKey, { algorithm: 'HS256' }, function (token) {
+      emails.sendEmailValidation(user, token, function (err) {
+        if (err) return cb(new Error('problem sending verification'))
+        cb(null)
+      })
     })
   }
 
@@ -90,7 +84,6 @@ module.exports = function (db) {
       handler: function (request, reply) {
         // console.log(request.payload.user)
         var user = request.payload.user
-        console.log(user)
         user.resource = 'User'
         user.emailValidated = false
         // console.log(request.info.remoteAddress)
@@ -158,12 +151,12 @@ module.exports = function (db) {
 
             if (user.email !== original.email) {
               original.email = user.email
-              original.emailValidated = !(original.validatedEmails.indexOf(user.email) > -1)
+              original.emailValidated = (original.validatedEmails.indexOf(user.email) > -1)
               // check if new email taken...
-              legit(user.email, function (valid, addresses, err) {
+              legit(original.email, function (valid, addresses, err) {
                 if (err) return reply('problem validating email').code(425)
                 if (valid) {
-                  checkIfEmailTaken(user.email, function (err, taken) {
+                  checkIfEmailTaken(original.email, function (err, taken) {
                     if (err) return reply(err)
                     if (taken) return reply(new Error('email taken')).code(430)
                     else checkUsername()
@@ -202,15 +195,18 @@ module.exports = function (db) {
                 jwt.sign(sanitizeUser(original), jwtKey, { algorithm: 'HS256' }, function (token) {
                   original.token = token
                   reply(sanitizeUser(original))
-                  resendVerification(original.username, function (err) {
-                    // dirty hack to resend verification. user gets no feedback if err
-                    if (err) {
-                      console.error('problem sending verification for new email for user', original.username)
-                      console.error(err)
-                      return
-                    }
-                    this.code = function () {}
-                  })
+
+                  if (!original.emailValidated) {
+                    resendVerification(original, function (err) {
+                      // dirty hack to resend verification. user gets no feedback if err
+                      if (err) {
+                        console.error('problem sending verification for new email for user', original.username)
+                        console.error(err)
+                        return
+                      }
+                      this.code = function () {}
+                    })
+                  }
                 })
               }
             })
@@ -223,7 +219,7 @@ module.exports = function (db) {
       path: '/api/user/resendVerification',
       config: { auth: 'jwt' },
       handler: function (request, reply) {
-        resendVerification(request.auth.credentials.username, reply)
+        resendVerification(request.auth.credentials, reply)
       }
     },
     {

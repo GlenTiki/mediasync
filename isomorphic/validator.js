@@ -33,7 +33,7 @@ module.exports.validateUsername = function (username, done) {
 
 function checkIfUsernameTaken (username, done) {
   request
-  .get(`/api/users/username/${username}`)
+  .get(`/api/user/username/${username}`)
   .send({username: username})
   // .set('X-API-Key', 'foobar')
   .set('Accept', 'application/json')
@@ -63,7 +63,7 @@ module.exports.validateEmail = function (email, done) {
 
 function checkIfEmailTaken (email, done) {
   request
-  .get(`/api/users/email/${email}`)
+  .get(`/api/user/email/${email}`)
   .send({username: email})
   // .set('X-API-Key', 'foobar')
   .set('Accept', 'application/json')
@@ -99,7 +99,11 @@ module.exports.validateRoomName = function (name, done) {
 }
 
 module.exports.validateRoomType = function (type, done) {
-  return done(null, {valid: true})
+  var validTypes = ['public', 'private', 'unlisted', 'membersOnly']
+
+  var valid = (validTypes.indexOf(type) > -1)
+
+  return done(null, {valid: valid})
 }
 
 module.exports.validateRoomPlayback = function (type, done) {

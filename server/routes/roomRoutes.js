@@ -14,8 +14,9 @@ module.exports = function (db) {
         // console.log(request.payload.user)
         var room = request.payload.room
         var creator = request.auth.credentials
+        room.resource = 'Room'
         console.log(room, creator)
-
+        reply(room)
         // check creator has validated email
         // check room doesn't exist
         // store room details

@@ -1,5 +1,6 @@
 const UserRoutes = require('./userRoutes')
 const AuthRoutes = require('./authRoutes')
+const RoomRoutes = require('./roomRoutes')
 
 module.exports = function (db) {
   var ret = [
@@ -11,5 +12,5 @@ module.exports = function (db) {
       }
     }
   ]
-  return UserRoutes(db).concat(AuthRoutes(db), ret)
+  return UserRoutes(db).concat(AuthRoutes(db), RoomRoutes(db), ret)
 }

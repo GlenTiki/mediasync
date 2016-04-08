@@ -26,7 +26,9 @@ module.exports = {
     .end(function (err, res) {
       console.log(err)
       console.log(res)
-      if (err) {
+      if (err && res.status === 401) {
+        return done(new Error('currPWMatchFormError'))
+      } else if (err) {
         return done(new Error('problemConnectingToServerError'))
       } else {
         return done(null, res.body)

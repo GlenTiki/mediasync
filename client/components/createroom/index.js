@@ -65,6 +65,18 @@ export class CreateRoom extends Component {
     var type = this.refs.roomType.getValue()
     var playback = this.refs.roomPlayback.getValue()
     var controllers = []
+    var invitedUsers = [] // in case of private room
+
+    if (type === 'private') {
+      invitedUsers = this.refs.invited.getValue().trim().toLowerCase().split(',')
+      invitedUsers.push(this.props.user.username)
+      invitedUsers.filter(function (c, i) {
+        // if the index of the current element is not the first occurance of it
+        // in the array, the element is not unique
+        return invitedUsers.indexOf(c) === i
+      })
+    }
+
     if (playback === 'friends') {
       controllers = this.refs.controllers.getValue().trim().toLowerCase().split(',')
       controllers.push(this.props.user.username)
@@ -77,7 +89,7 @@ export class CreateRoom extends Component {
       controllers = [this.props.user.username]
     }
 
-    roomsApi.create({ name: name, type: type, playback: playback, controllers: controllers }, this.props.user, function (err, res) {
+    roomsApi.create({ name: name, type: type, playback: playback, controllers: controllers, invitedUsers: invitedUsers }, this.props.user, function (err, res) {
       if (err) return console.error(err)
       console.log(res)
     })
