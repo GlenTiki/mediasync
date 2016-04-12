@@ -11,9 +11,9 @@ $navbar-inverse-border ?= inverse-color
 $navbar-inverse-color ?= inverse-text-color
 $navbar-inverse-link-color ?= inverse-text-color
 
-footer-size-large = 110
-footer-size-small = 320
-footer-bottom-padding = 30
+footer-size-large = 110px
+footer-size-small = 320px
+footer-bottom-padding = 0
 
 mobile-width = 992px
 
@@ -23,14 +23,36 @@ html
   min-height: 100%
 
 body
-  margin-bottom: (footer-size-large + footer-bottom-padding)px !important
+  margin-bottom: footer-size-large !important
   @media (max-width: mobile-width)
-    margin-bottom: (footer-size-small + footer-bottom-padding)px !important
+    margin-bottom: footer-size-small !important
 
 #loading
   background: url("/assets/images/loading.gif") no-repeat center center
   height: 100%
   width: 100%
+
+.room
+  .container-fluid
+  .col-md-8
+  .col-md-4
+    padding: 0 !important
+  .panel
+    margin: 0 !important
+    padding: 0 !important
+    height: 100%
+    width: 100%
+    .panel-body
+      min-height: 75vh
+      min-height: 'calc(100vh - %s - 50px)' % footer-size-large
+      @media (max-width: mobile-width)
+        min-height: 'calc(100vh - %s - 50px)' % footer-size-small
+    .panel-collapse
+      .panel-body
+        min-height: 60vh
+        min-height: 'calc(100vh - %s - 50px - 75px)' % footer-size-large
+        @media (max-width: mobile-width)
+          min-height: 'calc(100vh - %s - 50px - 75px)' % footer-size-small
 
 .content
   position: relative
@@ -44,12 +66,13 @@ body
   text-align: center
   background-color: inverse-color
   color: inverse-text-color
+  margin-top: 0 !important
   padding-top: 10px
   bottom: 0px
   width: 100%
-  height: (footer-size-large)px
+  height: footer-size-large
   @media (max-width: mobile-width)
-    height: (footer-size-small)px
+    height: footer-size-small
 
 .my-nav
   .navbar-inverse, .navbar-collapse

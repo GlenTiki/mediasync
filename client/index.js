@@ -15,6 +15,7 @@ import { UserNotFoundError } from './components/profile/userNotFoundError'
 import { default as Landing } from './components/landing'
 import { default as Profile } from './components/profile'
 import { default as Settings } from './components/settings'
+import { default as Room } from './components/room'
 import { default as CreateRoom } from './components/createroom'
 import { default as myProfile } from './components/profile/mine'
 import { default as Signin } from './components/signin/signinPage'
@@ -56,8 +57,8 @@ render(
         </Route>
         <Route path='createroom' component={CreateRoom} />
         <Route path='room' component={Empty} >
-          <IndexRoute component={myProfile} />
-          <Route path='/profile/:username' component={Profile}/>
+          <IndexRoute component={CreateRoom} />
+          <Route path='/room/:name' component={Room}/>
         </Route>
         <Route path='settings' component={Settings} />
         <Route path='forgotpassword' component={ForgotPassword} />

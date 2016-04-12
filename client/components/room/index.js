@@ -5,8 +5,8 @@ import { connect } from 'react-redux'
 import * as AuthActions from '../../actions/Auth'
 import * as RoomActions from '../../actions/Room'
 
-import { routerActions } from 'redux-simple-router'
-import { Accordion, Panel } from 'react-bootstrap'
+import { routerActions } from 'react-router-redux'
+import { Panel, Col, Grid } from 'react-bootstrap'
 
 function mapStateToProps (state) {
   return {
@@ -37,19 +37,27 @@ export class Room extends Component {
   }
 
   render () {
+    var that = this
     return (
-      <div>
-        <Accordion>
-          <Panel header='Video' eventKey='1'>
-            Testing
-          </Panel>
-          <Panel header='Search' eventKey='2'>
-            Testing
-          </Panel>
-          <Panel header='Queue' eventKey='3'>
-            Testing
-          </Panel>
-        </Accordion>
+      <div className='room' >
+        <Grid fluid>
+          <Col fluid sm={12} md={8}>
+            <Panel header={<h3 onClick={() => that.props.roomActions.handlePanelClick(0)}>Video</h3>} collapsible expanded={this.props.room.openPanel === 0}>
+              Testing
+            </Panel>
+            <Panel header={<h3 onClick={() => that.props.roomActions.handlePanelClick(1)}>Search</h3>} collapsible expanded={this.props.room.openPanel === 1}>
+              Testing
+            </Panel>
+            <Panel header={<h3 onClick={() => that.props.roomActions.handlePanelClick(2)}>Queue</h3>} collapsible expanded={this.props.room.openPanel === 2}>
+              Testing
+            </Panel>
+          </Col>
+          <Col fluid sm={12} md={4}>
+            <Panel className='sidebar' header='sidebar'>
+              Testing
+            </Panel>
+          </Col>
+        </Grid>
       </div>
     )
   }
@@ -57,13 +65,14 @@ export class Room extends Component {
 
 Room.propTypes = {
   user: PropTypes.object,
+  room: PropTypes.object,
   showPlaybackControllers: PropTypes.bool.isRequired,
   showInvitedUsers: PropTypes.bool.isRequired,
   routeActions: PropTypes.object.isRequired,
   errorTracker: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   authActions: PropTypes.object.isRequired,
-  createRoomActions: PropTypes.object.isRequired
+  roomActions: PropTypes.object.isRequired
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Room)
