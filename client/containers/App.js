@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { routeActions } from 'redux-simple-router'
+import { routerActions } from 'react-router-redux'
 
 import Header from '../components/header/'
 import Footer from '../components/footer/'
@@ -9,7 +9,7 @@ import * as AuthActions from '../actions/Auth'
 
 var usersApi = require('../api/user.js')
 
-function mapStateToProps (state) {
+function mapStateToProps (state, ownProps) {
   return {
     user: state.auth.user
   }
@@ -18,7 +18,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     authActions: bindActionCreators(AuthActions, dispatch),
-    routeActions: bindActionCreators(routeActions, dispatch)
+    routeActions: bindActionCreators(routerActions, dispatch)
   }
 }
 

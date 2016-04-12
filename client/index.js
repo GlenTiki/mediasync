@@ -1,16 +1,15 @@
 import React from 'react'
 import { render } from 'react-dom'
 
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
-import { Router, Route, IndexRoute, Redirect } from 'react-router'
-import { syncHistory } from 'redux-simple-router'
-import { createHistory } from 'history'
+import { Router, Route, IndexRoute, Redirect, browserHistory } from 'react-router'
+import { syncHistoryWithStore, routerReducer, routerMiddleware } from 'react-router-redux'
 
 import { default as App } from './containers/App'
 import { Empty } from './containers/Empty'
 
-import { Foo, Bar, NotFoundView } from './components/test'
+import { NotFoundView } from './components/notFound'
 import { FbErrorSignup, FbErrorSignin, TwitterErrorSignup, TwitterErrorSignin, BadToken } from './components/errors'
 import { UserNotFoundError } from './components/profile/userNotFoundError'
 import { default as Landing } from './components/landing'
@@ -29,15 +28,16 @@ import { default as Signup } from './components/signup'
 import { SignupSuccessful } from './components/signup/signupSuccessful'
 import { ValidationSuccess } from './components/signup/validationSuccess'
 
-import reducer from './reducers'
+import * as reducers from './reducers'
 
-const history = createHistory()
-const reduxRouterMiddleware = syncHistory(history)
-const createStoreWithMiddleware = applyMiddleware(reduxRouterMiddleware)(createStore)
-const store = createStoreWithMiddleware(reducer)
+const reducer = combineReducers({
+  ...reducers,
+  routing: routerReducer
+})
+const middleware = routerMiddleware(browserHistory)
+const store = createStore(reducer, applyMiddleware(middleware))
+const history = syncHistoryWithStore(browserHistory, store)
 
-// Required for replaying actions from devtools to work
-// reduxRouterMiddleware.listenForReplays(store)
 let rootElement = document.getElementById('app')
 
 render(
@@ -45,8 +45,6 @@ render(
     <Router history={history}>
       <Route path='/' component={App}>
         <IndexRoute component={Landing} />
-        <Route path='foo' component={Foo} />
-        <Route path='bar' component={Bar} />
         <Route path='terms' component={Terms} />
         <Route path='about' component={About} />
         <Route path='help' component={Help} />
@@ -57,6 +55,10 @@ render(
           <Route path='/profile/:username' component={Profile}/>
         </Route>
         <Route path='createroom' component={CreateRoom} />
+        <Route path='room' component={Empty} >
+          <IndexRoute component={myProfile} />
+          <Route path='/profile/:username' component={Profile}/>
+        </Route>
         <Route path='settings' component={Settings} />
         <Route path='forgotpassword' component={ForgotPassword} />
         <Route path='signup' component={Signup} />

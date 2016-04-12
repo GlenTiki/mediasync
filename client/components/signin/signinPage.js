@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import * as AuthActions from '../../actions/Auth'
 import * as SigninActions from '../../actions/Signin'
-import { routeActions } from 'redux-simple-router'
+import { routerActions } from 'react-router-redux'
 
 import { default as SignInPanel } from '../signin'
 
@@ -18,7 +18,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    routeActions: bindActionCreators(routeActions, dispatch),
+    routeActions: bindActionCreators(routerActions, dispatch),
     authActions: bindActionCreators(AuthActions, dispatch),
     signinActions: bindActionCreators(SigninActions, dispatch)
   }

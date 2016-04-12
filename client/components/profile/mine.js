@@ -6,7 +6,7 @@ import * as ProfileActions from '../../actions/Profile'
 // import { SignInPanel } from '../signin'
 
 // import { Navbar, Nav, OverlayTrigger, Popover, NavDropdown, MenuItem } from 'react-bootstrap'
-import { routeActions } from 'redux-simple-router'
+import { routerActions } from 'react-router-redux'
 import { default as Profile } from './index'
 // var userApi = require('../../api/user.js')
 
@@ -18,7 +18,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    routeActions: bindActionCreators(routeActions, dispatch),
+    routeActions: bindActionCreators(routerActions, dispatch),
     viewProfile: bindActionCreators(ProfileActions, dispatch).view
   }
 }

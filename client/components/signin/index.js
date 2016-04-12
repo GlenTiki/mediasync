@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react'
 // import { Link } from 'react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { routeActions } from 'redux-simple-router'
+import { routerActions } from 'react-router-redux'
 
 import { Link } from 'react-router'
 import { Tabs, Tab, Input, ButtonInput, Button } from 'react-bootstrap'
@@ -20,7 +20,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    routeActions: bindActionCreators(routeActions, dispatch)
+    routeActions: bindActionCreators(routerActions, dispatch)
   }
 }
 

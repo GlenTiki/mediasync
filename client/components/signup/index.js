@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react'
 // import { Link } from 'react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { routeActions } from 'redux-simple-router'
+import { routerActions } from 'react-router-redux'
 
 import { Link } from 'react-router'
 import { Panel, Input, Button } from 'react-bootstrap'
@@ -26,7 +26,7 @@ function mapDispatchToProps (dispatch) {
   return {
     authActions: bindActionCreators(AuthActions, dispatch),
     signupActions: bindActionCreators(SignupActions, dispatch),
-    routeActions: bindActionCreators(routeActions, dispatch),
+    routeActions: bindActionCreators(routerActions, dispatch),
     dispatch: dispatch
   }
 }

@@ -1,7 +1,6 @@
 const Hapi = require('hapi')
 const Inert = require('inert')
 const Good = require('good')
-const Nes = require('nes')
 const Bell = require('bell')
 const Jwt = require('hapi-auth-jwt2')
 const Mediasync = require('./mediasync.js')
@@ -18,7 +17,6 @@ const Plugins = [
   Jwt,
   Https,
   Bell,
-  Nes,
   {
     register: Good,
     options: {

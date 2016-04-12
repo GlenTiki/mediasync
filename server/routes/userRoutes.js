@@ -249,6 +249,19 @@ module.exports = function (db) {
       }
     },
     {
+      method: 'GET',
+      path: '/api/user/{id}',
+      config: { auth: false },
+      handler: function (request, reply) {
+        const id = request.params.id ? request.params.id : ''
+        db.get(id, function (err, user) {
+          if (err) return reply(new Error('something went wrong...'))
+          if (user) reply(sanitizeUser(user))
+          else reply('user doesn\'t exist').code(404)
+        })
+      }
+    },
+    {
       method: 'POST',
       path: '/api/user/updateFbId',
       config: { auth: 'jwt' },

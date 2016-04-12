@@ -1,20 +1,7 @@
-import { default as counter } from './modules/counter'
-import { default as auth } from './modules/auth'
-import { default as signin } from './modules/signin'
-import { default as signup } from './modules/signup'
-import { default as profile } from './modules/profile'
-import { default as createroom } from './modules/createroom'
-import { default as settings } from './modules/settings'
-import { routeReducer } from 'redux-simple-router'
-import { combineReducers } from 'redux'
-
-export default combineReducers({
-  counter,
-  auth,
-  signin,
-  signup,
-  profile,
-  createroom,
-  settings,
-  routeReducer
-})
+export { default as counter } from './modules/counter'
+export { default as auth } from './modules/auth'
+export { default as signin } from './modules/signin'
+export { default as signup } from './modules/signup'
+export { default as profile } from './modules/profile'
+export { default as createroom } from './modules/createroom'
+export { default as settings } from './modules/settings'

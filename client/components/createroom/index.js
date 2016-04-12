@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import * as AuthActions from '../../actions/Auth'
 import * as CreateRoomActions from '../../actions/CreateRoom'
 
-import { routeActions } from 'redux-simple-router'
+import { routerActions } from 'react-router-redux'
 import { Panel, Input } from 'react-bootstrap'
 var usersApi = require('../../api/user.js')
 var roomsApi = require('../../api/room.js')
@@ -13,7 +13,6 @@ var roomsApi = require('../../api/room.js')
 function mapStateToProps (state) {
   return {
     user: state.auth.user,
-    selectedSigninPanel: state.signin.navSelected,
     errorTracker: state.createroom.errorTracker,
     showPlaybackControllers: state.createroom.showPlaybackControllers,
     showInvitedUsers: state.createroom.showInvitedUsers
@@ -22,7 +21,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    routeActions: bindActionCreators(routeActions, dispatch),
+    routeActions: bindActionCreators(routerActions, dispatch),
     createRoomActions: bindActionCreators(CreateRoomActions, dispatch),
     authActions: bindActionCreators(AuthActions, dispatch)
   }
@@ -37,7 +36,7 @@ export class CreateRoom extends Component {
       return
     }
     if (this.props.location.query) {
-      var token = JSON.parse(window.localStorage.getItem('settingsUser')).token
+      var token = JSON.parse(window.localStorage.getItem('mediasyncUser')).token
       if (this.props.location.query.fbId) {
         usersApi.saveFbId({token: token, fbId: this.props.location.query.fbId}, function (err, me) {
           if (err) {

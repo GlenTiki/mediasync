@@ -5,246 +5,91 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Mediasync Email Verification</title>
     <style>
-    /* -------------------------------------
-      GLOBAL
-    ------------------------------------- */
-    p {
-      margin-bottom:0; 
-      margin:0
+    @media only screen and (min-device-width: 541px) {
+      .content {
+        width: 540px !important;
+      }
     }
-
     * {
       font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
-      font-size: 100%;
+      font-size: 1em;
+      color: #000;
       line-height: 1.6em;
-      margin: 0;
-      padding: 0;
     }
 
-    img {
-      max-width: 500px;
-      height: auto;
-      margin:0 auto;
-      display:block;
-      width: 100%;
-    }
+      h1 {
+        font-size: 1.4em;
+      }
 
-    body {
-      -webkit-font-smoothing: antialiased;
-      height: 100%;
-      -webkit-text-size-adjust: none;
-      width: 100% !important;
-    }
-    /* -------------------------------------
-      ELEMENTS
-    ------------------------------------- */
+      h2 {
+        font-size: 1.2em;
+      }
 
-    a {
-      color: #00b5ff;
-    }
+      a {
+        color: #00b5ff;
+      }
 
-    .btn-primary {
-      Margin-bottom: 10px;
-    }
+      .button {
+        display:block;
+        text-decoration: none;
+        border: none;
+        width: 100%;
 
-    .btn-primary td {
-      background-color: #00b5ff;
-      border-radius: 25px;
-      font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-      font-size: 14px;
-      text-align: center;
-      vertical-align: top;
-    }
+        background-color: #00b5ff;
+        color: #fff;
+        font-size: 1.5em;
+        padding-top: .5em;
+        padding-bottom: .5em;
+        text-align: center;
+        border-radius: .3em;
+      }
 
-    .btn-primary td a {
-      background-color: #00b5ff;
-      border: solid 1px #00b5ff;
-      border-radius: 25px;
-      border-width: 10px 20px;
-      display: inline-block;
-      color: #ffffff;
-      cursor: pointer;
-      font-weight: bold;
-      line-height: 2;
-      text-decoration: none;
-    }
-
-    .last {
-      margin-bottom: 0;
-    }
-
-    .first {
-      margin-top: 0;
-    }
-
-    .padding {
-      padding: 10px 0;
-    }
-    /* -------------------------------------
-      BODY
-    ------------------------------------- */
-
-    table.body-wrap {
-      padding: 20px;
-      width: 100%;
-    }
-
-    table.body-wrap .container {
-      border: 1px solid #f0f0f0;
-    }
-    /* -------------------------------------
-      FOOTER
-    ------------------------------------- */
-
-    table.footer-wrap {
-      clear: both !important;
-      width: 100%;
-    }
-
-    .footer-wrap .container p {
-      color: #666666;
-      font-size: 12px;
-    }
-
-    table.footer-wrap a {
-      color: #999999;
-    }
-    /* -------------------------------------
-    TYPOGRAPHY
-    ------------------------------------- */
-
-    h1,
-    h2,
-    h3 {
-      color: #111111;
-      font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-      font-weight: 200;
-      line-height: 1.2em;
-      margin: 10px 0 10px;
-    }
-
-    h1 {
-      font-size: 36px;
-      text-align: center;
-    }
-
-    h2 {
-      font-size: 28px;
-    }
-
-    h3 {
-      font-size: 22px;
-    }
-
-    p,
-    ul,
-    ol {
-      font-size: 14px;
-      font-weight: normal;
-      margin-bottom: 10px;
-    }
-
-    ul li,
-    ol li {
-      margin-left: 5px;
-      list-style-position: inside;
-    }
-    /* ---------------------------------------------------
-      RESPONSIVENESS
-    ------------------------------------------------------ */
-    /* Set a max-width, and make it display as block so it will automatically stretch to that width, but will also shrink down on a phone or something */
-
-    .container {
-      clear: both !important;
-      display: block !important;
-      Margin: 0 auto !important;
-      max-width: 600px !important;
-    }
-    /* Set the padding on the td rather than the div for Outlook compatibility */
-
-    .body-wrap .container {
-      padding: 20px;
-    }
-    /* This should also be a block element, so that it will fill 100% of the .container */
-
-    .content {
-      display: block;
-      margin: 0 auto;
-      max-width: 600px;
-    }
-    /* Let's make sure tables in the content area are 100% wide */
-
-    .content table {
-      width: 100%;
-    }
+      .footer {
+        color: #444;
+        font-size: .9em;
+      }
     </style>
   </head>
-  <body bgcolor="#f6f6f6">
-    <!-- body -->
-    <table class="body-wrap" bgcolor="#f6f6f6">
-      <tr>
-        <td></td>
-        <td class="container" bgcolor="#FFFFFF">
-          <!-- content -->
-          <div class="content">
-            <table>
-              <tr>
-                <td>
-                  <img alt="mediasync logo" src="https://www.mediasync.io/assets/images/logo.png" />
-                  <h2>Hi {{user.username}},</h2>
-                  <h1>Thank you for signing up to MediaSync</h1>
-                  <p>This email ({{user.email}}) has been used to create an account on mediasync, so now you need to validate it!</p>
-                  <h2 align="center">Please click the button below to validate your email</h2>
-                  <!-- button -->
-                  <table class="btn-primary" cellpadding="0" cellspacing="0" border="0">
-                    <tr>
-                      <td>
-                        <a href="https://www.mediasync.io/api/auth/validate/{{token}}">Click here to validate email</a>
-                      </td>
-                    </tr>
-                  </table>
-                  <!-- /button -->
-                  <p>If the button isn't showing properly, please copy and paste this url into your browser to validate your email:</p>
-                  <a href="https://www.mediasync.io/api/auth/validate/{{token}}">https://www.mediasync.io/api/auth/validate/{{token}}</a>
-                  <br/><br/>
-                  <h3>
-                    Cheers,
-                  </h3>
-                  <h2>
-                    The MediaSync Team.
-                  </h2>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <!-- /content -->
-        </td>
-        <td></td>
-      </tr>
+  <body>
+    <!--[if (gte mso 9)|(IE)]>
+      <table width="540" align="center" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td>
+    <![endif]-->
+      <table class="content" align="center" cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width: 540px;">
+        <tr>
+          <td>
+            <img alt="mediasync logo" src="https://www.mediasync.io/assets/images/logo.png" class="logo"/>
+            <h2>Hi {{user.username}},</h2>
+            <h1>Thank you for signing up to MediaSync</h1>
+            <p>This email address ({{user.email}}) has been used to create an account on MediaSync.io, so now you need to validate it!</p>
+            <h2 align="center">Please click the button below to validate your email</h2>
+            <button class="button" onclick="location.href='https://www.mediasync.io/api/auth/validate/{{token}}'">Click here to validate email</button>
+            <p>If the button isn't showing properly, please copy and paste this url into your browser to validate your email:</p>
+            <a href="https://www.mediasync.io/api/auth/validate/{{token}}">https://www.mediasync.io/api/auth/validate/{{token}}</a>
+            <br/><br/>
+            <h3>
+              Cheers,
+            </h3>
+            <h2>
+              The MediaSync Team.
+            </h2>
+            <p class="footer">
+              If you are not the user who signed up with this email, please ignore it.
+            </p>
+          </td>
+        </tr>
+      </table>
+  <!--[if (gte mso 9)|(IE)]>
+      </td>
+    </tr>
+  </table>
+  <![endif]-->
+    <table cellspacing="0" cellpadding="0" border="0" width="600">
+	      <!-- email content -->
+
+
     </table>
-    <!-- /body -->
-    <!-- footer -->
-    <table class="footer-wrap">
-      <tr>
-        <td></td>
-        <td class="container">
-          <!-- content -->
-          <div class="content">
-            <table>
-              <tr>
-                <td align="center">
-                  <p>
-                    If you are not the user who signed up with this email, please ignore it.
-                  </p>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <!-- /content -->
-        </td>
-        <td></td>
-      </tr>
-    </table>
-    <!-- /footer -->
+
   </body>
 </html>

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import * as AuthActions from '../../actions/Auth'
 import * as SettingsActions from '../../actions/Settings'
 
-import { routeActions } from 'redux-simple-router'
+import { routerActions } from 'react-router-redux'
 import { Col, Panel, Input, Button, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap'
 var async = require('async')
 var usersApi = require('../../api/user.js')
@@ -39,7 +39,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    routeActions: bindActionCreators(routeActions, dispatch),
+    routeActions: bindActionCreators(routerActions, dispatch),
     settingsActions: bindActionCreators(SettingsActions, dispatch),
     authActions: bindActionCreators(AuthActions, dispatch)
   }

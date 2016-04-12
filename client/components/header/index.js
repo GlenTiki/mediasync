@@ -8,7 +8,7 @@ import * as ProfileActions from '../../actions/Profile'
 import { default as SignInPanel } from '../signin'
 
 import { Navbar, Nav, OverlayTrigger, Popover, NavDropdown, Tooltip } from 'react-bootstrap'
-import { routeActions } from 'redux-simple-router'
+import { routerActions } from 'react-router-redux'
 // var userApi = require('../../api/user.js')
 
 function mapStateToProps (state) {
@@ -19,9 +19,9 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps (dispatch, ownProps) {
   return {
-    routeActions: bindActionCreators(routeActions, dispatch),
+    routeActions: bindActionCreators(routerActions, dispatch),
     authActions: bindActionCreators(AuthActions, dispatch),
     signinActions: bindActionCreators(SigninActions, dispatch),
     viewProfile: bindActionCreators(ProfileActions, dispatch).view
@@ -29,12 +29,6 @@ function mapDispatchToProps (dispatch) {
 }
 
 export class Header extends Component {
-  viewMyProfile (e) {
-    e.preventDefault()
-    this.props.viewProfile(this.props.user)
-    this.props.routeActions.push(`/profile/${this.props.user.username}`)
-  }
-
   createARoom (e) {
     e.preventDefault()
     this.props.routeActions.push('/createroom')
@@ -71,7 +65,7 @@ export class Header extends Component {
           {
             this.props.user
             ? <NavDropdown className='point-at' eventKey={1} title={this.props.user.username} id='basic-nav-dropdown'>
-                  <li><a onClick={this.viewMyProfile.bind(this)}>Profile</a></li>
+                  <li><Link to={'/profile/' + this.props.user.username}>Profile</Link></li>
                   <li><Link to='/settings'>Settings</Link></li>
               </NavDropdown>
             : void (0)

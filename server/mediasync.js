@@ -4,6 +4,7 @@ const Package = require('../package.json')
 var dbConf = require('../config/couchdb.js')
 var cradle = require('cradle')
 var dbUtils = require('./db/dbUtils')
+var RoomSync = require('./sync/index')
 
 cradle.setup({
   host: dbConf.host,
@@ -22,6 +23,8 @@ module.exports = function (server, options, next) {
   setupDb(function (db) {
     server.route(ClientRoutes())
     server.route(ApiRoutes(db))
+
+    RoomSync(server, db)
 
     next()
   })
