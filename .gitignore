@@ -39,3 +39,5 @@ build
 
 bower_components
 # ===== End Node.gitignore =====
+
+.DS_Store
