@@ -93,11 +93,22 @@ module.exports = function (db) {
       config: { auth: false },
       handler: function (request, reply) {
         const roomName = request.params.roomName ? request.params.roomName : ''
-        console.log(roomName)
         db.view('room/byName', { key: roomName }, function (err, doc) {
           if (err) return reply(new Error('something went wrong...'))
-          if (doc[0]) reply()
+          if (doc[0]) reply(doc[0])
           else reply('room doesn\'t exist').code(404)
+        })
+      }
+    },
+    {
+      method: 'GET',
+      path: '/api/room',
+      config: { auth: false },
+      handler: function (request, reply) {
+        db.view('room/public', function (err, res) {
+          if (err) return reply(new Error('something went wrong...'))
+          if (res) reply(res)
+          else reply('no rooms').code(404)
         })
       }
     }

@@ -50,5 +50,18 @@ module.exports = {
         })
       }
     })
+  },
+  getRooms: function (done) {
+    request
+    .get(`/api/room`)
+    .set('Accept', 'application/json')
+    .end(function (err, res) {
+      // console.log(err, res)
+      if (err) {
+        return done(new Error('user doesn\'t exist'))
+      } else {
+        return done(null, res.body)
+      }
+    })
   }
 }

@@ -84,7 +84,7 @@ export class CreateRoom extends Component {
         // in the array, the element is not unique
         return controllers.indexOf(c) === i
       })
-    } else if (playback === 'me') {
+    } else if (playback === 'owner') {
       controllers = [this.props.user.username]
     }
 
@@ -125,7 +125,7 @@ export class CreateRoom extends Component {
             : void 0
           }
           <Input type='select' ref='roomPlayback' label='Who can change the playback in this room?' placeholder='me' wrapperClassName='col-sm-12' onChange={this.handlePlaybackChange.bind(this)}>
-            <option value='me'>Just Me</option>
+            <option value='owner'>Just Me</option>
             <option value='anyone'>Anyone</option>
             <option value='friends'>People I Choose</option>
           </Input>

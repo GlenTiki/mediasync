@@ -10,13 +10,14 @@ import { default as App } from './containers/App'
 import { Empty } from './containers/Empty'
 
 import { NotFoundView } from './components/notFound'
-import { FbErrorSignup, FbErrorSignin, TwitterErrorSignup, TwitterErrorSignin, BadToken } from './components/errors'
+import { FbErrorSignup, FbErrorSignin, TwitterErrorSignup, TwitterErrorSignin, BadToken, CannotEnterRoom } from './components/errors'
 import { UserNotFoundError } from './components/profile/userNotFoundError'
 import { default as Landing } from './components/landing'
 import { default as Profile } from './components/profile'
 import { default as Settings } from './components/settings'
 import { default as Room } from './components/room'
 import { default as CreateRoom } from './components/createroom'
+import { default as FindRoom } from './components/findroom'
 import { default as myProfile } from './components/profile/mine'
 import { default as Signin } from './components/signin/signinPage'
 import { Terms } from './components/terms'
@@ -60,6 +61,7 @@ render(
           <IndexRoute component={CreateRoom} />
           <Route path='/room/:name' component={Room}/>
         </Route>
+        <Route path='findroom' component={FindRoom} />
         <Route path='settings' component={Settings} />
         <Route path='forgotpassword' component={ForgotPassword} />
         <Route path='signup' component={Signup} />
@@ -72,6 +74,7 @@ render(
         <Route path='twitterErrorSignup' component={TwitterErrorSignup} />
         <Route path='twitterErrorSignin' component={TwitterErrorSignin} />
         <Route path='badToken' component={BadToken} />
+        <Route path='enterRoomFail' component={CannotEnterRoom} />
         <Route path='/404' component={NotFoundView} />
         <Redirect from='*' to='/404' />
       </Route>

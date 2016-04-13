@@ -17,6 +17,9 @@ module.exports.createViews = function (db, done) {
   }, function () {
     db.save('_design/room', {
       views: {
+        public: {
+          map: 'function(doc) { if (doc.resource === "Room" && (doc.type === "public" || doc.type === "membersOnly")) { emit(doc.id, doc) } }'
+        },
         byName: {
           map: 'function (doc) { if (doc.resource === "Room") { emit(doc.name, doc) } }'
         },

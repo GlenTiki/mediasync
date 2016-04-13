@@ -58,10 +58,8 @@ export class Header extends Component {
                   <button type='button' className='btn btn-primary navbar-btn disabled'>Create A Room</button>
                 </OverlayTrigger>
             }
-          </li>{
-          // <li role='presentation'><Link to='/foo'>foo</Link></li>
-          // <li role='presentation'><Link to='/bar'>bar</Link></li>
-          }
+          </li>
+          <li role='presentation'><Link to='/findroom'>Find A Room</Link></li>
           {
             this.props.user
             ? <NavDropdown className='point-at' eventKey={1} title={this.props.user.username} id='basic-nav-dropdown'>

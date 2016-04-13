@@ -1,7 +1,9 @@
 import { handleActions } from 'redux-actions'
 
 const initialState = {
-  openPanel: 0
+  display: {
+    openPanel: 0
+  }
 }
 
 export default handleActions({
@@ -9,10 +11,23 @@ export default handleActions({
     if (action.payload !== state.openPanel) {
       return {
         ...state,
-        openPanel: action.payload
+        display: {
+          openPanel: action.payload
+        }
       }
     }
 
     return state
+  },
+
+  'LEAVE_ROOM' (state, action) {
+    return initialState
+  },
+
+  'RECEIVED_ROOM_CREDENTIALS' (state, action) {
+    return {
+      ...state,
+      connectedCredentials: action.payload
+    }
   }
 }, initialState)
