@@ -181,7 +181,10 @@ export class Room extends Component {
 
     this.socket.on('deleteMedia', function (index) {
       console.log('deleteMedia', index)
-      if (index === 0) that.props.roomActions.seekTo(0)
+      console.log('index', !(index > 0))
+      if (!(index > 0)) {
+        that.props.roomActions.seekTo(0)
+      }
       that.props.roomActions.deleteFromQueue(index)
     })
 
@@ -418,7 +421,7 @@ export class Room extends Component {
             return (
               <tr key={ind}>
                 <td><img src={elem.thumburl} width='60' height='60'/> {elem.title}</td>
-                <td>{elem.title}</td>
+                <td>{elem.uploader}</td>
                 <td>
                   <Button bsStyle='success' onClick={function () {
                     that.socket.emit('moveToFront', ind + 1)
@@ -428,7 +431,7 @@ export class Room extends Component {
                     Play now
                   </Button>
                   <Button bsStyle='warning' onClick={function () {
-                    that.socket.emit('delete', ind + 1)
+                    that.socket.emit('deleteMedia', ind + 1)
                       // console.log('add to queue', elem)
                       // that.socket.emit('addMedia', {id: elem.id.videoId, type: 'youtube', title: elem.snippet.title, thumburl: elem.snippet.thumbnails.default.url})
                   }} block>
@@ -464,6 +467,11 @@ export class Room extends Component {
             ? that.props.room.queue[0].title : 'Nothing!'
           }
         </h4>
+        <h5>{
+            that.props.room.queue[0] && ['vimeo', 'youtube'].indexOf(that.props.room.queue[0].type) > -1
+            ? that.props.room.queue[0].uploader : false
+          }
+        </h5>
         { that.hasPermission() ? <h5>you can edit the playback here</h5> : <h5>You cannot do anything to the playback</h5> }
 
         { that.hasPermission() && that.props.room.queue[0] && ['vimeo', 'youtube'].indexOf(that.props.room.queue[0].type) > -1
