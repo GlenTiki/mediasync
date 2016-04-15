@@ -53,7 +53,20 @@ module.exports = {
   },
   getRooms: function (done) {
     request
-    .get(`/api/room`)
+    .get(`/api/rooms`)
+    .set('Accept', 'application/json')
+    .end(function (err, res) {
+      // console.log(err, res)
+      if (err) {
+        return done(new Error('user doesn\'t exist'))
+      } else {
+        return done(null, res.body)
+      }
+    })
+  },
+  getUsersRooms: function (userId, done) {
+    request
+    .get(`/api/room/user/${userId}`)
     .set('Accept', 'application/json')
     .end(function (err, res) {
       // console.log(err, res)

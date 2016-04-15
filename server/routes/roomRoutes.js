@@ -102,10 +102,24 @@ module.exports = function (db) {
     },
     {
       method: 'GET',
-      path: '/api/room',
+      path: '/api/rooms',
       config: { auth: false },
       handler: function (request, reply) {
         db.view('room/public', function (err, res) {
+          if (err) return reply(new Error('something went wrong...'))
+          if (res) reply(res)
+          else reply('no rooms').code(404)
+        })
+      }
+    },
+    {
+      method: 'GET',
+      path: '/api/room/user/{userId}',
+      config: { auth: false },
+      handler: function (request, reply) {
+        const userId = request.params.userId ? request.params.userId : ''
+        db.view('room/byCreatorId', { key: userId }, function (err, res) {
+          // console.log('res', err, res)
           if (err) return reply(new Error('something went wrong...'))
           if (res) reply(res)
           else reply('no rooms').code(404)

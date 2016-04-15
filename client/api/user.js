@@ -62,11 +62,7 @@ module.exports = {
       if (err) {
         return done(new Error('user doesn\'t exist'))
       } else {
-        return done(null, {
-          name: res.body.name,
-          username: res.body.username,
-          email: res.body.email
-        })
+        return done(null, res.body)
       }
     })
   },

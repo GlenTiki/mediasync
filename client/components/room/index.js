@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-// import { Link } from 'react-router'
+import { Link } from 'react-router'
 import * as AuthActions from '../../actions/Auth'
 import * as RoomActions from '../../actions/Room'
 
@@ -268,7 +268,8 @@ export class Room extends Component {
     })
 
     var chat = this.props.roomDisplay.chat.map(function (elem, id) {
-      return (<Col key={id}>
+      var shouldLink = !!elem.author
+      return (<Col key={id} style={{padding: '0px 5px'}}>
         {
           elem.roomMessage
           ? (function () {
@@ -277,10 +278,15 @@ export class Room extends Component {
                 return (<p>User <span style={{color: usersColors[elem.user]}}>{elem.user}</span> Joined</p>)
             }
           })()
-          : <span><span style={{color: usersColors[elem.author.username]}}>{elem.author.username}:</span> {elem.message}</span>
+          : <span><span style={{color: usersColors[elem.author.username]}}>{ shouldLink ? <Link to={'/profile/' + elem.author.username} style={{color: usersColors[elem.author.username]}}>{elem.author.username}</Link> : elem.author.username }:</span> {elem.message}</span>
         }
         <hr/>
       </Col>)
+    })
+
+    var connectedUsers = this.props.room.connectedUsers.map(function (elem, id) {
+      var shouldLink = !!elem.id
+      return <h4 style={{color: usersColors[elem.username], padding: '0px 5px'}}>{ shouldLink ? <Link to={'/profile/' + elem.username} style={{color: usersColors[elem.username]}}>{elem.username}</Link> : elem.username }</h4>
     })
 
     var player = (<span style={{pointerEvents: 'none'}}>
@@ -518,13 +524,18 @@ export class Room extends Component {
               <Tabs defaultActiveKey={1}>
                 <Tab eventKey={1} title='Chat'>
                   <div className='panel panel-default panel-body' ref='chat' style={{height: '50vh', overflowY: 'scroll'}}>
-                      {chat}
+                      { chat }
                   </div>
                   <Input type='text' bsSize='large' placeholder='Send A Message' ref='chatMsg' onKeyPress={function (e) {
                     if (e.key === 'Enter') {
                       sendChatMessage()
                     }
                   }} buttonAfter={<Button onClick={sendChatMessage}>Send</Button>} />
+                </Tab>
+                <Tab eventKey={2} title='Connected Users'>
+                  <div className='panel panel-default panel-body' ref='connectedUsers' style={{height: '50vh', overflowY: 'scroll'}}>
+                      { connectedUsers }
+                  </div>
                 </Tab>
               </Tabs>
             </Panel>

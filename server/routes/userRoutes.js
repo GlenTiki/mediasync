@@ -9,6 +9,8 @@ const signUpKey = require('../../config/signUpKey.js')
 const jwtKey = require('../../config/jwtKey.js')
 const capKey = require('../../config/recaptcha.js')
 var validator = require('../../isomorphic/validator')
+const Path = require('path')
+const BuildPath = Path.resolve(__dirname, '../../build')
 
 const recaptcha = new ReCAPTCHA({
   siteKey: capKey.client,
@@ -18,7 +20,7 @@ const recaptcha = new ReCAPTCHA({
 function sanitizeUser (user) {
   return {
     name: user.name,
-    id: user.id,
+    id: user.id || user._id,
     username: user.username,
     email: user.email,
     emailValidated: user.emailValidated,
@@ -259,6 +261,14 @@ module.exports = function (db) {
           if (user) reply(sanitizeUser(user))
           else reply('user doesn\'t exist').code(404)
         })
+      }
+    },
+    {
+      method: 'GET',
+      path: '/api/users/pic/{username}',
+      config: { auth: false },
+      handler: {
+        file: Path.resolve(BuildPath, 'assets/images/profilePic.png')
       }
     },
     {
