@@ -131,11 +131,10 @@ module.exports = function (server, db) {
       if (i > -1) rooms[roomId].connectedUsers.splice(i, 1)
     })
 
-    socket.on('getData', () => socket.emit('roomDetails', rooms[roomId]))
-
     // play, pause, skip & back
     socket.on('play', function (data) {
       // console.log('play', data)
+      console.log('play', data)
       if (rooms[roomId].playback !== 'anyone') {
         if (rooms[roomId].controllers.indexOf(user.id) > -1) {
           sync.to(roomId).emit('play', data)
@@ -149,6 +148,7 @@ module.exports = function (server, db) {
 
     socket.on('pause', function (data) {
       // console.log('pause', data)
+      console.log('pause', data)
       if (rooms[roomId].playback !== 'anyone') {
         if (rooms[roomId].controllers.indexOf(user.id) > -1) {
           sync.to(roomId).emit('pause', data)
@@ -161,6 +161,7 @@ module.exports = function (server, db) {
     })
 
     socket.on('skip', function (data) {
+      console.log('skip', data)
       if (rooms[roomId].queue.length > 1 && data.id === rooms[roomId].queue[0].id) {
         if (rooms[roomId].playback !== 'anyone') {
           if (rooms[roomId].controllers.indexOf(user.id) > -1) {
@@ -177,6 +178,7 @@ module.exports = function (server, db) {
     })
 
     socket.on('back', function (data) {
+      console.log('back', data)
       if (rooms[roomId].queue.length > 1 && data.id === rooms[roomId].queue[0].id) {
         if (rooms[roomId].playback !== 'anyone') {
           if (rooms[roomId].controllers.indexOf(user.id) > -1) {
@@ -396,6 +398,8 @@ module.exports = function (server, db) {
     socket.on('chatMessage', function (message) {
       sync.to(roomId).emit('chatMessage', message)
     })
+
+    socket.on('getState', () => sync.to(roomId).emit('getState'))
 
     socket.on('currentState', function (data) {
       sync.to(roomId).emit('currentState', data)

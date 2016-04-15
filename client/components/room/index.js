@@ -6,7 +6,7 @@ import * as AuthActions from '../../actions/Auth'
 import * as RoomActions from '../../actions/Room'
 
 import { routerActions } from 'react-router-redux'
-import { Panel, Col, Grid, ResponsiveEmbed, Tabs, Tab, Button, Input, Glyphicon, Table } from 'react-bootstrap'
+import { Panel, Col, Grid, ResponsiveEmbed, Tabs, Tab, Button, ButtonGroup, Input, Glyphicon, Table } from 'react-bootstrap'
 
 import { default as io } from 'socket.io-client'
 
@@ -45,6 +45,10 @@ export class Room extends Component {
     // var that = this
     // setup socket here
     var that = this
+    this.justJoined = true
+
+    setTimeout(() => that.justJoined = false, 3000)
+
     this.socket = io('/api/sync')
     this.socket.on('connect', function () {
       var token = that.props.user ? that.props.user.token : null
@@ -62,7 +66,10 @@ export class Room extends Component {
 
     this.socket.on('userJoined', function (user) {
       that.props.roomActions.userJoinedRoom(user)
-      if (!that.props.room.seeking && user.id !== that.props.connectedCredentials.id) that.socket.emit('currentState', { time: that.props.room.played, playing: that.props.room.playing })
+      if (!that.props.room.seeking && !that.justJoined) {
+        console.log('user joined, sending state', { time: that.props.room.played, playing: that.props.room.playing })
+        that.socket.emit('currentState', { time: that.props.room.played, playing: that.props.room.playing })
+      }
     })
 
     this.socket.on('userLeft', function (data) {
@@ -76,6 +83,7 @@ export class Room extends Component {
 
     this.socket.on('connectionCredentials', function (cred) {
       that.props.roomActions.receivedRoomCredentials(cred)
+      // that.socket.emit('getState')
     })
 
     this.socket.on('kicked', function () {
@@ -141,16 +149,19 @@ export class Room extends Component {
     })
 
     this.socket.on('currentQueue', function (queue) {
-      try {
-        if (queue[0].id !== that.props.room.queue[0]) that.socket.emit('getDetails')
-      } catch (e) {}
       that.props.roomActions.currentQueue(queue)
     })
 
     this.socket.on('currentState', function (data) {
+      console.log('got currentState', data)
       if (data.playing) that.props.roomActions.playMedia()
       else that.props.roomActions.pauseMedia()
-      that.refs.player.seekTo(data.newTime)
+      that.refs.player.seekTo(data.time)
+    })
+
+    this.socket.on('getState', function () {
+      console.log('sent currentState', { time: that.props.room.played, playing: that.props.room.playing })
+      that.socket.emit('currentState', { time: that.props.room.played, playing: that.props.room.playing })
     })
 
     this.socket.on('moveMedia', function (data) {
@@ -179,11 +190,17 @@ export class Room extends Component {
   }
 
   onPlay () {
-    if (this.hasPermission()) this.socket.emit('play', { id: this.props.room.queue[0].id, time: this.props.room.played })
+    this.props.roomActions.playMedia(this.props.room.clientAction)
+    if (this.hasPermission() && this.props.room.clientAction && !this.justJoined) {
+      this.socket.emit('play', { id: this.props.room.queue[0].id, time: this.props.room.played })
+    }
   }
 
   onPause () {
-    if (this.hasPermission()) this.socket.emit('pause', { id: this.props.room.queue[0].id, time: this.props.room.played })
+    this.props.roomActions.pauseMedia(this.props.room.clientAction)
+    if (this.hasPermission() && this.props.room.clientAction && !this.justJoined) {
+      this.socket.emit('pause', { id: this.props.room.queue[0].id, time: this.props.room.played })
+    }
   }
 
   onEnded () {
@@ -211,6 +228,7 @@ export class Room extends Component {
 
   onSeekMouseUp (e) {
     this.props.roomActions.seekingDone()
+    this.refs.player.seekTo(parseFloat(e.target.value))
     this.socket.emit('timeChanged', { newTime: parseFloat(e.target.value), playing: this.props.room.playing })
   }
 
@@ -426,15 +444,30 @@ export class Room extends Component {
           }
         </h4>
         { that.hasPermission() ? <h5>you can edit the playback here</h5> : <h5>You cannot do anything to the playback</h5> }
+
         { that.hasPermission() && that.props.room.queue[0] && ['vimeo', 'youtube'].indexOf(that.props.room.queue[0].type) > -1
           ? <div>
-            <Button onClick={ () => that.socket.emit('back', { id: that.props.room.queue[0].id }) }><Glyphicon glyph='step-backward' />Back</Button>
+            <Col xs={12}>
+            <ButtonGroup justified>
+            <ButtonGroup><Button onClick={ function () {
+              that.props.roomActions.backMedia(true)
+              that.socket.emit('back', { id: that.props.room.queue[0].id })
+            }}><Glyphicon glyph='step-backward' />Back</Button></ButtonGroup>
             {
               that.props.room.playing
-              ? <Button onClick={ () => that.socket.emit('pause', { id: that.props.room.queue[0].id, time: that.props.room.played }) }><Glyphicon glyph='pause' />Pause</Button>
-            : <Button onClick={ () => that.socket.emit('play', { id: that.props.room.queue[0].id, time: that.props.room.played }) }><Glyphicon glyph='play' />Play</Button>
+              ? <ButtonGroup><Button onClick={ function () {
+                that.props.roomActions.pauseMedia(true)
+              }}><Glyphicon glyph='pause' />Pause</Button></ButtonGroup>
+            : <ButtonGroup><Button onClick={function () {
+              that.props.roomActions.playMedia(true)
+            }}><Glyphicon glyph='play' />Play</Button></ButtonGroup>
             }
-            <Button onClick={ () => that.socket.emit('skip', { id: that.props.room.queue[0].id }) }><Glyphicon glyph='step-forward' />Skip</Button>
+            <ButtonGroup><Button onClick={function () {
+              that.props.roomActions.skipMedia(true)
+              that.socket.emit('skip', { id: that.props.room.queue[0].id })
+            }}><Glyphicon glyph='step-forward' />Skip</Button></ButtonGroup>
+            </ButtonGroup>
+            </Col>
             <br/>
             <input
               type='range' min={0} max={1} step='any'
@@ -444,7 +477,7 @@ export class Room extends Component {
               onMouseUp={that.onSeekMouseUp.bind(that)}
             />
           </div>
-          : false
+          : <progress style={{width: '100%'}} max={1} value={that.props.room.played} />
         }
       </div>
     )

@@ -15,7 +15,8 @@ const initialState = {
     queue: [],
     playing: true,
     played: 0,
-    seeking: false
+    seeking: false,
+    clientAction: false
   },
   connectedCredentials: {},
   player: {}
@@ -81,7 +82,8 @@ export default handleActions({
         queue: [],
         playing: true,
         played: 0,
-        seeking: false
+        seeking: false,
+        clientAction: false
       },
       connectedCredentials: {}
     }
@@ -137,7 +139,8 @@ export default handleActions({
       ...state,
       roomDetails: {
         ...state.roomDetails,
-        playing: true
+        playing: true,
+        clientAction: action.payload || false
       }
     }
   },
@@ -147,7 +150,8 @@ export default handleActions({
       ...state,
       roomDetails: {
         ...state.roomDetails,
-        playing: false
+        playing: false,
+        clientAction: action.payload || false
       }
     }
   },
@@ -155,21 +159,20 @@ export default handleActions({
   'SKIP_MEDIA' (state, action) {
     var queue = state.roomDetails.queue
     queue.push(queue.shift())
-    if (state.player && state.player.playVideo && queue[0].type === 'youtube') state.player.playVideo()
     return {
       ...state,
       roomDetails: {
         ...state.roomDetails,
         queue: queue,
         playing: true,
-        played: 0
+        played: 0,
+        clientAction: action.payload || false
       }
     }
   },
 
   'BACK_MEDIA' (state, action) {
     var queue = state.roomDetails.queue
-    if (state.player && state.player.playVideo && queue[0].type === 'youtube') state.player.playVideo()
     queue.unshift(queue.pop())
     return {
       ...state,
@@ -177,7 +180,8 @@ export default handleActions({
         ...state.roomDetails,
         queue: queue,
         playing: true,
-        played: 0
+        played: 0,
+        clientAction: action.payload || false
       }
     }
   },
@@ -207,7 +211,8 @@ export default handleActions({
       ...state,
       roomDetails: {
         ...state.roomDetails,
-        seeking: false
+        seeking: false,
+        clientAction: true
       }
     }
   },
