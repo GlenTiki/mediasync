@@ -1,4 +1,5 @@
 import { handleActions } from 'redux-actions'
+var randomColor = require('randomcolor')
 
 const initialState = {
   display: {
@@ -20,11 +21,6 @@ const initialState = {
   },
   connectedCredentials: {},
   player: {}
-}
-
-var colors = ['#111', '#ab0', '#d3a', '#22d']
-var randomColor = function () {
-  return colors[Math.floor(Math.random() * colors.length)]
 }
 
 export default handleActions({
@@ -56,7 +52,10 @@ export default handleActions({
 
   'ENTER_ROOM' (state, action) {
     action.payload.connectedUsers.forEach(function (elem) {
-      elem.color = randomColor()
+      elem.color = randomColor({
+        luminosity: 'bright',
+        format: 'rgb' // e.g. 'rgb(225,200,20)'
+      })
     })
     action.payload.played = 0
     action.payload.playing = false
@@ -97,7 +96,10 @@ export default handleActions({
         return true
       }
     })) {
-      action.payload.color = randomColor()
+      action.payload.color = randomColor({
+        luminosity: 'bright',
+        format: 'rgb' // e.g. 'rgb(225,200,20)'
+      })
       connectedUsers.push(action.payload)
       chat.push({ roomMessage: true, messageType: 'userJoined', user: action.payload.username })
     }
@@ -117,7 +119,9 @@ export default handleActions({
   'USER_LEFT_ROOM' (state, action) {
     var connectedUsers = state.roomDetails.connectedUsers
     var i = -1
-    if (connectedUsers.some(function (elem, ind) {
+    if (!(state.connectedCredentials.name === action.payload.name &&
+      state.connectedCredentials.username === action.payload.name) &&
+    connectedUsers.some(function (elem, ind) {
       if (elem.name === action.payload.name && elem.username === action.payload.username) {
         i = ind
         return true

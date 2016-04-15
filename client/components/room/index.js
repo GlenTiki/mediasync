@@ -45,19 +45,26 @@ export class Room extends Component {
     // var that = this
     // setup socket here
     var that = this
-    this.justJoined = true
+    that.justJoined = true
 
     setTimeout(() => that.justJoined = false, 3000)
 
     this.socket = io('/api/sync')
     this.socket.on('connect', function () {
       var token = that.props.user ? that.props.user.token : null
+      that.justJoined = true
+
       that.socket.emit('joinRoom', { roomName: that.props.routeParams.name, token: token })
+
+      setTimeout(() => that.justJoined = false, 3000)
     })
 
     this.socket.on('reconnect', () => {
       var token = that.props.user ? that.props.user.token : null
-      that.socket.emit('joinRoom', { roomName: 'testing', token: token, details: that.props.connectedCredentials })
+      that.justJoined = true
+
+      that.socket.emit('joinRoom', { roomName: that.props.routeParams.name, token: token, details: that.props.connectedCredentials, alreadyActive: true })
+      setTimeout(() => that.justJoined = false, 1000)
     })
 
     this.socket.on('roomDetails', function (data) {
@@ -97,43 +104,43 @@ export class Room extends Component {
         that.props.roomActions.userJoinedRoom(message.author)
       }
       that.props.roomActions.addChatMessage(message)
+      that.refs['chat'].scrollTop = that.refs['chat'].scrollHeight
     })
 
     this.socket.on('play', function (data) {
       console.log('play', data)
-      that.props.roomActions.playMedia()
+      that.props.roomActions.seekTo(data.time)
       that.refs.player.seekTo(data.time)
+      that.props.roomActions.playMedia()
     })
 
     this.socket.on('pause', function (data) {
       console.log('pause', data)
-      that.props.roomActions.pauseMedia()
+      that.props.roomActions.seekTo(data.time)
       that.refs.player.seekTo(data.time)
+      that.props.roomActions.pauseMedia()
     })
 
     this.socket.on('skip', function (data) {
+      console.log('skip', data)
       if (data.id === that.props.room.queue[0].id) {
         that.props.roomActions.skipMedia()
       }
     })
 
     this.socket.on('back', function (data) {
+      console.log('back', data)
       if (data.id === that.props.room.queue[0].id) {
         that.props.roomActions.backMedia()
       }
     })
 
     this.socket.on('timeChanged', function (data) {
+      console.log('timeChanged', data)
+      that.props.roomActions.seekTo(data.newTime)
+      that.refs.player.seekTo(data.newTime)
       if (data.playing) that.props.roomActions.playMedia()
       else that.props.roomActions.pauseMedia()
-      console.log('diff', data.newTime * that.props.room.duration -
-            that.props.room.played * that.props.room.duration)
-      if (data.newTime * that.props.room.duration -
-            that.props.room.played * that.props.room.duration > 2 ||
-              data.newTime * that.props.room.duration -
-                that.props.room.played * that.props.room.duration < -2) {
-        that.refs.player.seekTo(data.newTime)
-      }
     })
 
     this.socket.on('searchResults', function (results) {
@@ -154,9 +161,13 @@ export class Room extends Component {
 
     this.socket.on('currentState', function (data) {
       console.log('got currentState', data)
-      if (data.playing) that.props.roomActions.playMedia()
-      else that.props.roomActions.pauseMedia()
+      that.props.roomActions.seekTo(data.time)
       that.refs.player.seekTo(data.time)
+      if (data.playing) {
+        that.props.roomActions.playMedia()
+      } else {
+        that.props.roomActions.pauseMedia()
+      }
     })
 
     this.socket.on('getState', function () {
@@ -228,6 +239,7 @@ export class Room extends Component {
 
   onSeekMouseUp (e) {
     this.props.roomActions.seekingDone()
+    this.props.roomActions.seekTo(parseFloat(e.target.value))
     this.refs.player.seekTo(parseFloat(e.target.value))
     this.socket.emit('timeChanged', { newTime: parseFloat(e.target.value), playing: this.props.room.playing })
   }
@@ -256,7 +268,7 @@ export class Room extends Component {
     })
 
     var chat = this.props.roomDisplay.chat.map(function (elem, id) {
-      return (<div key={id}>
+      return (<Col key={id}>
         {
           elem.roomMessage
           ? (function () {
@@ -268,7 +280,7 @@ export class Room extends Component {
           : <span><span style={{color: usersColors[elem.author.username]}}>{elem.author.username}:</span> {elem.message}</span>
         }
         <hr/>
-      </div>)
+      </Col>)
     })
 
     var player = (<span style={{pointerEvents: 'none'}}>
@@ -326,7 +338,11 @@ export class Room extends Component {
 
     var s = (
       <div>
-        <Input type='text' bsSize='large' placeholder='Search' ref='search' buttonAfter={<Button onClick={doSearch}>Search</Button>} addonBefore={searchDropdown} />
+        <Input type='text' bsSize='large' placeholder='Search' ref='search' onKeyPress={function (e) {
+          if (e.key === 'Enter') {
+            doSearch()
+          }
+        }} buttonAfter={<Button onClick={doSearch}>Search</Button>} addonBefore={searchDropdown} />
         {
           that.props.roomDisplay.searchResults.items.length > 0
           ? <Table responsive>
@@ -427,7 +443,6 @@ export class Room extends Component {
       that.refs['chatMsg'].refs['input'].value = ''
       that.socket.emit('chatMessage', {message: msg, author: that.props.connectedCredentials})
       // FIXME: scroll doesn't scroll to bottom fully
-      that.refs['chat'].scrollTop = that.refs['chat'].scrollHeight
     }
 
     // console.log('playing 1', (that.props.room.queue[0]))
@@ -450,8 +465,8 @@ export class Room extends Component {
             <Col xs={12}>
             <ButtonGroup justified>
             <ButtonGroup><Button onClick={ function () {
-              that.props.roomActions.backMedia(true)
               that.socket.emit('back', { id: that.props.room.queue[0].id })
+              that.props.roomActions.backMedia(true)
             }}><Glyphicon glyph='step-backward' />Back</Button></ButtonGroup>
             {
               that.props.room.playing
@@ -463,8 +478,8 @@ export class Room extends Component {
             }}><Glyphicon glyph='play' />Play</Button></ButtonGroup>
             }
             <ButtonGroup><Button onClick={function () {
-              that.props.roomActions.skipMedia(true)
               that.socket.emit('skip', { id: that.props.room.queue[0].id })
+              that.props.roomActions.skipMedia(true)
             }}><Glyphicon glyph='step-forward' />Skip</Button></ButtonGroup>
             </ButtonGroup>
             </Col>
@@ -502,12 +517,14 @@ export class Room extends Component {
             <Panel className='sidebar' header={roomDetails}>
               <Tabs defaultActiveKey={1}>
                 <Tab eventKey={1} title='Chat'>
-                  <div className='panel panel-default' ref='chat' style={{height: '50vh', overflowY: 'scroll'}}>
-                    <div className='panel-body'>
+                  <div className='panel panel-default panel-body' ref='chat' style={{height: '50vh', overflowY: 'scroll'}}>
                       {chat}
-                    </div>
                   </div>
-                  <Input type='text' bsSize='large' placeholder='Send A Message' ref='chatMsg' buttonAfter={<Button onClick={sendChatMessage}>Send</Button>} />
+                  <Input type='text' bsSize='large' placeholder='Send A Message' ref='chatMsg' onKeyPress={function (e) {
+                    if (e.key === 'Enter') {
+                      sendChatMessage()
+                    }
+                  }} buttonAfter={<Button onClick={sendChatMessage}>Send</Button>} />
                 </Tab>
               </Tabs>
             </Panel>

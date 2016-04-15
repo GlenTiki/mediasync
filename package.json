@@ -58,6 +58,7 @@
     "nes": "^2.0.2",
     "node-uuid": "^1.4.7",
     "opn": "^3.0.3",
+    "randomcolor": "^0.4.4",
     "react": "^0.14.6",
     "react-bootstrap": "^0.28.2",
     "react-dom": "^0.14.6",

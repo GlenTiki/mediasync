@@ -82,7 +82,7 @@ module.exports.validatePassword = function (password, repeat, done) {
   // console.log(password, repeat)
   // username is valid
   if (password === repeat) {
-    var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/
+    var re = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,}$/
     if (re.test(password)) {
       return done(null, { valid: true })
     } else {

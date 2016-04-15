@@ -35,9 +35,11 @@ module.exports = function (server, db) {
     console.log('connection')
     // keep track of user who connected and the room they're in
     var user, roomId
+    var alreadyActive = false
 
     socket.on('joinRoom', function (data) {
       var entryData = data
+      alreadyActive = data.alreadyActive || false
 
       db.view('room/byName', { key: entryData.roomName }, function (err, doc) {
         if (err || !doc[0]) return socket.emit('kicked')
@@ -111,6 +113,12 @@ module.exports = function (server, db) {
           socket.emit('roomDetails', rooms[roomId])
           sync.to(roomId).emit('userJoined', user)
           socket.join(roomId)
+
+          setTimeout(function () {
+            if (rooms[roomId].connectedUsers.length === 1 && rooms[roomId].queue[0] && !alreadyActive) {
+              socket.emit('play', {id: rooms[roomId].queue[0].id, time: 0})
+            }
+          }, 2000)
         }
       })
     })
@@ -402,6 +410,7 @@ module.exports = function (server, db) {
     socket.on('getState', () => sync.to(roomId).emit('getState'))
 
     socket.on('currentState', function (data) {
+      console.log('user sent currentState', user, data)
       sync.to(roomId).emit('currentState', data)
     })
 

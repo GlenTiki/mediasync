@@ -131,8 +131,8 @@ export class SignUp extends Component {
           <div className='text-danger' style={this.props.errorTracker.emailInvalidErrorStyle}>Email is invalid!</div>
           <div className='text-danger' style={this.props.errorTracker.emailTakenErrorStyle}>Email is taken!</div>
           <Input type='password' ref='passwordSU' placeholder='Password' label='Password' labelClassName='col-sm-2' wrapperClassName='col-sm-10'/>
-          <Input type='password' ref='pwRepeatSU' placeholder='Re-type Password' wrapperClassName='col-sm-12'/>
-          <div className='text-danger' style={this.props.errorTracker.pwCharsErrorStyle}>Password needs to be at least 6 letters long and needs to have at least 1 upper case letter, 1 lower case letter and 1 number!</div>
+          <Input type='password' ref='pwRepeatSU' placeholder='Re-type Password' label='Retype' labelClassName='col-sm-2' wrapperClassName='col-sm-10'/>
+          <div className='text-danger' style={this.props.errorTracker.pwCharsErrorStyle}>Password needs to be at least 6 letters long and needs to have at least 1 letter and 1 number!</div>
           <div className='text-danger' style={this.props.errorTracker.pwMatchErrorStyle}>Passwords must match!</div>
           <Input type='checkbox' ref='checkboxSU' label={<span>I agree to the <Link to='/terms'>terms and conditions</Link></span>}/>
           <div className='text-danger' style={this.props.errorTracker.termsErrorStyle}>You must agree to the <Link to='/terms'>Terms and conditions</Link> to sign up!</div>
