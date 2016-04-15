@@ -43,16 +43,24 @@ body
     height: 100%
     width: 100%
     .panel-body
+      overflow-y: scroll
       min-height: 75vh
+      max-height: 100vh
       min-height: 'calc(100vh - %s - 50px)' % footer-size-large
       @media (max-width: mobile-width)
         min-height: 'calc(100vh - %s - 50px)' % footer-size-small
+      .panel-body
+        min-height: 0px
+        height: auto
     .panel-collapse
       .panel-body
         min-height: 60vh
         min-height: 'calc(100vh - %s - 50px - 75px)' % footer-size-large
         @media (max-width: mobile-width)
           min-height: 'calc(100vh - %s - 50px - 75px)' % footer-size-small
+        .panel-body
+          min-height: 0px
+          height: auto
 
 .content
   position: relative

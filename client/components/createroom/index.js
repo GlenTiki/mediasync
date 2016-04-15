@@ -60,6 +60,7 @@ export class CreateRoom extends Component {
 
   createARoom (e) {
     e.preventDefault()
+    var that = this
     var name = this.refs.roomName.getValue()
     var type = this.refs.roomType.getValue()
     var playback = this.refs.roomPlayback.getValue()
@@ -90,7 +91,8 @@ export class CreateRoom extends Component {
 
     roomsApi.create({ name: name, type: type, playback: playback, controllers: controllers, invitedUsers: invitedUsers }, this.props.user, function (err, res) {
       if (err) return console.error(err)
-      console.log(res)
+      that.props.routeActions.push('/room/' + window.encodeURIComponent(name))
+      // console.log(res)
     })
 
     console.log(name, type, playback, controllers)
