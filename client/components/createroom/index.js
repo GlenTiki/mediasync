@@ -7,7 +7,6 @@ import * as CreateRoomActions from '../../actions/CreateRoom'
 
 import { routerActions } from 'react-router-redux'
 import { Panel, Input } from 'react-bootstrap'
-var usersApi = require('../../api/user.js')
 var roomsApi = require('../../api/room.js')
 
 function mapStateToProps (state) {
@@ -34,27 +33,6 @@ export class CreateRoom extends Component {
       that.props.authActions.signout()
       that.props.routeActions.push('/')
       return
-    }
-    if (this.props.location.query) {
-      var token = JSON.parse(window.localStorage.getItem('mediasyncUser')).token
-      if (this.props.location.query.fbId) {
-        usersApi.saveFbId({token: token, fbId: this.props.location.query.fbId}, function (err, me) {
-          if (err) {
-            console.error('something went wrong saving FbID for user')
-          } else {
-            that.props.authActions.signin(me)
-          }
-        })
-      }
-      if (this.props.location.query.twitterId) {
-        usersApi.saveFbId({token: token, twitterId: this.props.location.query.twitterId}, function (err, me) {
-          if (err) {
-            console.error('something went wrong saving twitterID for user')
-          } else {
-            that.props.authActions.signin(me)
-          }
-        })
-      }
     }
   }
 

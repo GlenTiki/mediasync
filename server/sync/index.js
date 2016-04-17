@@ -116,7 +116,7 @@ module.exports = function (server, db) {
 
           setTimeout(function () {
             if (rooms[roomId].connectedUsers.length === 1 && rooms[roomId].queue[0] && !alreadyActive) {
-              socket.emit('play', {id: rooms[roomId].queue[0].id, time: 0})
+              sync.to(roomId).emit('play', {id: rooms[roomId].queue[0].id, time: 0})
             }
           }, 2000)
         }
@@ -418,7 +418,7 @@ module.exports = function (server, db) {
       db.merge(roomId, { queue: rooms[roomId].queue }, function (err, res) {
         console.log('updated', err, res)
         console.log('updated queue')
-        setTimeout(() => socket.emit('currentQueue', rooms[roomId].queue), 1500)
+        setTimeout(() => sync.to(roomId).emit('currentQueue', rooms[roomId].queue), 1500)
         // console.log('updated queue:', rooms[roomId], err, res)
       })
     }

@@ -263,6 +263,20 @@ export default handleActions({
     }
   },
 
+  'PUSH_TO_FRONT' (state, action) {
+    var q = state.roomDetails.queue
+    var elem = q[action.payload]
+    q.splice(action.playload, 1)
+    q.deshift(elem)
+    return {
+      ...state,
+      roomDetails: {
+        ...state.roomDetails,
+        queue: q
+      }
+    }
+  },
+
   'ADD_TO_QUEUE' (state, action) {
     var q = state.roomDetails.queue
     q.push(action.playload)

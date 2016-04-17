@@ -85,9 +85,11 @@ export class Profile extends Component {
             {
               room.type === 'membersOnly' && that.props.viewingUser
               ? <h4><Link to={`/room/${encodeURIComponent(room.name)}`}>Room: {room.name}</Link></h4>
-              : room.type === 'public' || room.type === 'unlisted' || room.type === 'inviteOnly'
+              : room.type === 'public' || room.type === 'unlisted' || room.type !== 'private'
                 ? <h4><Link to={`/room/${encodeURIComponent(room.name)}`}>Room: {room.name}</Link></h4>
-                : <h4>Room: {room.name}</h4>
+                : room.type === 'private' && that.props.viewingUser && room.invitedUsers.indexOf(that.props.viewingUser.id) > -1
+                  ? <h4><Link to={`/room/${encodeURIComponent(room.name)}`}>Room: {room.name}</Link></h4>
+                  : <h4>Room: {room.name}</h4>
             }
             <h5>{
               (function () {

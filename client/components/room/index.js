@@ -192,6 +192,10 @@ export class Room extends Component {
       that.props.roomActions.addToQueue(media)
     })
 
+    this.socket.on('pushToFront', function (index) {
+      that.props.roomActions.pushToFront(index)
+    })
+
     // setInterval(function () {
     //   // that.socket.emit('chatMessage', {message: 'test', author: that.props.connectedCredentials})
     // }, 5000)
