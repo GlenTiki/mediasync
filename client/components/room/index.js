@@ -108,14 +108,14 @@ export class Room extends Component {
     })
 
     this.socket.on('play', function (data) {
-      console.log('play', data)
+      console.log('received play data', data)
       that.props.roomActions.seekTo(data.time)
       that.refs.player.seekTo(data.time)
       that.props.roomActions.playMedia()
     })
 
     this.socket.on('pause', function (data) {
-      console.log('pause', data)
+      console.log('received pause data', data)
       that.props.roomActions.seekTo(data.time)
       that.refs.player.seekTo(data.time)
       that.props.roomActions.pauseMedia()
@@ -195,10 +195,6 @@ export class Room extends Component {
     this.socket.on('pushToFront', function (index) {
       that.props.roomActions.pushToFront(index)
     })
-
-    // setInterval(function () {
-    //   // that.socket.emit('chatMessage', {message: 'test', author: that.props.connectedCredentials})
-    // }, 5000)
   }
 
   componentWillUnmount () {
@@ -208,15 +204,21 @@ export class Room extends Component {
   }
 
   onPlay () {
+    console.log('playing')
     this.props.roomActions.playMedia(this.props.room.clientAction)
     if (this.hasPermission() && this.props.room.clientAction && !this.justJoined) {
+      console.log('emitting play with data', { id: this.props.room.queue[0].id, time: this.props.room.played })
+
       this.socket.emit('play', { id: this.props.room.queue[0].id, time: this.props.room.played })
     }
   }
 
   onPause () {
+    console.log('pausing')
     this.props.roomActions.pauseMedia(this.props.room.clientAction)
     if (this.hasPermission() && this.props.room.clientAction && !this.justJoined) {
+      console.log('emitting pause with data', { id: this.props.room.queue[0].id, time: this.props.room.played })
+
       this.socket.emit('pause', { id: this.props.room.queue[0].id, time: this.props.room.played })
     }
   }
@@ -226,13 +228,12 @@ export class Room extends Component {
   }
 
   onProgress (state) {
-    if (!this.props.room.seeking && this.hasPermission) this.props.roomActions.seekTo(parseFloat(state.played))
-    // this.socket.emit('currentTime', { id: this.props.room.queue[0].id, time: state.played })
-    // if (this.props.room.played - state.played > -0.03 && !this.props.room.seeking) this.refs.player.seekTo(state.played)
+    // console.log('received progress', state)
+    if (!this.props.room.seeking && state.played) this.props.roomActions.seekTo(parseFloat(state.played))
   }
 
   onDuration (duration) {
-    // console.log('duration', duration)
+    // console.log('received duration', duration)
     this.props.roomActions.duration(duration)
   }
 
@@ -293,7 +294,7 @@ export class Room extends Component {
 
     var connectedUsers = this.props.room.connectedUsers.map(function (elem, id) {
       var shouldLink = !!elem.id
-      return <h4 style={{color: usersColors[elem.username], padding: '0px 5px'}}>{ shouldLink ? <Link to={'/profile/' + elem.username} style={{color: usersColors[elem.username]}}>{elem.username}</Link> : elem.username }</h4>
+      return <h4 key={id} style={{color: usersColors[elem.username], padding: '0px 5px'}}>{ shouldLink ? <Link to={'/profile/' + elem.username} style={{color: usersColors[elem.username]}}>{elem.username}</Link> : elem.username }</h4>
     })
 
     var player = (<span style={{pointerEvents: 'none'}}>

@@ -36,7 +36,7 @@ export class FindRoom extends Component {
     var rooms = this.props.rooms.results.map(function (room, i) {
       room = room.value
       return (
-        <Col xs={12} s={6} md={4} lg={3} key={i}>
+        <Col xs={12} s={6} md={4} lg={3} key={i} height='150'>
           <Panel>
             {
               room.type === 'membersOnly' && that.props.user
