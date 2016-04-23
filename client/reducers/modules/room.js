@@ -17,7 +17,8 @@ const initialState = {
     playing: true,
     played: 0,
     seeking: false,
-    clientAction: false
+    clientAction: false,
+    duration: 0
   },
   connectedCredentials: {},
   player: {}
@@ -82,7 +83,8 @@ export default handleActions({
         playing: true,
         played: 0,
         seeking: false,
-        clientAction: false
+        clientAction: false,
+        duration: 0
       },
       connectedCredentials: {}
     }

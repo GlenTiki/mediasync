@@ -15,7 +15,8 @@ import { UserNotFoundError } from './components/profile/userNotFoundError'
 import { default as Landing } from './components/landing'
 import { default as Profile } from './components/profile'
 import { default as Settings } from './components/settings'
-import { default as Room } from './components/room'
+import { default as Room } from './components/room/index'
+import { default as RoomRemote } from './components/room/roomRemote'
 import { default as CreateRoom } from './components/createroom'
 import { default as FindRoom } from './components/findroom'
 import { default as myProfile } from './components/profile/mine'
@@ -59,7 +60,10 @@ render(
         <Route path='createroom' component={CreateRoom} />
         <Route path='room' component={Empty} >
           <IndexRoute component={CreateRoom} />
-          <Route path='/room/:name' component={Room}/>
+          <Route path='/room/:name' component={Empty}>
+            <IndexRoute component={Room} />
+            <Route path='/room/:name/remote' component={RoomRemote}/>
+          </Route>
         </Route>
         <Route path='findroom' component={FindRoom} />
         <Route path='settings' component={Settings} />

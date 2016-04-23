@@ -6,11 +6,9 @@ import * as AuthActions from '../../actions/Auth'
 import * as RoomActions from '../../actions/Room'
 
 import { routerActions } from 'react-router-redux'
-import { Panel, Col, Grid, ResponsiveEmbed, Tabs, Tab, Button, ButtonGroup, Input, Glyphicon, Table } from 'react-bootstrap'
+import { Panel, Col, Grid, Tabs, Tab, Button, ButtonGroup, Input, Glyphicon, Table } from 'react-bootstrap'
 
 import { default as io } from 'socket.io-client'
-
-import ReactPlayer from 'react-player'
 
 function mapStateToProps (state, own) {
   return {
@@ -30,7 +28,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export class Room extends Component {
+export class RoomRemote extends Component {
   getParameterByName (name, url) {
     if (!url) return
     name = name.replace(/[\[\]]/g, '\\$&')
@@ -42,13 +40,26 @@ export class Room extends Component {
   }
 
   componentWillMount () {
-    // console.log(this.props.params.name)
     // var that = this
     // setup socket here
     var that = this
     that.justJoined = true
 
     setTimeout(() => that.justJoined = false, 3000)
+
+    var setup = false
+
+    var setupTimer = function () {
+      if (!setup) {
+        // increase the time once per second
+        setInterval(function () {
+          if (that.props.room.playing) {
+            that.props.roomActions.seekTo(that.props.room.played + (1 / that.props.room.duration))
+          }
+        }, 1000)
+      }
+      setup = true
+    }
 
     this.socket = io('/api/sync')
     this.socket.on('connect', function () {
@@ -73,8 +84,6 @@ export class Room extends Component {
     })
 
     this.socket.on('userJoined', function (user) {
-      that.socket.emit('duration', that.props.room.duration)
-
       that.props.roomActions.userJoinedRoom(user)
       if (!that.props.room.seeking && !that.justJoined) {
         console.log('user joined, sending state', { time: that.props.room.played, playing: that.props.room.playing })
@@ -113,14 +122,12 @@ export class Room extends Component {
     this.socket.on('play', function (data) {
       console.log('received play data', data)
       that.props.roomActions.seekTo(data.time)
-      that.refs.player.seekTo(data.time)
       that.props.roomActions.playMedia()
     })
 
     this.socket.on('pause', function (data) {
       console.log('received pause data', data)
       that.props.roomActions.seekTo(data.time)
-      that.refs.player.seekTo(data.time)
       that.props.roomActions.pauseMedia()
     })
 
@@ -141,7 +148,6 @@ export class Room extends Component {
     this.socket.on('timeChanged', function (data) {
       console.log('timeChanged', data)
       that.props.roomActions.seekTo(data.newTime)
-      that.refs.player.seekTo(data.newTime)
       if (data.playing) that.props.roomActions.playMedia()
       else that.props.roomActions.pauseMedia()
     })
@@ -165,7 +171,6 @@ export class Room extends Component {
     this.socket.on('currentState', function (data) {
       console.log('got currentState', data)
       that.props.roomActions.seekTo(data.time)
-      that.refs.player.seekTo(data.time)
       if (data.playing) {
         that.props.roomActions.playMedia()
       } else {
@@ -197,6 +202,11 @@ export class Room extends Component {
 
     this.socket.on('pushToFront', function (index) {
       that.props.roomActions.pushToFront(index)
+    })
+
+    this.socket.on('duration', function (duration) {
+      that.props.roomActions.duration(duration)
+      setupTimer()
     })
   }
 
@@ -238,7 +248,6 @@ export class Room extends Component {
   onDuration (duration) {
     // console.log('received duration', duration)
     this.props.roomActions.duration(duration)
-    this.socket.emit('duration', duration)
   }
 
   onSeekMouseDown (e) {
@@ -252,7 +261,6 @@ export class Room extends Component {
   onSeekMouseUp (e) {
     this.props.roomActions.seekingDone()
     this.props.roomActions.seekTo(parseFloat(e.target.value))
-    this.refs.player.seekTo(parseFloat(e.target.value))
     this.socket.emit('timeChanged', { newTime: parseFloat(e.target.value), playing: this.props.room.playing })
   }
 
@@ -301,45 +309,6 @@ export class Room extends Component {
       return <h4 key={id} style={{color: usersColors[elem.username], padding: '5px 5px 0px 5px'}}>{ shouldLink ? <Link to={'/profile/' + elem.username} style={{color: usersColors[elem.username]}}>{elem.username}</Link> : elem.username }</h4>
     })
 
-    var player = (<span style={{pointerEvents: 'none'}}>
-        {
-          (function () {
-            if (that.props.room.queue[0]) {
-              var topMedia = that.props.room.queue[0]
-              return (function () {
-                var url
-                switch (topMedia.type) {
-                  case 'youtube':
-                    url = `https://www.youtube.com/watch?v=${topMedia.id}`
-                    break
-                  case 'soundcloud':
-                    url = `https://soundcloud.com/${topMedia.id}`
-                    break
-                  case 'vimeo':
-                    url = `https://vimeo.com/${topMedia.id}`
-                    break
-                  default: // handle non recognised media in the queue
-                    // setTimeout(that.socket.emit('skipSong', {topMedia.id}), 3000)
-                    return <h1>Invalid media in queue...</h1>
-                }
-                return <ReactPlayer ref='player'
-                          url={url}
-                          playing={that.props.room.playing}
-                          onPlay={that.onPlay.bind(that)}
-                          onPause={that.onPause.bind(that)}
-                          onEnded={that.onEnded.bind(that)}
-                          onProgress={that.onProgress.bind(that)}
-                          onDuration={that.onDuration.bind(that)}
-                          soundcloudConfig={{clientId: '235c570a0c60640ee158a2c94bad6c84'}}
-                          youtubeConfig={{prelod: true, playerVars: {autoplay: 0}}}
-                          vimeoConfig={{preload: true, iframeParams: {autoplay: 0}}}/>
-              })()
-            } else {
-              return <h1>Nothing in the queue yet!</h1>
-            }
-          })()
-        }
-      </span>)
     var searchDropdown = (
         <select name='searchLoc' ref='searchLoc'>
           <option value='youtube'>Youtube</option>
@@ -408,7 +377,7 @@ export class Room extends Component {
         }} block>Load more results</Button> : false}
       </div>
     )
-    var search = (<span>{ that.hasPermission() ? s : <h1>You don't have permission to add music here!</h1> }</span>)
+    var search = (<span>{ that.hasPermission() ? s : <h1>You dont have permission to add music here!</h1> }</span>)
 
     var q = JSON.parse(JSON.stringify(this.props.room.queue))
     if (q[0]) q.splice(0, 1)
@@ -494,10 +463,18 @@ export class Room extends Component {
             {
               that.props.room.playing
               ? <ButtonGroup><Button onClick={ function () {
-                that.props.roomActions.pauseMedia(true)
+                if (that.hasPermission() && !that.justJoined) {
+                  console.log('emitting play with data', { id: that.props.room.queue[0].id, time: that.props.room.played })
+                  that.props.roomActions.pauseMedia(true)
+                  that.socket.emit('pause', { id: that.props.room.queue[0].id, time: that.props.room.played })
+                }
               }}><Glyphicon glyph='pause' />Pause</Button></ButtonGroup>
             : <ButtonGroup><Button onClick={function () {
-              that.props.roomActions.playMedia(true)
+              if (that.hasPermission() && !that.justJoined) {
+                console.log('emitting play with data', { id: that.props.room.queue[0].id, time: that.props.room.played })
+                that.props.roomActions.playMedia(true)
+                that.socket.emit('play', { id: that.props.room.queue[0].id, time: that.props.room.played })
+              }
             }}><Glyphicon glyph='play' />Play</Button></ButtonGroup>
             }
             <ButtonGroup><Button onClick={function () {
@@ -511,7 +488,9 @@ export class Room extends Component {
               type='range' min={0} max={1} step='any'
               value={that.props.room.played}
               onMouseDown={that.onSeekMouseDown.bind(that)}
+              onTouchStart={that.onSeekMouseDown.bind(that)}
               onChange={that.onSeekChange.bind(that)}
+              onTouchEnd={that.onSeekMouseUp.bind(that)}
               onMouseUp={that.onSeekMouseUp.bind(that)}
             />
           </div>
@@ -524,16 +503,11 @@ export class Room extends Component {
       <div className='room' >
         <Grid fluid>
           <Col fluid sm={12} md={8}>
-            <Panel header={<h3 onClick={() => that.props.roomActions.handlePanelClick(0)}>Video</h3>} collapsible expanded={this.props.roomDisplay.openPanel === 0}>
-              <ResponsiveEmbed a16by9 ref='player'>
-                {player}
-              </ResponsiveEmbed>
+            <Panel header={<h3 onClick={() => that.props.roomActions.handlePanelClick(0)}>Queue</h3>} collapsible expanded={this.props.roomDisplay.openPanel === 0}>
+              {queue}
             </Panel>
             <Panel header={<h3 onClick={() => that.props.roomActions.handlePanelClick(1)}>Search</h3>} collapsible expanded={this.props.roomDisplay.openPanel === 1}>
               {search}
-            </Panel>
-            <Panel header={<h3 onClick={() => that.props.roomActions.handlePanelClick(2)}>Queue</h3>} collapsible expanded={this.props.roomDisplay.openPanel === 2}>
-              {queue}
             </Panel>
           </Col>
           <Col fluid sm={12} md={4}>
@@ -563,7 +537,7 @@ export class Room extends Component {
   }
 }
 
-Room.propTypes = {
+RoomRemote.propTypes = {
   user: PropTypes.object,
   roomDisplay: PropTypes.object,
   room: PropTypes.object,
@@ -573,4 +547,4 @@ Room.propTypes = {
   roomActions: PropTypes.object.isRequired
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Room)
+export default connect(mapStateToProps, mapDispatchToProps)(RoomRemote)

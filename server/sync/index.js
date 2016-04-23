@@ -101,10 +101,17 @@ module.exports = function (server, db) {
               user = entryData.details
             }
           }
+          console.log('emitting play on join', !rooms[roomId].connectedUsers.some((elem) => elem.name === user.name && elem.username === user.username))
 
           // before forwarding the room data, add the newest user to the connected users
           if (!rooms[roomId].connectedUsers.some((elem) => elem.name === user.name && elem.username === user.username)) {
             rooms[roomId].connectedUsers.push(sanitizeUser(user))
+
+            setTimeout(function () {
+              if (rooms[roomId].connectedUsers.length === 1 && rooms[roomId].queue[0] && !alreadyActive) {
+                sync.to(roomId).emit('play', {id: rooms[roomId].queue[0].id, time: 0})
+              }
+            }, 2000)
           }
 
           // console.log('send details', rooms[roomId])
@@ -113,12 +120,6 @@ module.exports = function (server, db) {
           socket.emit('roomDetails', rooms[roomId])
           sync.to(roomId).emit('userJoined', user)
           socket.join(roomId)
-
-          setTimeout(function () {
-            if (rooms[roomId].connectedUsers.length === 1 && rooms[roomId].queue[0] && !alreadyActive) {
-              sync.to(roomId).emit('play', {id: rooms[roomId].queue[0].id, time: 0})
-            }
-          }, 2000)
         }
       })
     })
@@ -408,6 +409,8 @@ module.exports = function (server, db) {
     })
 
     socket.on('getState', () => sync.to(roomId).emit('getState'))
+
+    socket.on('duration', (duration) => sync.to(roomId).emit('duration', duration))
 
     socket.on('currentState', function (data) {
       console.log('user sent currentState', user, data)

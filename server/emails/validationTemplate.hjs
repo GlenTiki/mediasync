@@ -15,6 +15,7 @@
       font-size: 1em;
       color: #000;
       line-height: 1.6em;
+      max-width: 1200px !important;
     }
 
       h1 {
@@ -85,11 +86,6 @@
     </tr>
   </table>
   <![endif]-->
-    <table cellspacing="0" cellpadding="0" border="0" width="600">
-	      <!-- email content -->
-
-
-    </table>
 
   </body>
 </html>

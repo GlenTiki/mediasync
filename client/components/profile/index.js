@@ -80,7 +80,7 @@ export class Profile extends Component {
     return this.props.rooms.map(function (room, i) {
       room = room.value
       return (
-        <Col xs={12} s={6} md={4} lg={3} key={i}>
+        <Col xs={12} s={6} md={4} lg={3} key={i} style={{height: '150px'}}>
           <Panel>
             {
               room.type === 'membersOnly' && that.props.viewingUser
@@ -108,6 +108,15 @@ export class Profile extends Component {
               room.type === 'membersOnly' && !that.props.user
               ? <h5> Members only room, sign up to get in! </h5>
               : false
+            }
+            {
+              room.type === 'membersOnly' && that.props.viewingUser
+              ? <h4><Link to={`/room/${encodeURIComponent(room.name)}/remote`}>remote control</Link></h4>
+              : room.type === 'public' || room.type === 'unlisted' || room.type !== 'private'
+                ? <h4><Link to={`/room/${encodeURIComponent(room.name)}/remote`}>remote control</Link></h4>
+                : room.type === 'private' && that.props.viewingUser && room.invitedUsers.indexOf(that.props.viewingUser.id) > -1
+                  ? <h4><Link to={`/room/${encodeURIComponent(room.name)}/remote`}>remote control</Link></h4>
+                  : <h4>Room: {room.name}</h4>
             }
           </Panel>
         </Col>

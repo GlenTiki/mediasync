@@ -56,9 +56,10 @@ module.exports = {
     .get(`/api/rooms`)
     .set('Accept', 'application/json')
     .end(function (err, res) {
+      console.log(res)
       // console.log(err, res)
       if (err) {
-        return done(new Error('user doesn\'t exist'))
+        return done(new Error('rooms doesn\'t exist'))
       } else {
         return done(null, res.body)
       }

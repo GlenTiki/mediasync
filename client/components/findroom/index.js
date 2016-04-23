@@ -36,8 +36,8 @@ export class FindRoom extends Component {
     var rooms = this.props.rooms.results.map(function (room, i) {
       room = room.value
       return (
-        <Col xs={12} s={6} md={4} lg={3} key={i} height='150'>
-          <Panel>
+        <Col xs={12} s={6} md={4} lg={3} key={i}>
+          <Panel style={{height: '150px'}}>
             {
               room.type === 'membersOnly' && that.props.user
               ? <h4><Link to={`/room/${encodeURIComponent(room.name)}`}>Room: {room.name}</Link></h4>
@@ -61,6 +61,13 @@ export class FindRoom extends Component {
             {
               room.type === 'membersOnly' && !that.props.user
               ? <h5> Members only room, sign up to get in! </h5>
+              : false
+            }
+            {
+              room.type === 'membersOnly' && that.props.user
+              ? <h4><Link to={`/room/${encodeURIComponent(room.name)}/remote`}>Remote Control</Link></h4>
+              : room.type === 'public'
+                ? <h4><Link to={`/room/${encodeURIComponent(room.name)}/remote`}>Remote Control</Link></h4>
               : false
             }
           </Panel>
