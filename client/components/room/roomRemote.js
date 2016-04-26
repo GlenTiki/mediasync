@@ -402,7 +402,7 @@ export class RoomRemote extends Component {
                 <td>{elem.uploader}</td>
                 <td>
                   <Button bsStyle='success' onClick={function () {
-                    that.socket.emit('moveToFront', ind + 1)
+                    that.socket.emit('pushToFront', ind + 1)
                       // console.log('add to queue', elem)
                       // that.socket.emit('addMedia', {id: elem.id.videoId, type: 'youtube', title: elem.snippet.title, thumburl: elem.snippet.thumbnails.default.url})
                   }} block>

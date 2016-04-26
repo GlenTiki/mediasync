@@ -322,6 +322,7 @@ export class Room extends Component {
                     // setTimeout(that.socket.emit('skipSong', {topMedia.id}), 3000)
                     return <h1>Invalid media in queue...</h1>
                 }
+                console.log(url)
                 return <ReactPlayer ref='player'
                           url={url}
                           playing={that.props.room.playing}
@@ -331,7 +332,7 @@ export class Room extends Component {
                           onProgress={that.onProgress.bind(that)}
                           onDuration={that.onDuration.bind(that)}
                           soundcloudConfig={{clientId: '235c570a0c60640ee158a2c94bad6c84'}}
-                          youtubeConfig={{prelod: true, playerVars: {autoplay: 0}}}
+                          youtubeConfig={{preload: true, playerVars: {autoplay: 0}}}
                           vimeoConfig={{preload: true, iframeParams: {autoplay: 0}}}/>
               })()
             } else {
@@ -433,7 +434,7 @@ export class Room extends Component {
                 <td>{elem.uploader}</td>
                 <td>
                   <Button bsStyle='success' onClick={function () {
-                    that.socket.emit('moveToFront', ind + 1)
+                    that.socket.emit('pushToFront', ind + 1)
                       // console.log('add to queue', elem)
                       // that.socket.emit('addMedia', {id: elem.id.videoId, type: 'youtube', title: elem.snippet.title, thumburl: elem.snippet.thumbnails.default.url})
                   }} block>

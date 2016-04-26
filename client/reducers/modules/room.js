@@ -269,11 +269,13 @@ export default handleActions({
     var q = state.roomDetails.queue
     var elem = q[action.payload]
     q.splice(action.playload, 1)
-    q.deshift(elem)
+    q.unshift(elem)
     return {
       ...state,
       roomDetails: {
         ...state.roomDetails,
+        played: 0,
+        playing: true,
         queue: q
       }
     }

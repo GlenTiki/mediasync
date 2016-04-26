@@ -386,7 +386,7 @@ module.exports = function (server, db) {
       }
     })
 
-    socket.on('moveToFront', function (index) {
+    socket.on('pushToFront', function (index) {
       if (rooms[roomId].playback !== 'anyone') {
         if (rooms[roomId].controllers.indexOf(user.id) > -1) {
           moveToFront()
@@ -399,7 +399,7 @@ module.exports = function (server, db) {
         var elem = rooms[roomId].queue[index]
         rooms[roomId].queue.splice(index, 1)
         rooms[roomId].queue.unshift(elem)
-        sync.to(roomId).emit('moveToFront', index)
+        sync.to(roomId).emit('pushToFront', index)
         queueChanged()
       }
     })
