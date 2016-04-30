@@ -176,11 +176,13 @@ module.exports = function (server, db) {
           if (rooms[roomId].controllers.indexOf(user.id) > -1) {
             rooms[roomId].queue.push(rooms[roomId].queue.shift())
             sync.to(roomId).emit('skip', data)
+            setTimeout(function () { sync.to(roomId).emit('play', {time: 0}) }, 1000)
             queueChanged(roomId)
           }
         } else {
           rooms[roomId].queue.push(rooms[roomId].queue.shift())
           sync.to(roomId).emit('skip', data)
+          setTimeout(function () { sync.to(roomId).emit('play', {time: 0}) }, 1000)
           queueChanged(roomId)
         }
       }
@@ -193,11 +195,13 @@ module.exports = function (server, db) {
           if (rooms[roomId].controllers.indexOf(user.id) > -1) {
             rooms[roomId].queue.unshift(rooms[roomId].queue.pop())
             sync.to(roomId).emit('back', data)
+            setTimeout(function () { sync.to(roomId).emit('play', {time: 0}) }, 1000)
             queueChanged(roomId)
           }
         } else {
           rooms[roomId].queue.unshift(rooms[roomId].queue.pop())
           sync.to(roomId).emit('back', data)
+          setTimeout(function () { sync.to(roomId).emit('play', {time: 0}) }, 1000)
           queueChanged(roomId)
         }
       }
