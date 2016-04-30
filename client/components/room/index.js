@@ -322,7 +322,6 @@ export class Room extends Component {
                     // setTimeout(that.socket.emit('skipSong', {topMedia.id}), 3000)
                     return <h1>Invalid media in queue...</h1>
                 }
-                console.log(url)
                 return <ReactPlayer ref='player'
                           url={url}
                           playing={that.props.room.playing}
