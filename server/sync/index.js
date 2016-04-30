@@ -421,7 +421,7 @@ module.exports = function (server, db) {
       db.merge(roomId, { queue: rooms[roomId].queue }, function (err, res) {
         console.log('updated', err, res)
         console.log('updated queue')
-        setTimeout(() => sync.to(roomId).emit('currentQueue', rooms[roomId].queue), 1500)
+        sync.to(roomId).emit('currentQueue', rooms[roomId].queue)
         // console.log('updated queue:', rooms[roomId], err, res)
       })
     }

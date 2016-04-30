@@ -8,6 +8,7 @@ import * as CreateRoomActions from '../../actions/CreateRoom'
 import { routerActions } from 'react-router-redux'
 import { Panel, Input } from 'react-bootstrap'
 var roomsApi = require('../../api/room.js')
+var validator = require('../../../isomorphic/validator.js')
 
 function mapStateToProps (state) {
   return {
@@ -26,6 +27,11 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
+const clearErrors = {
+  nameEmptyErrorStyle: {display: 'none'},
+  nameLengthErrorStyle: {display: 'none'}
+}
+
 export class CreateRoom extends Component {
   componentDidMount () {
     var that = this
@@ -36,6 +42,13 @@ export class CreateRoom extends Component {
     }
   }
 
+  handleError (e) {
+    e = e + 'Style'
+    let c = Object.assign({}, clearErrors)
+    c[e] = {display: 'block'}
+    this.props.createRoomActions.handleError(c)
+  }
+
   createARoom (e) {
     e.preventDefault()
     var that = this
@@ -44,36 +57,41 @@ export class CreateRoom extends Component {
     var playback = this.refs.roomPlayback.getValue()
     var controllers = []
     var invitedUsers = [] // in case of private room
+    validator.validateRoomName(name, function (err, res) {
+      if (err) {
+        return that.handleError(err.message)
+      } else if (res.valid) {
+        if (type === 'private') {
+          invitedUsers = that.refs.invited.getValue().trim().toLowerCase().split(',')
+          invitedUsers.push(that.props.user.username)
+          invitedUsers.filter(function (c, i) {
+            // if the index of the current element is not the first occurance of it
+            // in the array, the element is not unique
+            return invitedUsers.indexOf(c) === i
+          })
+        }
 
-    if (type === 'private') {
-      invitedUsers = this.refs.invited.getValue().trim().toLowerCase().split(',')
-      invitedUsers.push(this.props.user.username)
-      invitedUsers.filter(function (c, i) {
-        // if the index of the current element is not the first occurance of it
-        // in the array, the element is not unique
-        return invitedUsers.indexOf(c) === i
-      })
-    }
+        if (playback === 'friends') {
+          controllers = that.refs.controllers.getValue().trim().toLowerCase().split(',')
+          controllers.push(that.props.user.username)
+          controllers.filter(function (c, i) {
+            // if the index of the current element is not the first occurance of it
+            // in the array, the element is not unique
+            return controllers.indexOf(c) === i
+          })
+        } else if (playback === 'owner') {
+          controllers = [that.props.user.username]
+        }
 
-    if (playback === 'friends') {
-      controllers = this.refs.controllers.getValue().trim().toLowerCase().split(',')
-      controllers.push(this.props.user.username)
-      controllers.filter(function (c, i) {
-        // if the index of the current element is not the first occurance of it
-        // in the array, the element is not unique
-        return controllers.indexOf(c) === i
-      })
-    } else if (playback === 'owner') {
-      controllers = [this.props.user.username]
-    }
+        roomsApi.create({ name: name, type: type, playback: playback, controllers: controllers, invitedUsers: invitedUsers }, that.props.user, function (err, res) {
+          if (err) return console.error(err)
+          that.props.routeActions.push('/room/' + window.encodeURIComponent(name))
+          // console.log(res)
+        })
 
-    roomsApi.create({ name: name, type: type, playback: playback, controllers: controllers, invitedUsers: invitedUsers }, this.props.user, function (err, res) {
-      if (err) return console.error(err)
-      that.props.routeActions.push('/room/' + window.encodeURIComponent(name))
-      // console.log(res)
+        console.log(name, type, playback, controllers)
+      }
     })
-
-    console.log(name, type, playback, controllers)
   }
 
   handleTypeChange () {

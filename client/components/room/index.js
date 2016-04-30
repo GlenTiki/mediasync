@@ -232,7 +232,7 @@ export class Room extends Component {
 
   onProgress (state) {
     // console.log('received progress', state)
-    if (!this.props.room.seeking && state.played) this.props.roomActions.seekTo(parseFloat(state.played))
+    if (!this.props.room.seeking && state.played && state.played < 1) this.props.roomActions.seekTo(parseFloat(state.played))
   }
 
   onDuration (duration) {

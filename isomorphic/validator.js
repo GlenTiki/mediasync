@@ -95,7 +95,15 @@ module.exports.validatePassword = function (password, repeat, done) {
 
 // TODO: Room validation
 module.exports.validateRoomName = function (name, done) {
-  return done(null, {valid: true})
+  if (name.length > 0) {
+    if (name.length < 256) {
+      return done(null, {valid: true})
+    } else {
+      return done(new Error('nameLengthError'), {valid: false})
+    }
+  } else {
+    return done(new Error('nameEmptyError'), {valid: false})
+  }
 }
 
 module.exports.validateRoomType = function (type, done) {
