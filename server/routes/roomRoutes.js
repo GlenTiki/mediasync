@@ -107,7 +107,20 @@ module.exports = function (db) {
       handler: function (request, reply) {
         db.view('room/public', function (err, res) {
           if (err) return reply(new Error('something went wrong...'))
-          if (res) reply(res)
+          if (res) {
+            async.map(res, function (room, done) {
+              db.get(room.value.creator, function (err, creator) {
+                if (err) return done(new Error('something went wrong...'))
+
+                room.value.creatorUsername = creator.username
+
+                done(null, room)
+              })
+            }, function (err, res) {
+              if (err) return reply(new Error('something went wrong...'))
+              reply(res)
+            })
+          }
           else reply('no rooms').code(404)
         })
       }
